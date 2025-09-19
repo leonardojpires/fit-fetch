@@ -1,8 +1,11 @@
+import Header from './components/Header';
+import AppRoutes from './routes/routes';
+
 function App() {
 
   return (
     <>
-      <p className="text-3xl">Test</p>
+      <AppRoutes />
     </>
   )
 }

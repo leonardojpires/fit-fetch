@@ -15,3 +15,13 @@
   --headline: "Montserrat", sans-serif;
   --body: "Raleway", sans-serif;
 }
+
+@layer utilities {
+  .font-headline {
+    font-family: var(--headline), sans-serif;
+  }
+
+  .font-body {
+    font-family: var(--body), sans-serif;
+  }
+}
