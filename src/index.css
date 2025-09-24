@@ -8,12 +8,20 @@
 
   --background: #E3D7FF;
   --cards: #FFFFFF;
-  --text-primary: #1E1E1E;
+  --text-primary: #ffffff;
   --text-secondary: #6B7280;
+  --text-paragraph: rgba(255, 255, 255, 0.693);
 
   /* FONTS */
   --headline: "Montserrat", sans-serif;
   --body: "Raleway", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 @layer utilities {
@@ -24,4 +32,9 @@
   .font-body {
     font-family: var(--body), sans-serif;
   }
+}
+
+/* CUSTOM TAILWIND CLASSES */
+.section {
+  @apply w-full lg:max-w-[1200px] px-5 lg:px-20 mt-30 mb-30 mx-auto flex items-center justify-between lg:gap-10 lg:mb-0;
 }

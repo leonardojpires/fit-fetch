@@ -11,12 +11,12 @@ function Header() {
     }
 
     return (
-        <header className="flex justify-between items-center py-4 px-10 lg:justify-evenly">
+        <header className="header absolute top-0 left-0 w-full flex items-center justify-between z-50 px-5 lg:px-20 py-5 bg-transparent">
 
             <div>
                 <Link to="/">
-                    <span className="text-3xl font-bold">
-                        <img src="/img/logos/ff_logo.svg" alt="Fit Fetch" width="200px" className="select-none pointer-none" />
+                    <span>
+                        <img src="/img/logos/ff_logo.svg" alt="Fit Fetch" className="select-none pointer-none w-[150px] lg:w-[200px]" />
                     </span>
                 </Link>
             </div>
