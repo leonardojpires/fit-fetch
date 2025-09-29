@@ -1,8 +1,8 @@
 function Container({ children }) {
     return (
-        <section className="mx-auto flex flex-col items-center">
+        <main className="mx-auto flex flex-col items-center bg-[var(--background)]">
             { children }
-        </section>
+        </main>
     )
 }
 

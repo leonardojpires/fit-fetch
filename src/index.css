@@ -6,7 +6,7 @@
   --secondary: #00C853;
   --accent: #FF9100;
 
-  --background: #E3D7FF;
+  --background: #f6f6f6;
   --cards: #FFFFFF;
   --text-primary: #ffffff;
   --text-secondary: #6B7280;
@@ -36,5 +36,5 @@
 
 /* CUSTOM TAILWIND CLASSES */
 .section {
-  @apply w-full lg:max-w-[1200px] px-5 lg:px-20 mt-30 mb-30 mx-auto flex items-center justify-between lg:gap-10 lg:mb-0;
+  @apply w-full max-w-[900px] px-5 lg:px-20 mt-30 mb-30 mx-auto lg:mb-0;
 }
