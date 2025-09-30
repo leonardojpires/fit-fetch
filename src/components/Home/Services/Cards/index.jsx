@@ -12,8 +12,8 @@ function Cards({ icon, title, description }) {
 
         <div className="p-5 flex flex-col justify-between flex-1">
           <div className="!p-4">
-            <h3 className="text-xl font-bold text-[var(--primary)] !mb-2">{title}</h3>
-            <p className="text-gray-500">{description}</p>
+            <h3 className="text-xl font-bold font-body text-[var(--primary)] !mb-2">{title}</h3>
+            <p className="text-gray-500 font-body">{description}</p>
           </div>
         </div>
       </div>

@@ -1,12 +1,12 @@
-
+import './index.css';
 import Cards from './Cards/index';
 
 function Services() {
     return (
         <section className="section !mb-20">
-            <h3 className="text-3xl font-body font-bold uppercase !mb-5">O que o Fit Fetch oferece</h3>
+            <h3 className="title font-body">O que o Fit Fetch oferece</h3>
 
-            <div className="w-full grid grid-cols-1 justify-items-center auto-rows-fr gap-10 sm:grid-cols-2 md:grid-cols-3">
+            <div className="services-div">
                 <Cards icon="https://images.pexels.com/photos/2261477/pexels-photo-2261477.jpeg" title="Planos de Treino" description="Cria o teu plano de treino baseado nos teus objetivos diários" />
 
                 <Cards icon="https://images.pexels.com/photos/406152/pexels-photo-406152.jpeg" title="Nutrição Adequada" description="A tua nutrição adequada ao teu estilo de vida" />
