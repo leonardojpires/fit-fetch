@@ -6,14 +6,18 @@ import { FiUsers } from 'react-icons/fi';
 function Hero() {
 
     return (
-        <section className="diagonal w-full relative bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-2xl">
-            <ParticleBackground />
+        <section className="relative w-full">
+
+            <div className="diagonal absolute inset-0">
+                <ParticleBackground />
+            </div>
+            
 
             <div className="section-lg flex items-center justify-between lg:gap-10 relative z-10">
 
                 <div className="w-full flex flex-col gap-5 lg:w-[50%]">
                     <h1 className="h1 font-headline">
-                        Transforma <span className="text-[var(--primary)] font-bold">tudo em ti</span> no melhor de ti com a Fit Fetch
+                        Transforma <span className="text-[var(--primary)] font-bold">tudo em ti</span> no melhor de ti com o Fit Fetch
                     </h1>
                     <p className="hero-p font-body">
                         Junta-te a nós e começa a tua jornada rumo a uma vida mais saudável, ativa e equilibrada! O Fit Fetch está aqui por ti.

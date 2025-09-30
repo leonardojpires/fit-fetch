@@ -17,14 +17,11 @@ function ParticleField() {
 
   useFrame((state) => {
     if (ref.current) {
-      // rotação geral
       ref.current.rotation.x = state.clock.elapsedTime * 0.02;
       ref.current.rotation.y = state.clock.elapsedTime * 0.05;
 
-      // piscar partículas
       ref.current.material.opacity = 0.6 + Math.sin(state.clock.elapsedTime * 2) * 0.2;
 
-      // leve oscilação vertical
       ref.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.5;
     }
   });
@@ -33,12 +30,12 @@ function ParticleField() {
     <Points ref={ref} positions={particlesPosition}>
       <PointMaterial
         transparent
-        color="#ff6f31"        // laranja gym vibrante
+        color="#ff6f31"        
         size={0.035}
         sizeAttenuation
         depthWrite={false}
         opacity={0.7}
-        emissive="#ff6f31"     // glow subtil
+        emissive="#ff6f31"     
       />
     </Points>
   );
@@ -49,26 +46,22 @@ export default function ParticleBackground() {
     <div className="absolute inset-0 z-0">
       <Canvas
         camera={{ position: [0, 0, 7], fov: 75 }}
-        style={{ background: '#1e1e1e' }} // cinza escuro moderno
+        style={{ background: '#051124' }}
       >
-        {/* luz ambiente suave */}
         <ambientLight intensity={0.2} color="#cccccc" />
 
-        {/* luz direcional energética */}
         <directionalLight 
           position={[5, 5, 5]} 
           intensity={0.5}
           color="#ff7f2a"
         />
 
-        {/* luz pontual complementar */}
         <pointLight 
           position={[-5, -5, 5]} 
           intensity={0.4}
           color="#ff9f1c"
         />
 
-        {/* partículas */}
         <ParticleField />
       </Canvas>
     </div>

@@ -16,7 +16,7 @@ function About() {
                 <CgGym className="text-[var(--primary)]" />
             </div>
 
-            <p className="font-body text-justify !mb-8">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis cum placeat consequatur, rem ipsam accusantium fugiat odio eaque, illo at recusandae perferendis quae nesciunt tempora pariatur, mollitia quo tenetur voluptates. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, voluptas a. Et quaerat quidem ipsa tempore eos, nesciunt voluptatem vitae ipsam placeat, sapiente repudiandae sint nisi rem, voluptatum nulla voluptates? Lorem</p>
+            <p className="font-body text-justify !mb-10">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis cum placeat consequatur, rem ipsam accusantium fugiat odio eaque, illo at recusandae perferendis quae nesciunt tempora pariatur, mollitia quo tenetur voluptates. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, voluptas a. Et quaerat quidem ipsa tempore eos, nesciunt voluptatem vitae ipsam placeat, sapiente repudiandae sint nisi rem, voluptatum nulla voluptates? Lorem</p>
 
             
 
