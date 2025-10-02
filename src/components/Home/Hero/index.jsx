@@ -39,7 +39,7 @@ function Hero() {
 
                 </div>
 
-                <div>
+                <div className="hero-img-div">
                     <img src="/img/imgs/hero-img.png" alt="Fit Fetch" className="hero-img"/>
                 </div>
 

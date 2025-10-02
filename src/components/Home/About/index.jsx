@@ -27,7 +27,7 @@ function About() {
 
                 <div className="card">
                     <IoNutritionSharp className="card-icon" />
-                    <span className="card-text">Nutrição sem fim</span>
+                    <span className="card-text">Nutre o teu "eu"</span>
                 </div>
 
                 <div className="card">
