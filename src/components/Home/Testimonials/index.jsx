@@ -16,7 +16,7 @@ export default function Testimonials() {
         Vê o que os nossos membros dizem
       </h2>
 
-      <div className="relative overflow-hidden w-full">
+      <div className="testimonials-div">
         <div className="flex gap-5 transation-transform duration-500" style={{ transform: `translateX(-${current * 50}%)` }}>
             {testimonials.map((t, index) => (
                 <div key={index} className="flex-shrink-0 w-1/2">
@@ -30,11 +30,11 @@ export default function Testimonials() {
             ))}
         </div>
 
-        <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white !p-3 rounded-full hover:bg-black/70 cursor-pointer">
+        <button onClick={prev} className="arrows left-2">
             &lt;
         </button>
 
-        <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white !p-3 rounded-full hover:bg-black/70 cursor-pointer">
+        <button onClick={next} className="arrows right-2">
             &gt;
         </button>
 

@@ -18,15 +18,15 @@ const testimonials = [
   },
   {
     image: testimonial3,
-    name: "Ana Costa",
-    stars: 5,
-    text: "Adorei o design limpo e moderno. Recomendo demais!",
-  },
-  {
-    image: testimonial4,
     name: "Lucas Fernandes",
     stars: 5,
     text: "Os treinos personalizados são exatamente o que eu precisava para evoluir.",
+  },
+  {
+    image: testimonial4,
+    name: "Ana Costa",
+    stars: 5,
+    text: "Adorei o design limpo e moderno. Recomendo demais!",
   },
 /*   {
     image: "https://via.placeholder.com/80",

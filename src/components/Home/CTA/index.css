@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+.cta-background {
+    background: #000000;
+    background: linear-gradient(180deg,rgb(21, 20, 28) 0%, rgba(24, 27, 74, 1) 86%);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+
+.cta-div {
+    @apply flex flex-col justify-center items-center gap-5 md:!px-32 !py-16;
+}
+
+.cta-span {
+    @apply text-[0.8rem] font-semibold uppercase text-[var(--cards)]/50 border px-[0.5rem] py-[0.2rem] rounded-full;
+}
+
+.cta-title {
+    @apply text-4xl font-bold uppercase text-[var(--cards)] text-center
+}
+
+.cta-paragraph {
+    @apply text-[var(--cards)]/80 text-center;
+}
+
+.cta-button {
+    @apply flex flex-row items-center gap-2 text-[var(--cards)] font-semibold border-2 border-[var(--primary)] bg-[var(--primary)]/80 !px-12 !py-4 hover:border-[var(--accent)] hover:bg-[var(--accent)]/80 hover:rounded-lg transition-all ease-in-out duration-200;
+}
