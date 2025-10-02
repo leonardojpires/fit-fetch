@@ -1,0 +1,9 @@
+@import 'tailwindcss';
+
+.title {
+    @apply [text-shadow:_1px_1px_0px_#00C853] text-center uppercase;
+}
+
+.carousel {
+    @apply flex flex-row;
+}
