@@ -1,5 +1,4 @@
 import './index.css';
-import Button from './../../Button/index';
 import { IoPersonAddOutline } from "react-icons/io5";
 import { Link } from 'react-router-dom';
 

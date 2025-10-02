@@ -13,7 +13,7 @@
 }
 
 .hero-img {
-    @apply w-[380px] hidden lg:block pointer-events-none z-10;
+    @apply w-[380px] hidden lg:block pointer-events-none;
 }
 
 .hero-span {
