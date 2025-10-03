@@ -30,10 +30,10 @@ function Header() {
                 <Link to="/nutricao" className="font-headline nav-link underline-hover">NUTRIÇÃO</Link>
                 <Link to="/contacto" className="font-headline nav-link underline-hover">CONTACTO</Link>
 
-                <a href="" class="font-headline auth-button">
+                <Link to="/entrar" class="font-headline auth-button">
                     ENTRAR
                     <CiLogin />
-                </a>
+                </Link>
             </nav>
 
             <div 

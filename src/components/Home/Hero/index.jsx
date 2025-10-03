@@ -13,7 +13,7 @@ function Hero() {
             </div>
             
 
-            <div className="diagonal section-lg flex items-center justify-between lg:gap-10 relative z-10">
+            <div className="section-lg flex items-center justify-between md:gap-15 lg:gap-10 relative z-10">
 
                 <div className="w-full flex flex-col gap-5 lg:w-[50%]">
                     <h1 className="h1 font-headline">
