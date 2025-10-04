@@ -2,8 +2,28 @@ import './index.css';
 import { Link } from "react-router-dom";
 import { FaGoogle, FaEnvelope, FaLock } from 'react-icons/fa';
 import { FaPerson } from "react-icons/fa6";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../../services/firebase";
 
 function AuthPage() {
+    const loginWithGoogle = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+
+            const user = result.user;
+            console.log("Utilizador logado:", {
+                name: user.displayName,
+                email: user.email,
+                uid: user.uid,
+                photoURL: user.photoURL
+            });
+        } catch(e) {
+            console.error(`Erro ao autenticar com a Google: ${e}`);
+            alert("Falha na autenticação. Tenta novamente")
+        }
+    }
+
     return (
         <section className="max-lg-[1200px] w-full !mt-40 !mb-40 !px-[5rem] flex flex-row">
             <div className="w-full h-full flex flex-col gap-5 lg:flex-row">
@@ -25,6 +45,7 @@ function AuthPage() {
                                     id="email"
                                     placeholder="teu@email.com"
                                     className="input font-body"
+                                    required
                                 />
                             </div>
                         </div>
@@ -39,6 +60,7 @@ function AuthPage() {
                                     id="password"
                                     placeholder="*******"
                                     className="input font-body"
+                                    required
                                 />
                             </div>
                         </div>
@@ -63,7 +85,7 @@ function AuthPage() {
                     <div className="flex justify-center cursor-pointer">
                         <div className="w-[50%] flex flex-row justify-center items-center gap-3 bg-[var(--text-secondary)]/30 !px-6 !py-3 hover:shadow-lg">
                             <FaGoogle className="text-red-500"/>
-                            <button className="cursor-pointer">Entrar com a Google</button>
+                            <button onClick={loginWithGoogle} className="cursor-pointer">Entrar com a Google</button>
                         </div>
                     </div>
 
@@ -90,6 +112,7 @@ function AuthPage() {
                                     id="name"
                                     placeholder="O Teu Nome"
                                     className="input font-body"
+                                    required
                                 />
                             </div>
                         </div>
@@ -104,6 +127,7 @@ function AuthPage() {
                                     id="email"
                                     placeholder="teu@email.com"
                                     className="input font-body"
+                                    required
                                 />
                             </div>
                         </div>
@@ -118,6 +142,7 @@ function AuthPage() {
                                     id="password"
                                     placeholder="*******"
                                     className="input font-body"
+                                    required
                                 />
                             </div>
                         </div>
@@ -132,6 +157,7 @@ function AuthPage() {
                                     id="password"
                                     placeholder="*******"
                                     className="input font-body"
+                                    required
                                 />
                             </div>
                         </div>
@@ -139,20 +165,10 @@ function AuthPage() {
                         <input type="submit" value="Criar conta" className="submit-input bg-[var(--secondary)] text-body"/>
 
                     </form>
-                    
-                    <span className="text-center !mt-5 !mb-5 text-[var(--text)] font-body pointer-events-none">Ou</span>
-
-                    <div className="flex justify-center cursor-pointer">
-                        <div className="w-[50%] flex flex-row justify-center items-center gap-3 bg-[var(--text-secondary)]/30 !px-6 !py-3 hover:shadow-lg">
-                            <FaGoogle className="text-red-500"/>
-                            <button className="cursor-pointer">Entrar com a Google</button>
-                        </div>
-                    </div>
 
                 </div>
-            
-
         </div>
+
     </section>
     )
 }

@@ -1,13 +1,28 @@
 import './index.css';
 import { Link } from "react-router-dom";
 import { CiLogin } from "react-icons/ci";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { auth } from "../../services/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 function Header() {
+    const [ user, setUser ] = useState(null);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe();
+    }, []);
+
     const [ showMenu, setShowMenu ] = useState(false);
     const toggleMenu = () => {
         setShowMenu(!showMenu);
+    }
+
+    const handleLogout = async () => {
+        await signOut(auth);
     }
 
     return (
@@ -30,11 +45,22 @@ function Header() {
                 <Link to="/nutricao" className="font-headline nav-link underline-hover">NUTRIÇÃO</Link>
                 <Link to="/contacto" className="font-headline nav-link underline-hover">CONTACTO</Link>
 
-                <Link to="/entrar" class="font-headline auth-button">
-                    ENTRAR
-                    <CiLogin />
-                </Link>
+                { user ? (
+                    <button onClick={handleLogout} class="font-headline auth-button">
+                        SAIR
+                        <CiLogin />
+                    </button>
+                ) : (
+                    <Link to="/entrar" class="font-headline auth-button">
+                        ENTRAR
+                        <CiLogin />
+                    </Link>
+                    )
+                }
+
+
             </nav>
+
 
             <div 
                 className='menu-button'
