@@ -36,5 +36,5 @@
 
 /* CUSTOM TAILWIND CLASSES */
 .section {
-  @apply w-full max-w-[900px] px-5 lg:px-20 mt-30 mb-20 mx-auto lg:mb-0;
+  @apply w-full max-w-[1200px] px-5 lg:px-20 mt-30 mb-20 mx-auto lg:mb-0;
 }

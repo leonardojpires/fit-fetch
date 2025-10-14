@@ -3,7 +3,7 @@ import Cards from './Cards/index';
 
 function Services() {
     return (
-        <section className="section !mb-20">
+        <section className="section !mb-10">
             <h3 className="title font-body">O que o Fit Fetch oferece</h3>
 
             <div className="services-div">
