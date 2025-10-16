@@ -2,12 +2,12 @@
 
 .cta-background {
     background: #000000;
-    background: linear-gradient(180deg,rgb(21, 20, 28) 0%, rgba(24, 27, 74, 1) 86%);
+    background: linear-gradient(180deg,rgb(21, 20, 28, 0.70) 0%, rgba(24, 27, 74, 0.8) 86%);
     box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }
 
 .cta-div {
-    @apply flex flex-col justify-center items-center gap-5 md:!px-32 !py-16;
+    @apply flex flex-col justify-center items-center gap-5 backdrop-blur-[20px] md:!px-32 !py-16;
 }
 
 .cta-span {

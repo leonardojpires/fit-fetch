@@ -9,24 +9,28 @@ const testimonials = [
     name: "Maria Silva",
     stars: 5,
     text: "Esse app mudou minha rotina de treinos! Muito prático e fácil de usar.",
+    up: true
   },
   {
     image: testimonial2,
     name: "João Pereira",
     stars: 4,
     text: "As dicas de nutrição são ótimas, só falta adicionar mais receitas.",
+    up: false
   },
   {
     image: testimonial3,
     name: "Lucas Fernandes",
     stars: 5,
     text: "Os treinos personalizados são exatamente o que eu precisava para evoluir.",
+    up: true
   },
   {
     image: testimonial4,
     name: "Ana Costa",
     stars: 5,
     text: "Adorei o design limpo e moderno. Recomendo demais!",
+    up: false
   },
 /*   {
     image: "https://via.placeholder.com/80",

@@ -6,12 +6,20 @@ import { FiUsers } from 'react-icons/fi';
 function Hero() {
 
     return (
-        <section className="relative w-full">
+        <section className="relative w-full min-h-screen bg-[#0f172a]">
 
-            <div className="diagonal absolute inset-0">
-                <ParticleBackground />
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#3b82f6]/20 rounded-full blur-[120px] animate-float" />
+                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#f43f5e]/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: "2s" }} />
+                <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-[#facc15]/10 rounded-full blur-[90px] animate-float" style={{ animationDelay: "4s" }} />
+                
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]" />
             </div>
-            
+
+            <div className="absolute top-20 left-[10%] w-2 h-2 rounded-full bg-primary/40 animate-float" />
+            <div className="absolute top-40 right-[15%] w-3 h-3 rounded-full bg-secondary/30 animate-float" style={{ animationDelay: "1s" }} />
+            <div className="absolute bottom-32 left-[20%] w-2 h-2 rounded-full bg-accent/40 animate-float" style={{ animationDelay: "3s" }} />
+            <div className="absolute bottom-48 right-[25%] w-2 h-2 rounded-full bg-primary/30 animate-float" style={{ animationDelay: "2s" }} />
 
             <div className="section-lg flex items-center justify-between md:gap-15 lg:gap-10 relative z-10">
 
@@ -24,9 +32,9 @@ function Hero() {
                     </p>
 
                     <div className="flex flex-col gap-7">
-                        <div className="flex flex-row gap-5 ">
-                            <Button text="Mais sobre nós" to="#sobre"/>
-                            <Button text="Como começar" to="#" isSecondary/>
+                        <div className="flex flex-row gap-5">
+                            <Button text="SOBRE NÓS" to="#sobre"/>
+                            <Button text="VER PLANOS" to="#" isSecondary/>
                         </div>
                         
                         <div>

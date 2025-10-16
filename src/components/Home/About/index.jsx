@@ -1,42 +1,33 @@
 import './index.css';
 import { CgGym } from "react-icons/cg";
-import { GiStrong } from "react-icons/gi";
-import { IoNutritionSharp } from "react-icons/io5";
-import { FaStar } from "react-icons/fa";
-
+import aboutData from "./aboutData";
 
 function About() {
     return (
-        <section id="sobre" className="section !mt-40">
-
-            <div className="h-[3px] bg-[var(--secondary)] !mb-5"></div>
+        <section id="sobre" className="section !mt-20">
 
             <div className="title-div font-headline">
                 <h2 className="title">O que é o Fit Fetch?</h2>
                 <CgGym className="text-[var(--primary)]" />
             </div>
 
-            <p className="description font-body">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis cum placeat consequatur, rem ipsam accusantium fugiat odio eaque, illo at recusandae perferendis quae nesciunt tempora pariatur, mollitia quo tenetur voluptates. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores, voluptas a. Et quaerat quidem ipsa tempore eos, nesciunt voluptatem vitae ipsam placeat, sapiente repudiandae sint nisi rem, voluptatum nulla voluptates? Lorem</p>
+            <p className="description font-body">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis cum placeat consequatur, rem ipsam accusantium fugiat odio eaque, illo at recusandae perferendis quae nesciunt tempora pariatur, mollitia quo tenetur voluptates.</p>
+
 
             <div className="cards-section font-body">
-
-                <div className="card">
-                    <GiStrong className="card-icon" />
-                    <span className="card-text">Treina com alma</span>
-                </div>
-
-                <div className="card">
-                    <IoNutritionSharp className="card-icon" />
-                    <span className="card-text">Nutre o teu "eu"</span>
-                </div>
-
-                <div className="card">
-                    <FaStar className="card-icon" />
-                    <span className="card-text">Saudável e equilibrado</span>
-                </div>
-                
+                { aboutData.map((about, index) => {
+                    const Icon = about.icon;
+                    return (
+                        <div key={index} className="card">
+                            <div className="card-icon">
+                                <Icon />
+                            </div>
+                            <h3 className="text-2xl font-bold font-headline">{ about.title }</h3>
+                            <p className="text-lg text-black/50">{ about.description }</p>
+                        </div>
+                    )
+                }) }
             </div>
-
         </section>
     )
 }

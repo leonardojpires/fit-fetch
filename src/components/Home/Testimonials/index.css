@@ -1,13 +1,57 @@
 @import 'tailwindcss';
 
 .title {
-    @apply [text-shadow:_1px_1px_0px_#00C853] text-center uppercase;
+    @apply text-center uppercase;
 }
 
 .testimonials-div {
     @apply relative overflow-hidden w-full;
 }
 
-.arrows {
-    @apply absolute top-1/2 -translate-y-1/2 bg-black/50 text-white !p-3 rounded-full hover:bg-black/70 cursor-pointer;
+.testimonial {
+    @apply h-full flex flex-col border border-white/60 bg-gradient-to-t from-white/40 to-white/60 backdrop-blur-[20px] !p-4 rounded-2xl;
+}
+
+.up {
+    animation: up 5s ease-in-out infinite;
+}
+
+.down {
+    animation: down 5s ease-in-out infinite;
+}
+
+@keyframes up {
+    0% {
+        transform: translateY(0);
+    }
+
+    33% {
+        transform: translateY(5px);
+    }
+
+    66% {
+        transform: translateY(-5px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes down {
+    0% {
+        transform: translateY(0);
+    }
+
+    33% {
+        transform: translateY(-5px);
+    }
+
+    66% {
+        transform: translateY(5px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }

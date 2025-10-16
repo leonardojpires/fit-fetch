@@ -1,19 +1,19 @@
 @import 'tailwindcss';
 
 .title-div {
-    @apply flex flex-row justify-center items-center text-4xl font-bold;
+    @apply flex flex-row justify-center items-center text-5xl font-bold !mb-5;
 }
 
 .title {
-    @apply [text-shadow:_1px_1px_0px_#00C853] uppercase;
+    @apply !text-5xl uppercase !mb-0;
 }
 
 .description {
-    @apply text-justify !mb-10;
+    @apply text-lg text-center text-black/70 !mb-10;
 }
 
 .cards-section {
-    @apply flex flex-col justify-around items-center gap-5 !mb-5 uppercase md:flex-row;
+    @apply w-full flex flex-col justify-around !items-center gap-5 !mb-5 lg:flex-row;
 }
 
 .card, .card-text {
@@ -21,19 +21,20 @@
 }
 
 .card {
-    @apply flex flex-col justify-center items-center gap-5 text-[1rem] text-wrap text-center border-none rounded-lg w-[50%] py-5 flex-1 lg:min-h-42 lg:max-w-32 lg:py-0 hover:bg-[var(--background)] hover:shadow-2xl;
+    @apply flex flex-1 flex-col justify-center items-start gap-5 border border-white/60 !px-10 !py-12 bg-gradient-to-t from-white/40 to-white/60 backdrop-blur-[20px] max-w-[300px] h-full rounded-2xl;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .card:hover {
-    @apply text-[var(--accent)];
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    @apply text-[var(--accent)] transition-all ease-in-out duration-200;
+    /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; */
 }
 
 .card-icon {
-    @apply text-[5rem] text-[var(--cards)] p-4 rounded-xl;
+    @apply flex items-center text-6xl text-white bg-[var(--primary)] rounded-xl !p-4;
 
     background: #82b0ff;
-    background: linear-gradient(236deg,rgba(31, 113, 255, 1) 0%, rgba(29, 80, 173, 1) 100%);
+    background: linear-gradient(236deg,rgba(31, 113, 255, 1) 0%, rgb(77, 133, 235) 100%);
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 

@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 .section-lg {
-  @apply w-full h-[500px] max-w-[900px] px-5 mt-30 mb-30 mx-auto md:mb-0 md:max-w-[1200px] md:px-20;
+  @apply w-full h-[500px] max-w-[900px] px-5 !mt-40 mb-30 mx-auto md:mb-0 md:max-w-[1200px] md:px-20;
 }
 
 .h1 {
-    @apply text-3xl text-[var(--cards)] font-bold leading-11 uppercase md:text-5xl md:leading-13 z-10;
+    @apply text-3xl text-[var(--cards)] font-bold leading-11 uppercase md:text-6xl md:leading-16 z-10;
 }
 
 .hero-p {
-    @apply text-sm text-[var(--text-paragraph)] md:text-base z-10;
+    @apply text-lg text-[var(--text-paragraph)] md:text-lg z-10;
 }
 
 .hero-img-div {
@@ -24,7 +24,7 @@
     @apply inline-flex flex-row items-center gap-2 w-auto text-[var(--cards)]/50 border border-[var(--cards)] bg-[var(--cards)]/10 backdrop-blur-3xl rounded-full px-3 py-1.5;
 }
 
-.diagonal {
+/* .diagonal {
     clip-path: polygon(
         0 0,
         100% 0,
@@ -33,7 +33,7 @@
         0 95%
     );
     z-index: 0;
-}
+} */
 
 @keyframes jump {
     0% {
@@ -55,4 +55,18 @@
     100% {
         transform: translateY(0)
     }
+}
+
+section.relative {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.hero-img-div {
+  transform: translateZ(60px) scale(1.05);
+  filter: drop-shadow(0 25px 40px rgba(0,0,0,0.4));
+}
+
+.section-lg > div:first-child {
+  transform: translateZ(30px);
 }
