@@ -10,11 +10,11 @@
 /* TAILWIND CSS CLASSES */
 
 .header {
-  @apply flex justify-between items-center py-4 px-10 lg:justify-evenly bg-black/10 backdrop-blur-[20px] z-100 overflow-x-hidden;
+  @apply flex justify-between items-center py-4 px-10 lg:justify-evenly bg-black/10 backdrop-blur-[20px] z-200 overflow-x-hidden;
 }
 
 .nav {
-    @apply flex flex-row justify-center items-center gap-10;
+    @apply flex flex-row justify-center items-center gap-10 z-100;
 }
 
 .nav-link {
@@ -56,7 +56,7 @@
     }
 
     .responsive-nav {
-        @apply w-[50%] h-auto absolute top-[70px] right-0 flex flex-col items-end p-[20px] gap-[1rem] rounded-2xl bg-black/50 backdrop-blur-3xl;
+        @apply w-[50%] h-auto absolute top-[70px] right-0 flex flex-col items-end p-[20px] gap-[1rem] rounded-2xl bg-black/50 backdrop-blur-3xl z-100;
     }
 
 }

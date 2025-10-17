@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .button, .sec-button {
-    @apply inline-block border-2 px-12 py-2.5 rounded-full z-10;
+    @apply text-lg inline-block border-2 px-6 py-2 lg:px-12 lg:py-2.5 rounded-full z-10;
 }
 
 .button:hover, .sec-button:hover {

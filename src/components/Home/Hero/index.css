@@ -5,7 +5,7 @@
 }
 
 .h1 {
-    @apply text-3xl text-[var(--cards)] font-bold leading-11 uppercase md:text-6xl md:leading-16 z-10;
+    @apply text-4xl text-[var(--cards)] font-bold leading-11 uppercase md:text-6xl md:leading-16 z-10;
 }
 
 .hero-p {

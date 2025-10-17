@@ -6,7 +6,7 @@ import { FiUsers } from 'react-icons/fi';
 function Hero() {
 
     return (
-        <section className="relative w-full min-h-screen bg-[#0f172a]">
+        <section className="relative w-full min-h-screen bg-[#0f172a] overflow-x-hidden">
 
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#3b82f6]/20 rounded-full blur-[120px] animate-float" />
@@ -21,7 +21,7 @@ function Hero() {
             <div className="absolute bottom-32 left-[20%] w-2 h-2 rounded-full bg-accent/40 animate-float" style={{ animationDelay: "3s" }} />
             <div className="absolute bottom-48 right-[25%] w-2 h-2 rounded-full bg-primary/30 animate-float" style={{ animationDelay: "2s" }} />
 
-            <div className="section-lg flex items-center justify-between md:gap-15 lg:gap-10 relative z-10">
+            <div className="section-lg flex items-center justify-between md:gap-8 lg:gap-10 relative z-10">
 
                 <div className="w-full flex flex-col gap-5 lg:w-[50%]">
                     <h1 className="h1 font-headline">
