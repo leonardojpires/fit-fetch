@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function LoginForm({ clickEvent }) {
+  const [ user, setCurrentUser ] = useState(null);
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
 
@@ -14,14 +15,31 @@ const loginWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-
       const user = result.user;
-      console.log("Utilizador logado:", {
+
+      console.log("Utilizador logado ao Firebase:", {
         name: user.displayName,
         email: user.email,
         uid: user.uid,
         photoURL: user.photoURL,
       });
+      
+      const idToken = user ? await user.getIdToken(true) : null;
+      console.log("ID Token:", idToken);
+
+      const res = await fetch('http://localhost:3000/api/users/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+
+      const data = await res.json();
+      console.log('Utilizador sincronizado no MySQL', data);
+
+      setCurrentUser(data.user);
+
     } catch (e) {
       console.error(`Erro ao autenticar com a Google: ${e}`);
       alert("Falha na autenticação. Tenta novamente");
@@ -34,12 +52,29 @@ const loginWithGoogle = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      const idToken = user ? await user.getIdToken(true) : null;
+
+      const res = await fetch('http://localhost:3000/api/users/sync', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`
+        }
+      });
+
+      const data = await res.json();
+      console.log('Utilizador sincronizado no MySQL', data);
+
+      setCurrentUser(data.user);
+
     } catch(e) {
       console.error("Erro ao entrar na conta", e);
       alert("Falha ao entrar na conta" + e.message);
     }
   }
 
+  
   return (
     <div className="auth-div w-full lg:w-1/2">
       <h1 className="font-headline text-3xl font-bold text-[var(--primary)] !mb-2">

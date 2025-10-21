@@ -4,8 +4,8 @@ import testimonials from './Testimonials';
 
 export default function Testimonials() {
   return (
-    <section className="section !max-w-[1200px]">
-      <h2 className="title font-headline !mb-10">
+    <section className="section !mt-20 !max-w-[1200px]">
+      <h2 className="title font-headline">
         Vê o que os nossos membros dizem
       </h2>
 
