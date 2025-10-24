@@ -1,17 +1,20 @@
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { auth } from "../../services/firebase";
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function LoginForm({ clickEvent }) {
-  const [ curentUser, setCurrentUser ] = useState(null);
-  const [ email, setEmail ] = useState('');
-  const [ password, setPassword ] = useState('');
+  const [currentUser, setCurrentUser] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const loginWithGoogle = async () => {
-    
+  const loginWithGoogle = async () => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -23,23 +26,22 @@ const loginWithGoogle = async () => {
         uid: user.uid,
         photoURL: user.photoURL,
       });
-      
+
       const idToken = user ? await user.getIdToken(true) : null;
       console.log("ID Token:", idToken);
 
-      const res = await fetch('http://localhost:3000/api/users/sync', {
-        method: 'POST',
+      const res = await fetch("http://localhost:3000/api/users/sync", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
       });
 
       const data = await res.json();
-      console.log('Utilizador sincronizado no MySQL', data);
+      console.log("Utilizador sincronizado no MySQL", data);
 
       setCurrentUser(data.user);
-
     } catch (e) {
       console.error(`Erro ao autenticar com a Google: ${e}`);
       alert("Falha na autenticação. Tenta novamente");
@@ -50,31 +52,33 @@ const loginWithGoogle = async () => {
     e.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
       const idToken = user ? await user.getIdToken(true) : null;
 
-      const res = await fetch('http://localhost:3000/api/users/sync', {
-        method: 'POST',
+      const res = await fetch("http://localhost:3000/api/users/sync", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`
-        }
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
       });
 
       const data = await res.json();
-      console.log('Utilizador sincronizado no MySQL', data);
+      console.log("Utilizador sincronizado no MySQL", data);
 
       setCurrentUser(data.user);
-
-    } catch(e) {
+    } catch (e) {
       console.error("Erro ao entrar na conta", e);
       alert("Falha ao entrar na conta" + e.message);
     }
-  }
+  };
 
-  
   return (
     <div className="auth-div w-full lg:w-1/2">
       <h1 className="font-headline text-3xl font-bold text-[var(--primary)] !mb-2">
@@ -164,7 +168,12 @@ const loginWithGoogle = async () => {
 
       <div className="flex flex-row justify-center items-center gap-1.5 font-body !mt-5">
         <p>Ainda não tens uma conta?</p>
-        <button onClick={clickEvent} className="font-semibold cursor-pointer hover:text-[var(--accent)]">Inscreve-te já</button>
+        <button
+          onClick={clickEvent}
+          className="font-semibold cursor-pointer hover:text-[var(--accent)]"
+        >
+          Inscreve-te já
+        </button>
       </div>
     </div>
   );

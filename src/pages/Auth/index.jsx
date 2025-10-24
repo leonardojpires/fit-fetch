@@ -2,11 +2,14 @@ import "./index.css";
 import LoginForm from './../../components/LoginForm/index';
 import RegisterForm from './../../components/RegisterForm/index';
 import { useState } from "react";
+import useRedirectIfAuth from "../../Hooks/useAuthHook";
 
 
 function AuthPage() {
   const [ form, setForm ] = useState('login');
   
+  useRedirectIfAuth();
+
   return (
     <section className="max-lg-[1200px] w-full !px-3 !mt-40 !mb-40 lg:!px-[5rem] flex flex-row z-1">
 
