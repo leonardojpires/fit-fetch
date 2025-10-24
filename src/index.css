@@ -13,7 +13,9 @@
   --text-paragraph: rgba(255, 255, 255, 0.693);
 
   /* FONTS */
-  --headline: "Montserrat", sans-serif;
+  --headline: 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   --body: "Raleway", sans-serif;
 }
 

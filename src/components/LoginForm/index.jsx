@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function LoginForm({ clickEvent }) {
-  const [ user, setCurrentUser ] = useState(null);
+  const [ curentUser, setCurrentUser ] = useState(null);
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
 

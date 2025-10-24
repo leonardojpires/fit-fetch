@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function CTA() {
     return (
-        <section className="section rounded-2xl !mb-20 !shadow-2xl !px-0">
+        <section className="section rounded-2xl !mt-10 !mb-20 !shadow-2xl !px-0">
                 <div className="w-full cta-background rounded-2xl">
                     <div className="cta-div">
                         <span className="cta-span font-body">Começa uma nova vida</span>

@@ -10,7 +10,7 @@ export default function Testimonials() {
       </h2>
 
       <div className="testimonials-div relative overflow-hidden w-full !py-10">
-        <div className="flex flex-col justify-center items-center gap-5 transation-transform duration-500 lg:flex-row">
+        <div className="flex flex-col justify-center items-stretch gap-5 transation-transform duration-500 lg:flex-row">
             {testimonials.map((t, index) => (
                 <div key={index} className={`flex-1 w-full lg:w-1/2 ${ t.up ? 'up' : 'down' } `}>
                 <TestimonialsCards

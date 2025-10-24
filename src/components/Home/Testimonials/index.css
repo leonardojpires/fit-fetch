@@ -22,44 +22,44 @@
 
 @keyframes up {
     0% {
-        transform: translateY(-5px);
+        transform: translateY(-2px);
     }
 
     25% {
-        transform: translateY(5px);
+        transform: translateY(2px);
     }
 
     50% {
-        transform: translateY(-5px);
+        transform: translateY(-2px);
     }
 
     75% {
-        transform: translateY(5px)
+        transform: translateY(2px)
     }
 
     100% {
-        transform: translateY(-5px);
+        transform: translateY(-2px);
     }
 }
 
 @keyframes down {
     0% {
-        transform: translateY(5px);
+        transform: translateY(2px);
     }
 
     25% {
-        transform: translateY(-5px);
+        transform: translateY(-2px);
     }
 
     50% {
-        transform: translateY(5px)
+        transform: translateY(2px)
     }
 
     75% {
-        transform: translateY(-5px);
+        transform: translateY(-2px);
     }
 
     100% {
-        transform: translateY(5px);
+        transform: translateY(2px);
     }
 }

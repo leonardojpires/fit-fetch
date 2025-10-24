@@ -5,6 +5,7 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
 
 function RegisterForm({ clickEvent }) {
+    const [ currentUser, setCurrentUser ] = useState(null);
     const [ name, setName ] = useState(''); 
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
@@ -23,6 +24,23 @@ function RegisterForm({ clickEvent }) {
         const user = userCredential.user;
 
         await updateProfile(user, { display: name });
+
+        const idToken = user ? await user.getIdToken(true) : null;
+
+        const res = await fetch('http://localhost:3000/api/users/sync', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+
+        const data = await res.json();
+        console.log('Utilizador sincronizado no MySQL', data);
+
+        setCurrentUser(data.user);
+
+        
 
         console.log("Utilizador criado com sucesso: ", user);
       } catch(e) {

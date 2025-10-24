@@ -10,7 +10,7 @@
 /* TAILWIND CSS CLASSES */
 
 .header {
-  @apply fixed top-0 left-0 right-0 flex justify-between items-center py-4 px-10 lg:justify-evenly bg-black/10 backdrop-blur-[20px] z-50;
+  @apply fixed top-0 left-0 right-0 flex justify-between items-center py-4 px-10 lg:justify-evenly bg-black/30 backdrop-blur-[20px] z-50;
 }
 
 .nav {
@@ -22,7 +22,19 @@
 }
 
 .auth-button {
-  @apply flex items-center gap-2 text-[var(--primary)] border-2 border-[var(--primary)] hover:rounded-xl hover:text-[var(--accent)] hover:border-[var(--accent)] py-2 px-4 cursor-pointer transition-all ease-in-out duration-200;
+  @apply hidden lg:flex items-center gap-2 text-[var(--primary)] border-2 border-[var(--primary)] hover:rounded-xl hover:text-[var(--accent)] hover:border-[var(--accent)] py-2 px-4 cursor-pointer transition-all ease-in-out duration-200;
+}
+
+.auth-button-mobile {
+  @apply flex lg:hidden items-center gap-2 text-[var(--primary)] border-2 border-[var(--primary)] hover:rounded-xl hover:text-[var(--accent)] hover:border-[var(--accent)] py-2 px-4 cursor-pointer transition-all ease-in-out duration-200;
+}
+
+.logout-button {
+  @apply hidden lg:flex items-center gap-2 text-white bg-[var(--primary)]/80 border-2 border-[var(--primary)] hover:rounded-xl hover:bg-[var(--accent)]/80 hover:border-[var(--accent)] py-2 px-4 cursor-pointer transition-all ease-in-out duration-200;
+}
+
+.logout-button-mobile {
+  @apply flex lg:hidden items-center gap-2 text-white bg-[var(--primary)]/80 border-2 border-[var(--primary)] hover:rounded-xl hover:bg-[var(--accent)]/80 hover:border-[var(--accent)] py-2 px-4 cursor-pointer transition-all ease-in-out duration-200;
 }
 
 .menu-button {  

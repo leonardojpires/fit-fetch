@@ -14,13 +14,13 @@ function AuthPage() {
       <div className="w-full h-full flex flex-col justify-center items-center gap-5">
 
         { form === "login" && (
-          <div className="w-full flex justify-center items-center slide-in-blurred-top">
+          <div className="w-full flex justify-center items-center scale-in-ver-bottom">
             <LoginForm clickEvent={() => setForm('register')} />
           </div>
         )}
       
         { form === "register" && (
-          <div className="w-full flex justify-center items-center slide-in-blurred-top">
+          <div className="w-full flex justify-center items-center scale-in-ver-bottom">
             <RegisterForm clickEvent={() => setForm('login')} />
           </div>
         ) }
