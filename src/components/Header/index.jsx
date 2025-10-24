@@ -8,7 +8,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 function Header() {
   const [ loading, setLoading ] = useState(true);
-  const [user, setUser] = useState(null);
+  const [ user, setUser ] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -44,7 +44,7 @@ return (
       onClick={toggleMenu}
     >
       <Link to="/" className="font-headline nav-link underline-hover">
-        HOME
+        INÍCIO
       </Link>
       <Link to="/treinos" className="font-headline nav-link underline-hover">
         TREINOS
