@@ -1,5 +1,5 @@
 import "./index.css";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CiLogin } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -9,6 +9,9 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 function Header() {
   const [ loading, setLoading ] = useState(true);
   const [ user, setUser ] = useState(null);
+
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -28,7 +31,7 @@ function Header() {
   };
 
 return (
-  <header className="header w-full flex items-center justify-between px-4 lg:px-8 py-5">
+  <header className={`header w-full flex items-center justify-between px-4 lg:px-8 py-5 ${isHome ? 'bg-black/30' : 'bg-black/80'}`}>
     <div>
       <Link to="/">
         <img

@@ -94,7 +94,7 @@ function LoginForm({ clickEvent }) {
             E-Mail
           </label>
           <div className="input-wrapper">
-            <FaEnvelope className="icon" />
+              <FaEnvelope className="icon" />
             <input
               type="email"
               name="email"
@@ -151,7 +151,7 @@ function LoginForm({ clickEvent }) {
       </span>
 
       <div className="flex justify-center cursor-pointer">
-        <div className="w-full flex flex-row justify-center items-center gap-3 bg-[var(--text-secondary)]/30 !px-6 !py-3 hover:shadow-lg lg:w-[50%]">
+        <div className="google-input">
           <FaGoogle className="text-red-500" />
           <button onClick={loginWithGoogle} className="cursor-pointer">
             Entrar com a Google
