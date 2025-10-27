@@ -5,6 +5,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
 } from "firebase/auth";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -13,9 +16,14 @@ function LoginForm({ clickEvent }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [ rememberMe, setRememberMe ] = useState(false);
 
   const loginWithGoogle = async () => {
-    try {
+  try {
+      const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+
+      await setPersistence(auth, persistence);
+
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -52,6 +60,10 @@ function LoginForm({ clickEvent }) {
     e.preventDefault();
 
     try {
+      const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+
+      await setPersistence(auth, persistence);
+
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -130,6 +142,8 @@ function LoginForm({ clickEvent }) {
             type="checkbox"
             id="remember"
             className="w-4 h-4 accent-[var(--primary)] rounded-sm"
+            checked={rememberMe}
+            onChange={() => setRememberMe(!rememberMe)}
           />
           <label
             htmlFor="remember"
