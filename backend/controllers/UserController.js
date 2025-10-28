@@ -36,6 +36,21 @@ class UserController {
             res.status(401).json({ error: 'Token inválido ou expirado' });
         }
     }
+
+    static async getCurrentUser(req, res) {
+        try {
+            const user = await User.findOne({ where: { firebase_uid: req.user.firebase_uid } });
+            return res.status(200).json({
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            })
+        } catch(err) {
+            console.log(err);
+            res.status(500).json({ error: 'Erro ao buscar o utilizador atual' });
+        }
+    }
 }
 
 export default UserController;
