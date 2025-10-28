@@ -1,5 +1,4 @@
-    import User from "../models/User";
-
+    import User from "../models/user.js";
 
     const attachUserFromDB = async (req, res, next) => {
         const { firebase_uid } = req.user;

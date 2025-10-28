@@ -1,4 +1,4 @@
-import admin from "../firebase/firebaseAdmin";
+import admin from "../firebase/firebaseAdmin.js";
 
 
 const verifyFirebaseToken = async (req, res, next) => {

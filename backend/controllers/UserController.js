@@ -1,5 +1,5 @@
 import admin from '../firebase/firebaseAdmin.js';
-import User from '../models/User.js';
+import User from '../models/user.js';
 
 class UserController {
     static async syncUser(req, res) {
