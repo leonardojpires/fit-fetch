@@ -1,11 +1,13 @@
 function Cards({ icon, title, description }) {
   return (
     <div className="h-full flex items-stretch hover:scale-[1.02] hover:cursor-pointer transition-all">
-      <div className="flex flex-col max-w-sm w-full border border-white/60 bg-gradient-to-t from-white/40 backdrop-blur-[20px] rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all h-full">
+      <div className="flex flex-col max-w-sm w-full border border-white/60 bg-gradient-to-t from-white/40 bg-white backdrop-blur-[20px] rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all h-full">
         <div className="relative">
           <img 
             src={icon}
             alt={title}
+            loading="lazy"
+            decoding="async"
             className="w-full h-40 object-cover"
           />
         </div>

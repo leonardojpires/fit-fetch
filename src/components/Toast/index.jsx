@@ -9,7 +9,7 @@ function Toast({ message, onClose, duration = 3000, isError = false }) {
   return (
     <div
       className={`${
-        isError ? "bg-red-500" : "bg-green-500"
+        isError ? "bg-red-500/50" : "bg-green-500/50"
       } fixed bottom-5 right-5 z-50  text-white !px-5 !py-3 rounded-xl shadow-lg flex items-center gap-4 animate-slide-in`}
     >
       <span className="font-medium">{message}</span>
