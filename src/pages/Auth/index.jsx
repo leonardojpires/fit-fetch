@@ -2,13 +2,15 @@ import "./index.css";
 import LoginForm from "./../../components/LoginForm/index";
 import RegisterForm from "./../../components/RegisterForm/index";
 import { useState } from "react";
-import useRedirectIfAuth from "../../Hooks/useAuthHook";
+import useRedirectIfAuth from "../../hooks/useAuthHook";
 import { motion } from "framer-motion";
 
 function AuthPage() {
   const [form, setForm] = useState("login");
 
-  useRedirectIfAuth();
+  const { loading } = useRedirectIfAuth();
+
+  if (loading) return null;
 
   return (
     <section className="max-lg-[1200px] w-full !px-3 !mt-30 !mb-40 lg:!px-[5rem] flex flex-row z-1">

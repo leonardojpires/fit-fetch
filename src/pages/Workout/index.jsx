@@ -1,4 +1,4 @@
-import useRedirectIfNotAuth from "../../Hooks/useIfNotAuth";
+import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 
 function Workout() {
     useRedirectIfNotAuth();

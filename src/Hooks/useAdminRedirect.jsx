@@ -28,7 +28,7 @@ export default function useAdminRedirect() {
 
         const user = await response.json();
 
-        console.log("Dados do utilizador:", user);
+        // console.log("Dados do utilizador:", user);
 
         if (isMounted &&user.role !== "admin") {
           navigate("/");
