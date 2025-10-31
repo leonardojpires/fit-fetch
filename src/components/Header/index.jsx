@@ -58,12 +58,9 @@ return (
 
       {/* MOBILE BUTTON */}
       {user ? (
-        <button
-          onClick={handleLogout}
-          className="font-headline logout-button-mobile flex flex-row lg:hidden mt-4"
-        >
-            SAIR <CiLogin />
-        </button>
+        <div>
+          
+        </div>
       ) : (
         <Link
           to="/entrar"
