@@ -47,7 +47,8 @@ function RegisterForm({ clickEvent }) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        await updateProfile(user, { display: name });
+        await updateProfile(user, { displayName: name });
+
 
         const idToken = user ? await user.getIdToken(true) : null;
 
