@@ -19,6 +19,10 @@ User.init(
       allowNull: false,
       unique: true,
     },
+    avatarUrl : {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     role: {
       type: DataTypes.ENUM('admin', 'user'),
       allowNull: false,

@@ -19,7 +19,8 @@ class UserController {
                 defaults: {
                     name: decodedToken.name || 'Utilizador sem nome',
                     email: decodedToken.email,
-                    role: 'user'
+                    role: 'user',
+                    avatarUrl: decodedToken.picture || null,
                 }
             });
 
@@ -44,8 +45,9 @@ class UserController {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role
-            })
+                role: user.role,
+                avatarUrl: user.avatarUrl
+            });
         } catch(err) {
             console.log(err);
             res.status(500).json({ error: 'Erro ao buscar o utilizador atual' });
