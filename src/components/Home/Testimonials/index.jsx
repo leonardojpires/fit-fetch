@@ -5,9 +5,10 @@ import testimonials from './Testimonials';
 export default function Testimonials() {
   return (
     <section className="section !mt-20 !max-w-[1200px]">
-      <h2 className="title font-headline">
+      <h2 className="title font-headline !mb-5">
         Vê o que os nossos membros dizem
       </h2>
+      <p className="description font-body">O que cada membro tem a dizer sobre a nossa plataforma</p>
 
       <div className="testimonials-div relative overflow-hidden w-full !py-10">
         <div className="flex flex-col justify-center items-stretch gap-5 transation-transform duration-500 lg:flex-row">

@@ -30,7 +30,7 @@ export default function useAdminRedirect() {
 
         // console.log("Dados do utilizador:", user);
 
-        if (isMounted &&user.role !== "admin") {
+        if (isMounted && user.role !== "admin") {
           navigate("/");
         }
       } catch (err) {

@@ -11,7 +11,7 @@ function About() {
                 <CgGym className="text-[var(--primary)]" />
             </div>
 
-            <p className="description font-body">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis cum placeat consequatur, rem ipsam accusantium fugiat odio eaque, illo at recusandae perferendis quae nesciunt tempora pariatur, mollitia quo tenetur voluptates.</p>
+            <p className="description font-body !mb-10">Descobre tudo o que o Fit Fetch tem a oferecer pare te ajudar a alcançar o teu sucesso físico e mental</p>
 
 
             <div className="cards-section font-body">

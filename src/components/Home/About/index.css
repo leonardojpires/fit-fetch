@@ -9,7 +9,7 @@
 }
 
 .description {
-    @apply text-lg text-center text-black/70 !mb-10;
+    @apply text-lg text-center text-black/70;
 }
 
 .cards-section {
