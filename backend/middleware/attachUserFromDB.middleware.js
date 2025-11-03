@@ -1,14 +1,17 @@
     import User from "../models/user.js";
 
     const attachUserFromDB = async (req, res, next) => {
-        const { firebase_uid } = req.user;
+        //const { firebase_uid } = req.user;
 
         try {
-            const user = await User.findOne({ where: { firebase_uid } });
-
-            if (!user) {
-                return res.status(404).json({ message: "Utilizador não encontrado!" });
+            // const user = await User.findOne({ where: { firebase_uid } });
+            const firebase_uid = req.user?.firebase_uid;
+            if (!firebase_uid) {
+                return res.status(401).json({ message: "Token inválido" });
             }
+
+            const user = await User.findOne({ where: { firebase_uid } });
+            if (!user) return res.status(404).json({ message: "Utilizador não encontrado" });
 
             req.user = {
                 id: user.id,

@@ -15,7 +15,7 @@ function Header() {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(true);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   useEffect(() => {
@@ -85,7 +85,7 @@ function Header() {
           onClick={toggleDropdown}
         >
           {user ? (
-            <div className="relative flex flex-col items-center gap-3">
+            <div className="relative flex flex-row items-center gap-3">
               <img
                 src={userInfo?.avatarUrl || defaultAvatar}
                 alt="Avatar"
@@ -99,6 +99,16 @@ function Header() {
                   >
                     <CgProfile /> Perfil
                   </Link>
+                  { userInfo?.role === 'admin' && (
+                  <Link
+                    to="/admin"
+                    className="profile-button"
+                  >
+                    <CgProfile /> Admin
+                  </Link>
+                  )
+
+                  }
                   <button
                     onClick={handleLogout}
                     className="profile-button text-left cursor-pointer"
@@ -107,8 +117,8 @@ function Header() {
                   </button>
                 </div>
               )}
-              <div className="hidden lg:flex flex-row justify-center items-center gap-2 text-sm">
-                <span className="flex flex-row items-center gap-2 font-bold text-[var(--primary)] font-body">
+              <div className="hidden lg:flex flex-row justify-center items-center gap-2 text-sm !font-body">
+                <span className="flex flex-row items-center gap-2 font-bold text-[var(--primary)]">
                   {userInfo?.name}
                   <IoIosArrowDown className={`${showDropdown ? "rotate-180" : 'group-hover:animate-bounce'}`} />
                 </span>
