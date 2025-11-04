@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+.admin-sidebar {
+  @apply w-[240px] bg-[#f8f9fa] !p-4 !py-12  border-r border-[#e5e5e5] h-screen sticky top-0 left-0 shrink-0 box-border flex flex-col justify-between shadow-md;
+}
+
+.admin-sidebar .brand {
+  @apply font-bold mb-4;
+}
+
+.admin-sidebar nav {
+  @apply flex flex-col gap-1;
+}
+
+.admin-nav-link {
+  @apply !px-3 !py-2 text-[#333] no-underline rounded;
+}
+
+.admin-nav-link.active,
+.admin-nav-link:hover {
+  @apply bg-[#e9ecef];
+}
+
+.admin-sidebar .back-link {
+    @apply flex flex-row items-center gap-2 hover:underline;
+}
+
+@media (max-width: 700px) {
+  .admin-sidebar {
+    @apply hidden;
+  }
+}

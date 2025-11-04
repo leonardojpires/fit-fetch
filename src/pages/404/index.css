@@ -1,5 +1,5 @@
 @import 'tailwindcss';
 
 .section-lg {
-  @apply w-full max-w-[900px] px-5 mt-30 mb-30 mx-auto lg:mb-0 lg:max-w-[1200px] lg:px-20;
+  @apply w-full max-w-[900px] px-5 mt-30 mx-auto lg:mb-0 lg:max-w-[1200px] lg:px-20;
 }

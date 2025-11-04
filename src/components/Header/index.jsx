@@ -3,8 +3,8 @@ import { CiLogin } from "react-icons/ci";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { IoMdExit, IoIosArrowDown  } from "react-icons/io";
-import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../../services/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
@@ -15,9 +15,16 @@ function Header() {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const [showDropdown, setShowDropdown] = useState(true);
+  const [showDropdown, setShowDropdown] = useState(false);
   const toggleDropdown = () => setShowDropdown(!showDropdown);
+  
+  let isInAdmin = false;
 
+  const location = useLocation();
+  if (location.pathname === "/admin" || location.pathname.startsWith("admin")) {
+    isInAdmin = true;
+  }
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -35,7 +42,7 @@ function Header() {
     await signOut(auth);
   };
 
-  return (
+  return !isInAdmin ? (
     <header className="header relative w-full flex items-center justify-evenly !px-4 !lg:px-6 !py-5 bg-white/10 supports-[backdrop-filter]:backdrop-blur-md dark:bg-black/20">
       {/* LOGO */}
       <div>
@@ -135,7 +142,7 @@ function Header() {
         </div>
       </div>
     </header>
-  );
+  ) : null;
 }
 
 export default Header;

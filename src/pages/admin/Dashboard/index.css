@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+.admin-dashboard {
+  @apply flex items-start w-full;
+}
+
+.admin-content {
+  @apply flex-1 !p-4 min-h-screen box-border !py-12;
+}
+
+.section.admin-dashboard {
+  @apply !p-0;
+}
+
+@media (max-width: 700px) {
+  .admin-dashboard {
+    @apply flex-col;
+  }
+
+  .admin-content {
+    @apply min-h-auto;
+  }
+}
