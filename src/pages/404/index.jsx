@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 function NotFound() {
     return (
         <section className="section-lg min-h-screen">
-            <div className="flex flex-col justify-center items-center bg-[var(--primary)]/50 backdrop-blur-3xl !p-4 !py-32 rounded-xl">
-                <h1>Página não encontrada</h1>
-                <p>O Fit Fetch não fica neste caminho...</p>
-                <Link to='/'>Voltar</Link>
+            <div className="flex flex-col justify-center items-center rounded-xl">
+                <span className="text-6xl text-[var(--primary)]/70 font-bold font-body">404</span>
+                <h1 className="text-[5rem] font-headline">Página não encontrada</h1>
+                <p className="text-2xl text-black/70 font-body !mb-5">O Fit Fetch não fica neste caminho...</p>
+                <Link to='/' className="bg-[var(--primary)] !px-8 !py-3 text-white font-body hover:bg-[var(--accent)] trasition-all ease-in-out duration-200 rounded-xl">Voltar</Link>
             </div>
         </section>
     )
