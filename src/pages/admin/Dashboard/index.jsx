@@ -2,16 +2,19 @@ import useAdminRedirect from "./../../../hooks/useAdminRedirect.jsx";
 import useRedirectIfNotAuth from "./../../../hooks/useIfNotAuth.jsx";
 import AdminSidebar from "../../../components/AdminSidebar";
 import "./index.css";
+import useGetAllUsers from "../../../hooks/useGetAllUsers.jsx";
 
 function Dashboard() {
   useAdminRedirect();
+  const users = useGetAllUsers();
+
   const { loading } = useRedirectIfNotAuth();
   if (loading) return null;
 
   const dashboardData = [
     {
       titulo: "Total de Utilizadores",
-      valor: 2,
+      valor: users.length,
       descricao: "Utilizadores registados",
     },
     {
