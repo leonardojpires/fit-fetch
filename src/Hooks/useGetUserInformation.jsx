@@ -11,6 +11,11 @@
 
                 try {
                     const token = await user.getIdToken();
+                    
+                    // 🔧 DEV: Log do token para Insomnia/Postman
+                    console.log('🔑 Firebase Token:', token);
+                    console.log('📋 Use no Insomnia/Postman:', `Authorization: Bearer ${token}`);
+                    
                     const response = await fetch("http://localhost:3000/api/users/me", {
                         method: "GET",
                         headers: {
