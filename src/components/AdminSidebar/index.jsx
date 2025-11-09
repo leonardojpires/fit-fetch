@@ -5,7 +5,7 @@ import { FaArrowLeft } from "react-icons/fa";
 
 const links = [
   { to: '/admin', label: 'Dashboard' },
-  { to: '/admin/users', label: 'Utilizadores' },
+  { to: '/admin/utilizadores', label: 'Utilizadores' },
   { to: '/admin/planos-treino', label: 'Planos Treino' },
   { to: '/admin/planos-alimentacao', label: 'Planos Alimentação' },
   { to: '/admin/exercicios', label: 'Exercícios' },

@@ -7,6 +7,7 @@ import Contact from './../pages/Contact/index';
 import NotFound from "../pages/404";
 import AuthPage from './../pages/Auth/index';
 import Dashboard from "../pages/admin/Dashboard";
+import UsersPage from "../pages/admin/Users";
 
 function AppRoutes() {
     return (
@@ -19,6 +20,7 @@ function AppRoutes() {
                     <Route path="/contacto" element={<Contact />}></Route>
                     <Route path="/entrar" element={<AuthPage />}></Route>
                     <Route path="/admin" element={<Dashboard />}></Route>
+                    <Route path="/admin/utilizadores" element={<UsersPage />}></Route>
                     <Route path="*" element={<NotFound />}></Route>
                 </Route>
             </Routes>

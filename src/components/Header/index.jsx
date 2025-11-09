@@ -21,7 +21,7 @@ function Header() {
   let isInAdmin = false;
 
   const location = useLocation();
-  if (location.pathname === "/admin" || location.pathname.startsWith("admin")) {
+  if (location.pathname === "/admin" || location.pathname.startsWith("/admin")) {
     isInAdmin = true;
   }
   

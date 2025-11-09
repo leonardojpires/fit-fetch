@@ -12,6 +12,14 @@
   @apply !p-0;
 }
 
+.admin-title {
+  @apply text-6xl font-bold !mb-3;
+}
+
+.admin-description {
+  @apply text-2xl text-black/70 !mb-10;
+}
+
 @media (max-width: 700px) {
   .admin-dashboard {
     @apply flex-col;

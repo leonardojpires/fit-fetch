@@ -1,7 +1,7 @@
 import useAdminRedirect from "./../../../hooks/useAdminRedirect.jsx";
 import useRedirectIfNotAuth from "./../../../hooks/useIfNotAuth.jsx";
 import AdminSidebar from "../../../components/AdminSidebar";
-import "./index.css";
+import "../index.css";
 import useGetAllUsers from "../../../hooks/useGetAllUsers.jsx";
 
 function Dashboard() {
@@ -33,10 +33,10 @@ function Dashboard() {
     <section className="section-admin admin-dashboard">
       <AdminSidebar />
       <div className="admin-content">
-        <h1 className="text-6xl font-bold font-headline !mb-3">
+        <h1 className="admin-title font-headline">
           Dashboard Fit Fetch
         </h1>
-        <p className="text-2xl text-black/70 !mb-10">
+        <p className="admin-description font-body">
           Bem-vindo(a) ao painel de administração
         </p>
         <div className="grid grid-cols-3 grid-rows-1 gap-10">
