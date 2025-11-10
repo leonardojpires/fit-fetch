@@ -8,7 +8,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../../services/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
-import useGetUserInformation from "./../../hooks/useGetUserInformation";
+import useGetUserInformation from "../../hooks/Users/useGetUserInformation";
 
 function Header() {
   const userInfo = useGetUserInformation();

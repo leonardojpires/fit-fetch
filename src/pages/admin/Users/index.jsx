@@ -3,17 +3,75 @@ import AdminSidebar from "./../../../components/AdminSidebar/index";
 import { useState } from "react";
 import { FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
 import useAdminRedirect from './../../../hooks/useAdminRedirect';
-import useGetAllUsers from "../../../hooks/useGetAllUsers";
-
+import useGetAllUsers from "../../../hooks/Users/useGetAllUsers";
+import useAddUser from "../../../hooks/Users/useAddUser";
+import useDeleteUser from './../../../hooks/Users/useDeleteUser';
+import { auth } from "../../../services/firebase";
 
 function UsersPage() {
   useAdminRedirect();
-
-  const users = useGetAllUsers();
+  
+  const { users, setUsers } = useGetAllUsers();
+  const addUser = useAddUser();
+  const deleteUser = useDeleteUser();
 
   const [ isModalOpen, setIsModalOpen ] = useState(false);
-  const [ formData, setFormData ] = useState({ name: "", email: "", role: "user" });
-  const [ mode, setMode ] = useState("add");
+  const [ isDeleteModalOpen, setIsDeleteModalOpen ] = useState(false);
+  const [ userToDelete, setUserToDelete ] = useState(null);
+  const [ formData, setFormData ] = useState({ name: "", email: "", password: "", role: "user" });
+
+  function openAddModal() {
+    setFormData({ name: "", email: "", password: "", role: "user" });
+    setIsModalOpen(true);
+  }
+
+  function openEditModal(user) {
+    
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
+
+  function openDeleteModal(user) {
+    setUserToDelete(user);
+    setIsDeleteModalOpen(true);
+  }
+
+  function closeDeleteModal() {
+    setIsDeleteModalOpen(false);
+    setUserToDelete(null);
+  }
+
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    const newUser = await addUser(formData);
+    
+    if (newUser) {
+      const updatedUsers = await fetch("http://localhost:3000/api/users/all", {
+        headers: { Authorization: `Bearer ${await (await auth.currentUser.getIdToken())}` }
+      }).then(res => res.json());
+      setUsers(updatedUsers)
+    }
+
+    closeModal();
+  }
+
+  async function handleDeleteUser() {
+    if (!userToDelete) return;
+
+    const result = await deleteUser(userToDelete.id);
+    if (result) {
+      setUsers(prev => prev.filter(u => u.id !== userToDelete.id));
+      closeDeleteModal();
+    }
+  }
 
   return (
     <section className="section-admin admin-dashboard">
@@ -26,12 +84,11 @@ function UsersPage() {
               Gestão de utilizadores da plataforma
             </p>
           </div>
-          <div>
+          <div className="admin-button font-body" onClick={openAddModal}>
             <button
-              className="font-body button flex flex-row items-center gap-2"
-            >
-              <FiUserPlus /> Adicionar
+              >
             </button>
+            <FiUserPlus /> Adicionar Utilizador
           </div>
         </div>
 
@@ -74,7 +131,7 @@ function UsersPage() {
                     </td>
                     <td className="!p-3 text-sm text-gray-700">{user.email}</td>
                     <td className="!p-3">
-                      <span className="inline-block px-3 py-1 rounded-full bg-gray-100 text-sm text-gray-700">
+                      <span className="inline-block !px-3 !py-1 rounded-full bg-[var(--primary)]/70 text-sm text-white">
                         {user.role}
                       </span>
                     </td>
@@ -85,13 +142,14 @@ function UsersPage() {
                       <div className="flex items-center gap-2">
                         <button
                           title="Editar"
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform"
+                          className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
                         >
                           <FiEdit2 />
                         </button>
                         <button
                           title="Eliminar"
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform"
+                          onClick={() => openDeleteModal(user)}
+                          className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
                         >
                           <FiTrash2 />
                         </button>
@@ -103,6 +161,125 @@ function UsersPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Modal: Adicionar Utilizador */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={closeModal}>
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md !p-6 border border-gray-200/50" onClick={(e) => e.stopPropagation()}>
+              <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">Adicionar Utilizador</h2>
+              
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">Nome</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Nome do utilizador"
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="email@exemplo.com"
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="Senha"
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">Role</label>
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleInputChange}
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                
+                <div className="flex justify-end gap-3 !mt-4">
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="!px-4 !py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-body font-medium text-gray-700"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-colors font-body font-medium"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Eliminar Utilizador */}
+        {isDeleteModalOpen && userToDelete && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={closeDeleteModal}>
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md !p-6 border border-gray-200/50" onClick={(e) => e.stopPropagation()}>
+              <h2 className="font-headline text-xl !mb-6 text-red-600">Eliminar Utilizador</h2>
+              
+              <div className="!mb-6">
+                <p className="font-body text-gray-700 !mb-4">
+                  Tem a certeza que deseja eliminar o utilizador?
+                </p>
+                <div className="bg-gray-50 !p-4 rounded-lg border border-gray-200">
+                  <div className="font-body font-medium text-gray-900">{userToDelete.name}</div>
+                  <div className="font-body text-sm text-gray-600">{userToDelete.email}</div>
+                  <div className="font-body text-xs text-gray-500 !mt-1">ID: {userToDelete.id}</div>
+                </div>
+                <p className="font-body text-sm text-red-600 !mt-4">
+                  Esta ação não pode ser desfeita.
+                </p>
+              </div>
+              
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={closeDeleteModal}
+                  className="!px-4 !py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-body font-medium text-gray-700"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteUser}
+                  className="!px-4 !py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-body font-medium"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

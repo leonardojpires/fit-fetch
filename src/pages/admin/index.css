@@ -20,6 +20,10 @@
   @apply text-2xl text-black/70 !mb-10;
 }
 
+.admin-button {
+  @apply flex flex-row items-center gap-2 bg-[var(--primary)] text-white rounded-full !px-8 !py-3 cursor-pointer hover:bg-[var(--accent)] transition-all ease-in-out duration-200;
+}
+
 @media (max-width: 700px) {
   .admin-dashboard {
     @apply flex-col;

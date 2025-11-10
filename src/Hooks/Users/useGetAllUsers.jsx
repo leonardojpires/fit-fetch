@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { auth } from './../services/firebase';
+import { auth } from '../../services/firebase';
 
 export default function useGetAllUsers() {
     const [ users, setUsers ] = useState([]);
@@ -25,5 +25,5 @@ export default function useGetAllUsers() {
         });
         return () => unsubscribe();
     }, []);
-    return users;
+    return { users, setUsers };
 }

@@ -1,5 +1,5 @@
     import { useEffect, useState } from "react";
-    import { auth } from "../services/firebase.js";
+    import { auth } from "../../services/firebase.js";
 
     export default function useGetUserInformation() {
         const [ userInfo, setUserInfo ] = useState(null);
