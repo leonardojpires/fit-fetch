@@ -166,7 +166,7 @@ class UserController {
 
             await user.update({ name: name || user.name, email: email || user.email, role: role || user.role });
 
-            return res.status(200).json({ user });
+            return res.status(200).json(user);
         } catch(err) {
             console.error("Erro ao atualizar utilizador: ", err);
             return res.status(500).json({ message: UserController.errorMessage });
