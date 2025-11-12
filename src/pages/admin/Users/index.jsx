@@ -244,11 +244,13 @@ function UsersPage() {
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
+                    disabled={userToEdit?.firebase_uid === auth.currentUser?.uid}
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                   </select>
+                  { userToEdit?.firebase_uid === auth.currentUser?.uid && ( <span className="font-body text-black/70 text-sm">Não podes alterar o teu próprio cargo</span> ) }
                 </div>
 
                 <div className="flex justify-end gap-3 !mt-4">
