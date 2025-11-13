@@ -1,22 +1,17 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/db.js';
 
-'use strict';
+class Exercicio extends Model {}
 
-export default (sequelize, DataTypes) => {
-  class Exercicio extends Model {
-    static associate(models) {
-      // Defines associations
-    }
-  }
-
-  Exercicio.init({
+Exercicio.init(
+  {
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     muscle_group: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
@@ -24,11 +19,11 @@ export default (sequelize, DataTypes) => {
     },
     image_url: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     video_url: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     series: {
       type: DataTypes.INTEGER,
@@ -37,15 +32,16 @@ export default (sequelize, DataTypes) => {
     rest_time: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    }
-  }, {
+    },
+  },
+  {
     sequelize,
     modelName: 'Exercicio',
-    tableName: 'Exercicios',
+    tableName: 'exercicios',
     timestamps: true,
     createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  });
+    updatedAt: 'updated_at',
+  }
+);
 
-  return Exercicio;
-};
+export default Exercicio;

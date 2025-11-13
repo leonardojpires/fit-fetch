@@ -4,7 +4,6 @@ import attachUserFromDB from '../middleware/attachUserFromDB.middleware.js';
 import UserController from "../controllers/UserController.js";
 import verifyAdmin from './../middleware/verifyAdmin.js';
 
-
 const userRouter = Router();
 
 userRouter.post("/sync", verifyFirebaseToken, UserController.syncUser);
