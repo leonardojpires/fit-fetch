@@ -3,10 +3,12 @@ import useRedirectIfNotAuth from "./../../../hooks/useIfNotAuth.jsx";
 import AdminSidebar from "../../../components/AdminSidebar";
 import "../index.css";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers.jsx";
+import useGetAllExercises from './../../../hooks/Exercises/useGetAllExercises';
 
 function Dashboard() {
   useAdminRedirect();
   const { users } = useGetAllUsers();
+  const { exercises } = useGetAllExercises();
 
   const { loading } = useRedirectIfNotAuth();
   if (loading) return null;
@@ -19,7 +21,7 @@ function Dashboard() {
     },
     {
       titulo: "Exercícios",
-      valor: 1,
+      valor: exercises.length,
       descricao: "Exercícios cadastrados",
     },
     {

@@ -3,6 +3,7 @@ import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
 import { useState } from "react";
 import { FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
+import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers";
 import useAddUser from "../../../hooks/Users/useAddUser";
@@ -14,6 +15,7 @@ function ExercisesPage() {
   useAdminRedirect();
 
   const { users, setUsers } = useGetAllUsers();
+  const { exercises, setExercises } = useGetAllExcercises();
   const addUser = useAddUser();
   const updateUser = useUpdateUser();
   const deleteUser = useDeleteUser();
@@ -110,14 +112,14 @@ function ExercisesPage() {
       <div className="admin-content">
         <div className="flex items-center justify-between !mb-6">
           <div>
-            <h1 className="admin-title font-headline">Utilizadores</h1>
+            <h1 className="admin-title font-headline">Exercícios</h1>
             <p className="admin-description font-body">
-              Gestão de utilizadores da plataforma
+              Gestão de exercícios da plataforma
             </p>
           </div>
           <div className="admin-button font-body" onClick={openAddModal}>
             <button></button>
-            <FiUserPlus /> Adicionar Utilizador
+            <CgGym /> Adicionar Exercício
           </div>
         </div>
 
@@ -125,10 +127,11 @@ function ExercisesPage() {
           <table className="w-full min-w-[700px] table-fixed">
             <thead className="text-left bg-white">
               <tr>
-                <th className="!p-3">Utilizador</th>
-                <th className="!p-3">Email</th>
-                <th className="!p-3">Role</th>
-                <th className="!p-3">Criado em</th>
+                <th className="!p-3">Nome</th>
+                <th className="!p-3">Grupo Muscular</th>
+                <th className="!p-3">Descrição</th> 
+                <th className="!p-3">Séries</th>
+                <th className="!p-3">Tempo de Descanso</th>
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
@@ -139,7 +142,7 @@ function ExercisesPage() {
                     colSpan={5}
                     className="!p-6 text-center text-sm text-gray-500"
                   >
-                    Sem utilizadores
+                    Sem exercícios.
                   </td>
                 </tr>
               ) : (
@@ -280,8 +283,8 @@ function ExercisesPage() {
             itemToDelete={userToDelete}
             closeDeleteModal={closeDeleteModal}
             handleDeleteItem={handleDeleteUser}
-            title="Eliminar Utilizador"
-            message="Tem a certeza que deseja eliminar o utilizador?"
+            title="Eliminar Exercício"
+            message="Tem a certeza que deseja eliminar o exercício?"
           />
         )}
       </div>

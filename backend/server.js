@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { sequelize } from "./config/db.js";
 import userRouter from "./routes/userRouter.js";
 import exerciseRouter from './routes/exerciseRouter.js';
+import foodRouter from "./routes/foodRouter.js";
 
 dotenv.config();
 const app = express();
@@ -12,7 +13,8 @@ app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
 app.use('/api/users', userRouter);
-app.use('/api/exercises', exerciseRouter)
+app.use('/api/exercises', exerciseRouter);
+app.use('/api/foods', foodRouter);
 
 app.get('/', async (req, res) => {
     try {

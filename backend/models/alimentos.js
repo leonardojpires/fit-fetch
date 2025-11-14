@@ -1,15 +1,10 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/db.js';
 
-'use strict';
+class Alimento extends Model {}
 
-export default (sequelize, DataTypes) => {
-  class Alimento extends Model {
-    static associate(models) {
-      // Defines associations
-    }
-  }
-
-  Alimento.init({
+Alimento.init(
+  {
     name: {
       type: DataTypes.STRING,
       allowNull: false
@@ -29,14 +24,15 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0
     }
-  }, {
+  },
+  {
     sequelize,
     modelName: 'Alimento',
     tableName: 'Alimentos',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
-  });
+  }
+);
 
-  return Alimento;
-};
+export default Alimento;
