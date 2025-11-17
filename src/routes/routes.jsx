@@ -9,6 +9,7 @@ import AuthPage from './../pages/Auth/index';
 import Dashboard from "../pages/admin/Dashboard";
 import UsersPage from "../pages/admin/Users";
 import ExercisesPage from './../pages/admin/Exercises/index';
+import FoodsPage from './../pages/admin/Foods/index';
 
 function AppRoutes() {
     return (
@@ -25,6 +26,7 @@ function AppRoutes() {
                     <Route path="/admin" element={<Dashboard />}></Route>
                     <Route path="/admin/utilizadores" element={<UsersPage />}></Route>
                     <Route path="/admin/exercicios" element={<ExercisesPage />}></Route>
+                    <Route path="/admin/alimentos" element={<FoodsPage />}></Route>
 
                     {/* FALLBACK ROUTE */}
                     <Route path="*" element={<NotFound />}></Route>

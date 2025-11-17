@@ -4,11 +4,13 @@ import AdminSidebar from "../../../components/AdminSidebar";
 import "../index.css";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers.jsx";
 import useGetAllExercises from './../../../hooks/Exercises/useGetAllExercises';
+import useGetAllFoods from './../../../hooks/Foods/useGetAllFoods';
 
 function Dashboard() {
   useAdminRedirect();
   const { users } = useGetAllUsers();
   const { exercises } = useGetAllExercises();
+  const { foods } = useGetAllFoods();
 
   const { loading } = useRedirectIfNotAuth();
   if (loading) return null;
@@ -26,7 +28,7 @@ function Dashboard() {
     },
     {
       titulo: "Alimentos",
-      valor: 0,
+      valor: foods.length,
       descricao: "Alimentos cadastrados",
     },
   ];
