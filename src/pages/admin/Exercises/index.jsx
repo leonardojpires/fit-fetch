@@ -2,106 +2,175 @@ import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
 import { useState } from "react";
-import { FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
-import useGetAllUsers from "../../../hooks/Users/useGetAllUsers";
-import useAddUser from "../../../hooks/Users/useAddUser";
-import useUpdateUser from '../../../hooks/Users/useUpdateUser';
-import useDeleteUser from "../../../hooks/Users/useDeleteUser";
 import DeleteModal from './../../../components/DeleteModal/index';
+import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
+import useAddExercise from "../../../hooks/Exercises/useAddExercise";
+import useUpdateExercise from "../../../hooks/Exercises/useUpdateExercise";
+import useDeleteExercise from "../../../hooks/Exercises/useDeleteExercise";
 
 function ExercisesPage() {
   useAdminRedirect();
 
-  const { users, setUsers } = useGetAllUsers();
-  const { exercises, setExercises } = useGetAllExcercises();
-  const addUser = useAddUser();
-  const updateUser = useUpdateUser();
-  const deleteUser = useDeleteUser();
-
+  const { exercises, setExercises } = useGetAllExercises();
+  const addExercise = useAddExercise();
+  const updateExercise = useUpdateExercise();
+  const deleteExercise = useDeleteExercise();
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [userToEdit, setUserToEdit] = useState(null); 
-  const [userToDelete, setUserToDelete] = useState(null);
+  const [exerciseToEdit, setExerciseToEdit] = useState(null); 
+  const [exerciseToDelete, setExerciseToDelete] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    role: "user",
+    muscle_group: "",
+    description: "",
+    image_url: "",
+    video_url: "",
   });
 
   function openAddModal() {
-    setFormData({ name: "", email: "", role: "user" });
+    setImageFile(null);
+    setFormData({ 
+      name: "", 
+      muscle_group: "", 
+      description: "", 
+      image_url: "", 
+      video_url: ""
+    });
     setIsModalOpen(true);
   }
 
-  function openEditModal(user) {
-    setUserToEdit(user);
+  function openEditModal(exercise) {
+    setExerciseToEdit(exercise);
     setFormData({
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      name: exercise.name,
+      muscle_group: exercise.muscle_group,
+      description: exercise.description || "",
+      image_url: exercise.image_url || "",
+      video_url: exercise.video_url || "",
     });
     setIsEditModalOpen(true);
     setIsModalOpen(true);
   }
 
   function closeModal() {
-    setUserToEdit(null);
+    setExerciseToEdit(null);
+    setImageFile(null);
     setIsEditModalOpen(false);
     setIsModalOpen(false);
   }
 
-  function openDeleteModal(user) {
-    setUserToDelete(user);
+  function openDeleteModal(exercise) {
+    setExerciseToDelete(exercise);
     setIsDeleteModalOpen(true);
   }
 
   function closeDeleteModal() {
     setIsDeleteModalOpen(false);
-    setUserToDelete(null);
+    setExerciseToDelete(null);
   }
 
   function handleInputChange(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, files } = e.target;
+    
+    if (type === 'file' && name === 'image_file') {
+      setImageFile(files[0]);
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    const newUser = await addUser(formData);
+    const dataToSend = { ...formData };
+    
+    // Se houver ficheiro de imagem, fazer upload primeiro
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append('image', imageFile);
+      
+      try {
+        const token = await auth.currentUser.getIdToken();
+        const uploadResponse = await fetch('http://localhost:3000/api/upload/image', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: uploadFormData,
+        });
+        
+        if (uploadResponse.ok) {
+          const { imageUrl } = await uploadResponse.json();
+          dataToSend.image_url = imageUrl;
+        }
+      } catch (err) {
+        console.error('Erro ao fazer upload da imagem:', err);
+      }
+    }
 
-    if (newUser) {
-      const updatedUsers = await fetch("http://localhost:3000/api/users/all", {
+    const newExercise = await addExercise(dataToSend);
+
+    if (newExercise) {
+      const updatedExercises = await fetch("http://localhost:3000/api/exercises/all", {
         headers: {
-          Authorization: `Bearer ${await await auth.currentUser.getIdToken()}`,
+          Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
         },
       }).then((res) => res.json());
-      setUsers(updatedUsers);
+      setExercises(updatedExercises);
     }
     closeModal();
   }
 
   async function handleEditSubmit(e) {
     e.preventDefault();
-    if (!userToEdit) return;
+    if (!exerciseToEdit) return;
 
-    const updatedUser = await updateUser(userToEdit.id, formData);
-    if (updatedUser) {
-      setUsers((prev) => prev.map((u) => u.id === updatedUser.id ? updatedUser : u));
+    const dataToSend = { ...formData };
+    
+    // Se houver ficheiro de imagem, fazer upload primeiro
+    if (imageFile) {
+      const uploadFormData = new FormData();
+      uploadFormData.append('image', imageFile);
+      
+      try {
+        const token = await auth.currentUser.getIdToken();
+        const uploadResponse = await fetch('http://localhost:3000/api/upload/image', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: uploadFormData,
+        });
+        
+        if (uploadResponse.ok) {
+          const { imageUrl } = await uploadResponse.json();
+          dataToSend.image_url = imageUrl;
+        }
+      } catch (err) {
+        console.error('Erro ao fazer upload da imagem:', err);
+      }
+    }
+
+    const updatedExercise = await updateExercise(exerciseToEdit.id, dataToSend);
+    if (updatedExercise) {
+      setExercises((prev) => prev.map((ex) => ex.id === updatedExercise.id ? updatedExercise : ex));
     }
 
     closeModal();
   }
 
-  async function handleDeleteUser() {
-    if (!userToDelete) return;
+  async function handleDeleteExercise() {
+    if (!exerciseToDelete) return;
 
-    const result = await deleteUser(userToDelete.id);
+    const result = await deleteExercise(exerciseToDelete.id);
     if (result) {
-      setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
+      setExercises((prev) => prev.filter((ex) => ex.id !== exerciseToDelete.id));
       closeDeleteModal();
     }
   }
@@ -129,59 +198,52 @@ function ExercisesPage() {
               <tr>
                 <th className="!p-3">Nome</th>
                 <th className="!p-3">Grupo Muscular</th>
-                <th className="!p-3">Descrição</th> 
-                <th className="!p-3">Séries</th>
-                <th className="!p-3">Tempo de Descanso</th>
+                <th className="!p-3">Descrição</th>
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {users.length === 0 ? (
+              {exercises.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={4}
                     className="!p-6 text-center text-sm text-gray-500"
                   >
                     Sem exercícios.
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                exercises.map((exercise) => (
                   <tr
-                    key={user.id}
+                    key={exercise.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
                   >
                     <td className="!p-3">
                       <div className="flex items-center gap-3">
                         <div>
-                          <div className="font-medium">{user.name}</div>
+                          <div className="font-medium">{exercise.name.charAt(0).toUpperCase() + exercise.name.slice(1)}</div>
                           <div className="text-xs text-gray-500">
-                            ID: {user.id}
+                            ID: {exercise.id}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="!p-3 text-sm text-gray-700">{user.email}</td>
-                    <td className="!p-3">
-                      <span className="inline-block !px-3 !py-1 rounded-full bg-[var(--primary)]/70 text-sm text-white">
-                        {user.role}
-                      </span>
-                    </td>
+                    <td className="!p-3 text-sm text-gray-700">{exercise.muscle_group}</td>
                     <td className="!p-3 text-sm text-gray-600">
-                      {user.createdAt.split("T")[0]}
+                      {exercise.description || 'Sem descrição'}
                     </td>
                     <td className="!p-3">
                       <div className="flex items-center gap-2">
                         <button
                           title="Editar"
-                          onClick={() => openEditModal(user)}
+                          onClick={() => openEditModal(exercise)}
                           className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
                         >
                           <FiEdit2 />
                         </button>
                         <button
                           title="Eliminar"
-                          onClick={() => openDeleteModal(user)}
+                          onClick={() => openDeleteModal(exercise)}
                           className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
                         >
                           <FiTrash2 />
@@ -195,7 +257,7 @@ function ExercisesPage() {
           </table>
         </div>
 
-        {/* Modal: Adicionar Utilizador */}
+        {/* Modal: Adicionar/Editar Exercício */}
         {isModalOpen && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
@@ -206,7 +268,7 @@ function ExercisesPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
-                { isEditModalOpen ? "Editar utilizador" : "Adicionar utilizador" }
+                { isEditModalOpen ? "Editar exercício" : "Adicionar exercício" }
               </h2>
 
               <form onSubmit={ isEditModalOpen ? handleEditSubmit : handleSubmit } className="flex flex-col gap-4">
@@ -219,7 +281,7 @@ function ExercisesPage() {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    placeholder="Nome do utilizador"
+                    placeholder="Nome do exercício"
                     required
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   />
@@ -227,34 +289,66 @@ function ExercisesPage() {
 
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="email@exemplo.com"
-                    required
-                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
-                    Role
+                    Grupo Muscular
                   </label>
                   <select
-                    name="role"
-                    value={formData.role}
+                    name="muscle_group"
+                    value={formData.muscle_group}
                     onChange={handleInputChange}
-                    disabled={userToEdit?.firebase_uid === auth.currentUser?.uid}
+                    required
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
+                    <option value="">Selecione um grupo</option>
+                    <option value="peito">Peito</option>
+                    <option value="ombros">Ombros</option>
+                    <option value="costas">Costas</option>
+                    <option value="pernas">Pernas</option>
+                    <option value="bíceps">Bíceps</option>
+                    <option value="tríceps">Tríceps</option>
+                    <option value="abdominais">Abdominais</option>
+                    <option value="cardio">Cardio</option>
                   </select>
-                  { userToEdit?.firebase_uid === auth.currentUser?.uid && ( <span className="font-body text-black/70 text-sm">Não podes alterar o teu próprio cargo</span> ) }
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Descrição
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    placeholder="Descrição do exercício (opcional)"
+                    rows={3}
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Imagem do Exercício
+                  </label>
+                  <input
+                    type="file"
+                    name="image_file"
+                    accept="image/*"
+                    onChange={handleInputChange}
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-white hover:file:bg-[var(--accent)] file:cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-500 !mt-1">Ou adicione uma URL abaixo</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Link do Vídeo
+                  </label>
+                  <input
+                    type="url"
+                    name="video_url"
+                    value={formData.video_url}
+                    onChange={handleInputChange}
+                    placeholder="https://youtube.com/watch?v=..."
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  />
                 </div>
 
                 <div className="flex justify-end gap-3 !mt-4">
@@ -277,12 +371,12 @@ function ExercisesPage() {
           </div>
         )}
 
-        {/* Modal: Eliminar Utilizador */}
-        {isDeleteModalOpen && userToDelete && (
+        {/* Modal: Eliminar Exercício */}
+        {isDeleteModalOpen && exerciseToDelete && (
           <DeleteModal
-            itemToDelete={userToDelete}
+            itemToDelete={exerciseToDelete}
             closeDeleteModal={closeDeleteModal}
-            handleDeleteItem={handleDeleteUser}
+            handleDeleteItem={handleDeleteExercise}
             title="Eliminar Exercício"
             message="Tem a certeza que deseja eliminar o exercício?"
           />

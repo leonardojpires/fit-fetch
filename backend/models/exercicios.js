@@ -25,14 +25,6 @@ Exercicio.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    series: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    rest_time: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
   },
   {
     sequelize,

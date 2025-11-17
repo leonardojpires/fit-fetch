@@ -29,23 +29,20 @@ class ExerciseController {
 
     static async addExercise(req, res) {
         try {
-            const { name, muscle_group, description, image_url, video_url, series, rest_time } = req.body;
+            const { name, muscle_group, description, image_url, video_url } = req.body;
 
-            if (!name || !muscle_group || !series || !rest_time) return res.status(400).json({ message: "Os campos obrigatórios devem ser preenchidos!" });
-            if (isNaN(series) || isNaN(rest_time)) return res.status(400).json({ message: "As séries e o tempo de descanso devem ser números!" });
+            if (!name || !muscle_group) return res.status(400).json({ message: "Os campos obrigatórios devem ser preenchidos!" });
             if (!ExerciseController.validMuscleGroups.includes(muscle_group)) return res.status(400).json({ message: "Grupo muscular inválido!" });
 
-            const newExercise = await Exercicio.create({
+            const exercise = await Exercicio.create({
                 name,
                 muscle_group,
                 description: description || null,
                 image_url: image_url || null,
-                video_url: video_url || null,
-                series,
-                rest_time
+                video_url: video_url || null
             });
 
-            return res.status(201).json({ exercise: newExercise });
+            return res.status(201).json({ exercise });
         } catch(err) {
             console.error("Erro ao adicionar exercício: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });
@@ -55,10 +52,9 @@ class ExerciseController {
     static async updateExercise(req, res) {
         try {
             const { id } = req.params;
-            const { name, muscle_group, description, image_url, video_url, series, rest_time } = req.body;
+            const { name, muscle_group, description, image_url, video_url } = req.body;
 
-            if (!name || !muscle_group || !series || !rest_time) return res.status(400).json({ message: "Os campos obrigatórios devem ser preenchidos!" });
-            if (isNaN(series) || isNaN(rest_time)) return res.status(400).json({ message: "As séries e o tempo de descanso devem ser números!" });
+            if (!name || !muscle_group) return res.status(400).json({ message: "Os campos obrigatórios devem ser preenchidos!" });
             if (!ExerciseController.validMuscleGroups.includes(muscle_group)) return res.status(400).json({ message: "Grupo muscular inválido!" });
 
             const exercise = await Exercicio.findByPk(id);
@@ -69,11 +65,9 @@ class ExerciseController {
                 muscle_group,
                 description: description || null,
                 image_url: image_url || null,
-                video_url: video_url || null,
-                series,
-                rest_time
+                video_url: video_url || null
             });
-            return res.status(200).json({ message: "Excercício atualizado com sucesso!", exercise });
+            return res.status(200).json(exercise);
         } catch(err) {
             console.error("Erro ao atualizar exercício: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });

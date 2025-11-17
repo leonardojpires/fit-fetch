@@ -29,14 +29,6 @@ export async function up(queryInterface, Sequelize) {
       type: Sequelize.STRING,
       allowNull: true,
     },
-    series: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
-    rest_time: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-    },
     created_at: {
       allowNull: false,
       type: Sequelize.DATE,
