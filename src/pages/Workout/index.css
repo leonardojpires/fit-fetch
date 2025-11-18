@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+
+.workout-input {
+    @apply w-full !px-4 !py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none transition-all;
+}

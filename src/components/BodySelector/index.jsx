@@ -1,50 +1,60 @@
 import { useState } from 'react';
+import { GiShoulderArmor, GiBiceps, GiMuscleUp, GiLeg } from 'react-icons/gi';
+import { FaDumbbell } from 'react-icons/fa';
+import { IoBodySharp } from 'react-icons/io5';
 import './style.css';
 
-function BodySelector({ onMuscleSelect }) {
+function BodySelector({ onMuscleSelect, isDisabled }) {
     const [selected, setSelected] = useState([]);
     const [hoveredMuscle, setHoveredMuscle] = useState(null);
 
     const muscleData = {
         'ombros': {
             name: 'Ombros',
-            emoji: '🏔️',
-            color: '#FF6B6B',
+            icon: <GiShoulderArmor />,
+            color: 'var(--primary)',
+            colorDark: 'rgba(36,108,229,0.8)',
             description: 'Deltoides'
         },
         'peito': {
             name: 'Peito',
-            emoji: '💪',
-            color: '#4ECDC4',
+            icon: <GiMuscleUp />,
+            color: 'var(--accent)',
+            colorDark: 'rgba(255,145,0,0.8)',
             description: 'Peitoral'
         },
         'biceps': {
             name: 'Bíceps',
-            emoji: '💥',
-            color: '#95E1D3',
-            description: 'Braços Frontais'
+            icon: <GiBiceps />,
+            color: 'var(--secondary)',
+            colorDark: 'rgba(0,200,83,0.8)',
+            description: 'Braço Frontal'
         },
         'triceps': {
             name: 'Tríceps',
-            emoji: '⚡',
-            color: '#F38181',
-            description: 'Braços Traseiros'
+            icon: <FaDumbbell />,
+            color: 'var(--accent)',
+            colorDark: 'rgba(255,145,0,0.8)',
+            description: 'Braço Traseiro'
         },
         'costas': {
             name: 'Costas',
-            emoji: '🛡️',
-            color: '#AA96DA',
+            icon: <IoBodySharp />,
+            color: 'var(--primary)',
+            colorDark: 'rgba(36,108,229,0.8)',
             description: 'Dorsais'
         },
         'pernas': {
             name: 'Pernas',
-            emoji: '🦵',
-            color: '#FCBAD3',
+            icon: <GiLeg />,
+            color: 'var(--secondary)',
+            colorDark: 'rgba(0,200,83,0.8)',
             description: 'Membros Inferiores'
         }
     };
 
     const toggleMuscle = (muscleId) => {
+        if (isDisabled) return;
         let newSelected;
         if (selected.includes(muscleId)) {
             newSelected = selected.filter(id => id !== muscleId);
@@ -60,25 +70,19 @@ function BodySelector({ onMuscleSelect }) {
     const isMuscleSelected = (muscleId) => selected.includes(muscleId);
 
     return (
-        <div className="body-selector-epic">
-            {/* Header com info */}
-            <div className="selector-header">
-                <h3 className="header-title">Seleciona os Teus Músculos</h3>
-                <p className="header-subtitle">Clica para construir o teu treino personalizado</p>
-            </div>
+        <div className={`body-selector-epic ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
 
-            {/* Grid de Músculos - Estilo Moderno */}
             <div className="muscles-container">
                 {Object.entries(muscleData).map(([id, data]) => (
                     <div
                         key={id}
                         className={`muscle-card-epic ${isMuscleSelected(id) ? 'selected' : ''} ${hoveredMuscle === id ? 'hovered' : ''}`}
                         onClick={() => toggleMuscle(id)}
-                        onMouseEnter={() => setHoveredMuscle(id)}
-                        onMouseLeave={() => setHoveredMuscle(null)}
+                        onMouseEnter={() => !isDisabled && setHoveredMuscle(id)}
+                        onMouseLeave={() => !isDisabled && setHoveredMuscle(null)}
                         style={{
                             '--muscle-color': data.color,
-                            '--muscle-color-dark': data.color + 'CC'
+                            '--muscle-color-dark': data.colorDark
                         }}
                     >
                         {/* Badge de selecionado */}
@@ -88,8 +92,8 @@ function BodySelector({ onMuscleSelect }) {
                             </div>
                         )}
 
-                        {/* Emoji grande */}
-                        <div className="muscle-emoji">{data.emoji}</div>
+                        {/* Ícone grande */}
+                        <div className="muscle-icon" aria-hidden="true">{data.icon}</div>
 
                         {/* Nome principal */}
                         <div className="muscle-name-epic">{data.name}</div>
@@ -107,7 +111,7 @@ function BodySelector({ onMuscleSelect }) {
             </div>
 
             {/* Resumo Visual */}
-            {selected.length > 0 && (
+            {!isDisabled && selected.length > 0 && (
                 <div className="selection-summary">
                     <div className="summary-header">
                         <span className="summary-icon">🎯</span>
@@ -126,7 +130,7 @@ function BodySelector({ onMuscleSelect }) {
                                     style={{ '--pill-color': data.color }}
                                     onClick={() => toggleMuscle(muscleId)}
                                 >
-                                    <span className="pill-emoji">{data.emoji}</span>
+                                    <span className="pill-icon" aria-hidden="true">{data.icon}</span>
                                     <span className="pill-name">{data.name}</span>
                                     <span className="pill-remove">×</span>
                                 </div>
@@ -137,7 +141,7 @@ function BodySelector({ onMuscleSelect }) {
             )}
 
             {/* Mensagem motivacional */}
-            {selected.length === 0 && (
+            {!isDisabled && selected.length === 0 && (
                 <div className="empty-state">
                     <div className="empty-icon">🏋️</div>
                     <p className="empty-text">Começa a selecionar os músculos que queres trabalhar!</p>
