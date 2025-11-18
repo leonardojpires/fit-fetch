@@ -25,6 +25,16 @@ Exercicio.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    type: {
+      type: DataTypes.ENUM('calisthenics', 'weightlifting', 'cardio'),
+      allowNull: false,
+      defaultValue: 'weightlifting',
+    },
+    difficulty: {
+      type: DataTypes.ENUM('beginner', 'intermediate', 'advanced'),
+      allowNull: false,
+      defaultValue: 'beginner',
+    },
   },
   {
     sequelize,

@@ -43,7 +43,7 @@ function Header() {
   };
 
   return !isInAdmin ? (
-    <header className="header relative w-full flex items-center justify-evenly !px-4 !lg:px-6 !py-5 bg-white/10 supports-[backdrop-filter]:backdrop-blur-md dark:bg-black/20">
+    <header className="header relative w-full flex items-center justify-evenly !px-4 !lg:px-6 !py-5 bg-[#0f172a] supports-[backdrop-filter]:backdrop-blur-md dark:bg-[#0f172a]">
       {/* LOGO */}
       <div>
         <Link to="/">

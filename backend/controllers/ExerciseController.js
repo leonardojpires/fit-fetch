@@ -3,6 +3,8 @@ import Exercicio from "../models/exercicios.js";
 class ExerciseController {
     static errorMessage = "Erro interno do servidor";
     static validMuscleGroups = ['peito', 'ombros', 'costas', 'pernas', 'bíceps', 'tríceps', 'abdominais', 'cardio'];
+    static validTypes = ['calisthenics', 'weightlifting', 'cardio'];
+    static validDifficulties = ['beginner', 'intermediate', 'advanced'];
 
     static async getAllExercises(req, res) {
         try {
@@ -29,17 +31,29 @@ class ExerciseController {
 
     static async addExercise(req, res) {
         try {
-            const { name, muscle_group, description, image_url, video_url } = req.body;
+            const { name, muscle_group, description, image_url, video_url, type, difficulty } = req.body;
 
             if (!name || !muscle_group) return res.status(400).json({ message: "Os campos obrigatórios devem ser preenchidos!" });
             if (!ExerciseController.validMuscleGroups.includes(muscle_group)) return res.status(400).json({ message: "Grupo muscular inválido!" });
+            
+            // Validar type se fornecido
+            if (type && !ExerciseController.validTypes.includes(type)) {
+                return res.status(400).json({ message: "Tipo de exercício inválido! Use: calisthenics, weightlifting ou cardio" });
+            }
+            
+            // Validar difficulty se fornecido
+            if (difficulty && !ExerciseController.validDifficulties.includes(difficulty)) {
+                return res.status(400).json({ message: "Dificuldade inválida! Use: beginner, intermediate ou advanced" });
+            }
 
             const exercise = await Exercicio.create({
                 name,
                 muscle_group,
                 description: description || null,
                 image_url: image_url || null,
-                video_url: video_url || null
+                video_url: video_url || null,
+                type: type || 'weightlifting',
+                difficulty: difficulty || 'beginner'
             });
 
             return res.status(201).json({ exercise });
@@ -52,10 +66,20 @@ class ExerciseController {
     static async updateExercise(req, res) {
         try {
             const { id } = req.params;
-            const { name, muscle_group, description, image_url, video_url } = req.body;
+            const { name, muscle_group, description, image_url, video_url, type, difficulty } = req.body;
 
             if (!name || !muscle_group) return res.status(400).json({ message: "Os campos obrigatórios devem ser preenchidos!" });
             if (!ExerciseController.validMuscleGroups.includes(muscle_group)) return res.status(400).json({ message: "Grupo muscular inválido!" });
+            
+            // Validar type se fornecido
+            if (type && !ExerciseController.validTypes.includes(type)) {
+                return res.status(400).json({ message: "Tipo de exercício inválido! Use: calisthenics, weightlifting ou cardio" });
+            }
+            
+            // Validar difficulty se fornecido
+            if (difficulty && !ExerciseController.validDifficulties.includes(difficulty)) {
+                return res.status(400).json({ message: "Dificuldade inválida! Use: beginner, intermediate ou advanced" });
+            }
 
             const exercise = await Exercicio.findByPk(id);
             if (!exercise) return res.status(404).json({ message: "Exercício não encontrado!" });
@@ -65,7 +89,9 @@ class ExerciseController {
                 muscle_group,
                 description: description || null,
                 image_url: image_url || null,
-                video_url: video_url || null
+                video_url: video_url || null,
+                type: type || exercise.type,
+                difficulty: difficulty || exercise.difficulty
             });
             return res.status(200).json(exercise);
         } catch(err) {

@@ -31,6 +31,8 @@ function ExercisesPage() {
     description: "",
     image_url: "",
     video_url: "",
+    type: "weightlifting",
+    difficulty: "beginner",
   });
 
   function openAddModal() {
@@ -40,7 +42,9 @@ function ExercisesPage() {
       muscle_group: "", 
       description: "", 
       image_url: "", 
-      video_url: ""
+      video_url: "",
+      type: "weightlifting",
+      difficulty: "beginner"
     });
     setIsModalOpen(true);
   }
@@ -53,6 +57,8 @@ function ExercisesPage() {
       description: exercise.description || "",
       image_url: exercise.image_url || "",
       video_url: exercise.video_url || "",
+      type: exercise.type || "weightlifting",
+      difficulty: exercise.difficulty || "beginner",
     });
     setIsEditModalOpen(true);
     setIsModalOpen(true);
@@ -198,7 +204,8 @@ function ExercisesPage() {
               <tr>
                 <th className="!p-3">Nome</th>
                 <th className="!p-3">Grupo Muscular</th>
-                <th className="!p-3">Descrição</th>
+                <th className="!p-3">Tipo</th>
+                <th className="!p-3">Dificuldade</th>
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
@@ -206,7 +213,7 @@ function ExercisesPage() {
               {exercises.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="!p-6 text-center text-sm text-gray-500"
                   >
                     Sem exercícios.
@@ -229,8 +236,19 @@ function ExercisesPage() {
                       </div>
                     </td>
                     <td className="!p-3 text-sm text-gray-700">{exercise.muscle_group}</td>
-                    <td className="!p-3 text-sm text-gray-600">
-                      {exercise.description || 'Sem descrição'}
+                    <td className="!p-3 text-sm text-gray-700">
+                      <span className="inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {exercise.type || 'weightlifting'}
+                      </span>
+                    </td>
+                    <td className="!p-3 text-sm text-gray-700">
+                      <span className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
+                        exercise.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
+                        exercise.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {exercise.difficulty || 'beginner'}
+                      </span>
                     </td>
                     <td className="!p-3">
                       <div className="flex items-center gap-2">
@@ -257,14 +275,19 @@ function ExercisesPage() {
           </table>
         </div>
 
+
+
+
+
+
         {/* Modal: Adicionar/Editar Exercício */}
         {isModalOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
             onClick={closeModal}
           >
             <div
-              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md !p-6 border border-gray-200/50"
+              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto !p-6 border border-gray-200/50"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
@@ -307,6 +330,40 @@ function ExercisesPage() {
                     <option value="tríceps">Tríceps</option>
                     <option value="abdominais">Abdominais</option>
                     <option value="cardio">Cardio</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Tipo de Exercício
+                  </label>
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  >
+                    <option value="weightlifting">Musculação (Weightlifting)</option>
+                    <option value="calisthenics">Calistenia (Calisthenics)</option>
+                    <option value="cardio">Cardio</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Dificuldade
+                  </label>
+                  <select
+                    name="difficulty"
+                    value={formData.difficulty}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  >
+                    <option value="beginner">Iniciante (Beginner)</option>
+                    <option value="intermediate">Intermediário (Intermediate)</option>
+                    <option value="advanced">Avançado (Advanced)</option>
                   </select>
                 </div>
 
