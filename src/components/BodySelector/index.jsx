@@ -4,7 +4,7 @@ import { FaDumbbell } from 'react-icons/fa';
 import { IoBodySharp } from 'react-icons/io5';
 import './style.css';
 
-function BodySelector({ onMuscleSelect, isDisabled }) {
+function BodySelector({ onMuscleSelect }) {
     const [selected, setSelected] = useState([]);
     const [hoveredMuscle, setHoveredMuscle] = useState(null);
 
@@ -54,7 +54,6 @@ function BodySelector({ onMuscleSelect, isDisabled }) {
     };
 
     const toggleMuscle = (muscleId) => {
-        if (isDisabled) return;
         let newSelected;
         if (selected.includes(muscleId)) {
             newSelected = selected.filter(id => id !== muscleId);
@@ -70,7 +69,7 @@ function BodySelector({ onMuscleSelect, isDisabled }) {
     const isMuscleSelected = (muscleId) => selected.includes(muscleId);
 
     return (
-        <div className={`body-selector-epic ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
+        <div className={'body-selector-epic'}>
 
             <div className="muscles-container">
                 {Object.entries(muscleData).map(([id, data]) => (
@@ -78,40 +77,33 @@ function BodySelector({ onMuscleSelect, isDisabled }) {
                         key={id}
                         className={`muscle-card-epic ${isMuscleSelected(id) ? 'selected' : ''} ${hoveredMuscle === id ? 'hovered' : ''}`}
                         onClick={() => toggleMuscle(id)}
-                        onMouseEnter={() => !isDisabled && setHoveredMuscle(id)}
-                        onMouseLeave={() => !isDisabled && setHoveredMuscle(null)}
+                        onMouseEnter={() => setHoveredMuscle(id)}
+                        onMouseLeave={() => setHoveredMuscle(null)}
                         style={{
                             '--muscle-color': data.color,
                             '--muscle-color-dark': data.colorDark
                         }}
                     >
-                        {/* Badge de selecionado */}
                         {isMuscleSelected(id) && (
                             <div className="selected-indicator">
                                 <span className="indicator-check">✓</span>
                             </div>
                         )}
 
-                        {/* Ícone grande */}
                         <div className="muscle-icon" aria-hidden="true">{data.icon}</div>
 
-                        {/* Nome principal */}
                         <div className="muscle-name-epic">{data.name}</div>
 
-                        {/* Descrição */}
                         <div className="muscle-description">{data.description}</div>
 
-                        {/* Barra de cor no fundo */}
                         <div className="color-bar"></div>
 
-                        {/* Efeito de brilho ao hover */}
                         <div className="shine-effect"></div>
                     </div>
                 ))}
             </div>
 
-            {/* Resumo Visual */}
-            {!isDisabled && selected.length > 0 && (
+            {selected.length > 0 && (
                 <div className="selection-summary">
                     <div className="summary-header">
                         <span className="summary-icon">🎯</span>
@@ -140,8 +132,7 @@ function BodySelector({ onMuscleSelect, isDisabled }) {
                 </div>
             )}
 
-            {/* Mensagem motivacional */}
-            {!isDisabled && selected.length === 0 && (
+            {selected.length === 0 && (
                 <div className="empty-state">
                     <div className="empty-icon">🏋️</div>
                     <p className="empty-text">Começa a selecionar os músculos que queres trabalhar!</p>

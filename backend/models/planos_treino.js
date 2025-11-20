@@ -18,6 +18,32 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true
     },
+    workout_type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Tipo: calisthenics, weightlifting, cardio'
+    },
+    level: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Nível: beginner, intermediate, advanced'
+    },
+    exercises_number: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0,
+      comment: 'Duração em minutos (cardio)'
+    },
+    muscles: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      comment: 'Array de músculos alvo'
+    },
     rest_time: {
       type: DataTypes.INTEGER,
       allowNull: false,

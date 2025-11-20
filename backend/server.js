@@ -6,6 +6,7 @@ import { sequelize } from "./config/db.js";
 import userRouter from "./routes/userRouter.js";
 import exerciseRouter from './routes/exerciseRouter.js';
 import foodRouter from "./routes/foodRouter.js";
+import workoutPlanRouter from "./routes/workoutPlanRouter.js";
 
 dotenv.config();
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/users', userRouter);
 app.use('/api/exercises', exerciseRouter);
 app.use('/api/foods', foodRouter);
+app.use('/api/workout-plans', workoutPlanRouter);
 
 app.get('/', async (req, res) => {
     try {
