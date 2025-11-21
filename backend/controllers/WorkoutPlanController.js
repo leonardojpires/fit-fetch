@@ -14,6 +14,7 @@ class WorkoutPlanController {
         return res.status(422).json({ errors });
       }
 
+      // Here, if the workout type is not cardio, the controller will select exercises that match the criteria (type: weightlifting or calisthetnics and muscle groups)
       if (normalized.workoutType !== "cardio") {
         const allExercises = await Exercicio.findAll({
           where: {
@@ -21,15 +22,22 @@ class WorkoutPlanController {
             muscle_group: normalized.muscles,
           },
         });
+
+        // It converts the difficulty level into numeric values for easier comparison, where beginner = 1, intermediate = 2, advanced = 3
+        // The difficulty is then assigned as a numeric value
         const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
         const difficulty = difficultyOrder[normalized.level];
 
+        // Then, it filters all the exercises (previosly fetched from the database) to only include those who match the difficulty level
         const filteredExercises = allExercises.filter((ex) => {
           return difficultyOrder[ex.difficulty] === difficulty;
         });
 
+        // Suffles the filtered exercises to ensure randomness in selection
         const shuffled = filteredExercises.sort(() => Math.random() - 0.5);
 
+        // It tries to civer all the muscle groups specified by the user by iterating through each muscle group and selecting the first exercise that matches and hasn't been selected yet
+        // For example: if the user selected "peito" (chest) and "costas" (back), it looks for an exercise that targets "peito" and adds it to the selected list, then looks for an exercise that targets "costas" and adds it to the list as well
         const covered = [];
         for (const muscle of normalized.muscles) {
           const exercise = shuffled.find(
@@ -38,6 +46,7 @@ class WorkoutPlanController {
           if (exercise) covered.push(exercise);
         }
 
+        // Finally, it fills teh remaining slots with random exercises from the sfuffled list until reaching the specified number of exercises
         for (const ex of shuffled) {
           if (covered.length >= normalized.exercises_number) break;
           if (!covered.includes(ex)) covered.push(ex);
@@ -46,19 +55,20 @@ class WorkoutPlanController {
         selectedExercises = covered;
       }
 
+      // It creates the workout plan in the PlanoTreino table
       const newPlan = await PlanoTreino.create({
         name: `Plano ${normalized.workoutType} - ${new Date()}`,
         description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
         workout_type: normalized.workoutType,
         level: normalized.level,
-        exercises_number:
-          normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
+        exercises_number: normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
         duration: normalized.duration || null,
         muscles: normalized.muscles,
         rest_time: normalized.rest_time || null,
         series_number: normalized.series_number || null,
       });
 
+      // If the workout type is not cardio, it relates the selected excercises to the created plan in the pivot table
       if (normalized.workoutType !== "cardio" && selectedExercises.length > 0) {
         for (const exercise of selectedExercises) {
           await ExerciciosPlano.create({
@@ -68,6 +78,7 @@ class WorkoutPlanController {
         }
       }
 
+      // Lastly, it returns the created plan along with a success message
       return res.status(201).json({
         message: "Plano de treino gerado com sucesso!",
         plan: {
