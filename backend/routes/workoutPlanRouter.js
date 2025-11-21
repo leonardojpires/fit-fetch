@@ -1,5 +1,5 @@
 import { Router } from "express";
-import WorkoutPlanController from './../controllers/WorkoutPlanController.js';
+import WorkoutPlanController from '../controllers/WorkoutPlanController.js';
 
 const workoutPlanRouter = Router();
 

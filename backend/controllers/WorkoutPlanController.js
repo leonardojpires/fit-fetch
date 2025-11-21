@@ -1,82 +1,98 @@
-const VALID_WORKOUT_TYPES = ['calisthenics', 'weightlifting', 'cardio'];
-const VALID_LEVELS = ['beginner', 'intermediate', 'advanced'];
+import db from "../models/index.mjs";
+import validateWorkoutPlanParams from "../validators/workoutPlanValidator.js";
+
+const { PlanoTreino, Exercicio, ExerciciosPlano } = db;
 
 class WorkoutPlanController {
-    static async generateWorkoutPlan(req, res) {
-        try {
-            const { duration, exercises_number, level, muscles, rest_time, series_number, workoutType } = req.body;
+  static async generateWorkoutPlan(req, res) {
+    try {
+      const { errors, normalized } = validateWorkoutPlanParams(req.body);
+      let selectedExercises = [];
 
-            const errors = [];
+      /* Error handling */
+      if (errors.length > 0) {
+        return res.status(422).json({ errors });
+      }
 
-            /* ERROR HANDLING */
-            /* Validates the workout type */
-            if (!workoutType) {
-                errors.push({ field: "workoutType", message: "O tipo de treino é obrigatório!" });
-            } else if (!VALID_WORKOUT_TYPES.includes(workoutType)) {
-                errors.push({ field: "workoutType", message: "Tipo de treino inválido!" });
-            }
+      if (normalized.workoutType !== "cardio") {
+        const allExercises = await Exercicio.findAll({
+          where: {
+            type: normalized.workoutType,
+            muscle_group: normalized.muscles,
+          },
+        });
+        const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
+        const difficulty = difficultyOrder[normalized.level];
 
-            /* Validates the level */
-            if (!level) {
-                errors.push({ field: "level", message: "O nível de treino é obrigatório!" });
-            } else if (!VALID_LEVELS.includes(level)) {
-                errors.push({ field: "level", message: "Nível de treino inválido!" });
-            }
+        const filteredExercises = allExercises.filter((ex) => {
+          return difficultyOrder[ex.difficulty] === difficulty;
+        });
 
-            /* Validates the input fields */
-            if (workoutType === 'cardio') {
-                if (duration === undefined || duration === null) {
-                    errors.push({ field: "duration", message: "A duração de treino é obrigatória para cardio!" });
-                } else if (Number(duration) <= 1) {
-                    errors.push({ field: "duration", message: "Duração de treino inválida! Mínimo de 1 minuto!" });
-                }
-            } else if (VALID_WORKOUT_TYPES.includes(workoutType)) {
-                if (series_number == null) {
-                    errors.push({ field: 'series_number', message: 'O número de séries é obrigatório!' });
-                } else if (Number(series_number) < 1 || Number(series_number) > 4) {
-                    errors.push({ field: 'series_number', message: 'O número de séries deve ser entre 1 e 4!' });
-                }
+        const shuffled = filteredExercises.sort(() => Math.random() - 0.5);
 
-                if (exercises_number == null) {
-                    errors.push({ field: 'exercises_number', message: 'O número de exercícios é obrigatório!' });
-                } else if (Number(exercises_number) < 3 || Number(exercises_number) > 12) {
-                    errors.push({ field: 'exercises_number', message: 'O número de exercícios deve ser entre 3 e 12!' });
-                }
-
-                if (rest_time == null) {
-                    errors.push({ field: 'rest_time', message: 'O tempo de descanso obrigatório!' });
-                } else if (Number(rest_time) < 0 || Number(rest_time) > 600) {
-                    errors.push({ field: 'rest_time', message: 'o descanso deve estar entre 0 e 600 segundos (10 minutos)!' });
-                }
-
-                if (!Array.isArray(muscles) || muscles.length === 0) {
-                    errors.push({ field: 'muscles', message: 'Seleciona pelo menos um grupo muscular!' });
-                }
-            }
-
-            if (errors.length > 0) {
-                return res.status(422).json({ errors });
-            }
-
-            const response = {
-                message: 'Parâmetros válidos',
-                params: {
-                    workoutType,
-                    level,
-                    muscles,
-                    exercises_number: exercises_number != null ? Number(exercises_number) : undefined,
-                    series_number: series_number != null ? Number(series_number) : undefined,
-                    rest_time: rest_time != null ? Number(rest_time) : undefined,
-                    duration: duration != null ? Number(duration) : undefined
-                }
-            };
-            return res.status(200).json(response);
-
-        } catch(err) {
-            console.error("Erro ao gerar plano de treino: ", err);
-            return res.status(500).json({ message: "Erro interno do servidor." });
+        const covered = [];
+        for (const muscle of normalized.muscles) {
+          const exercise = shuffled.find(
+            (e) => e.muscle_group === muscle && !covered.includes(e)
+          );
+          if (exercise) covered.push(exercise);
         }
+
+        for (const ex of shuffled) {
+          if (covered.length >= normalized.exercises_number) break;
+          if (!covered.includes(ex)) covered.push(ex);
+        }
+
+        selectedExercises = covered;
+      }
+
+      const newPlan = await PlanoTreino.create({
+        name: `Plano ${normalized.workoutType} - ${new Date()}`,
+        description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
+        workout_type: normalized.workoutType,
+        level: normalized.level,
+        exercises_number:
+          normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
+        duration: normalized.duration || null,
+        muscles: normalized.muscles,
+        rest_time: normalized.rest_time || null,
+        series_number: normalized.series_number || null,
+      });
+
+      if (normalized.workoutType !== "cardio" && selectedExercises.length > 0) {
+        for (const exercise of selectedExercises) {
+          await ExerciciosPlano.create({
+            plano_id: newPlan.id,
+            exercicio_id: exercise.id,
+          });
+        }
+      }
+
+      return res.status(201).json({
+        message: "Plano de treino gerado com sucesso!",
+        plan: {
+          id: newPlan.id,
+          name: newPlan.name,
+          workout_type: newPlan.workout_type,
+          level: newPlan.level,
+          exercises_number: newPlan.exercises_number,
+          duration: newPlan.duration,
+          muscles: newPlan.muscles,
+          rest_time: newPlan.rest_time,
+          series_number: newPlan.series_number,
+          exercises: selectedExercises.map((ex) => ({
+            id: ex.id,
+            name: ex.name,
+            muscle_group: ex.muscle_group,
+            difficulty: ex.difficulty,
+          })),
+        },
+      });
+    } catch (err) {
+      console.error("Erro ao gerar plano de treino: ", err);
+      return res.status(500).json({ message: "Erro interno do servidor." });
     }
+  }
 }
 
 export default WorkoutPlanController;

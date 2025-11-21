@@ -3,14 +3,14 @@ import { Model } from 'sequelize';
 'use strict';
 
 export default (sequelize, DataTypes) => {
-  class AlimentosPlano extends Model {
+  class PlanoAlimentacao extends Model {
     static associate(models) {
       this.belongsTo(models.PlanoAlimentacao, { foreignKey: 'plano_id' });
       this.belongsTo(models.Alimento, { foreignKey: 'alimento_id' });
     }
   }
 
-  AlimentosPlano.init({
+  PlanoAlimentacao.init({
     plano_id: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -24,12 +24,12 @@ export default (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'AlimentosPlano',
+    modelName: 'PlanoAlimentacao',
     tableName: 'alimentos_planos',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
   });
 
-  return AlimentosPlano;
+  return PlanoAlimentacao;
 };

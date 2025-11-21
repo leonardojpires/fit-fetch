@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { Sequelize, DataTypes } from 'sequelize';
 import { sequelize } from '../config/db.js';
 
@@ -13,11 +13,19 @@ for (const file of fs.readdirSync(__dirname)) {
   if (file === path.basename(__filename)) continue;
   if (!file.endsWith('.js') && !file.endsWith('.mjs')) continue;
   const modelPath = path.join(__dirname, file);
-  const mod = await import(modelPath);
+  const mod = await import(pathToFileURL(modelPath).href);
   const modelFactory = mod.default;
+  
   if (typeof modelFactory === 'function') {
-    const model = modelFactory(sequelize, DataTypes);
-    db[model.name] = model;
+    // Verifica se é uma classe (já inicializada) ou factory function
+    if (modelFactory.prototype && modelFactory.prototype.constructor === modelFactory) {
+      // É uma classe ES6 já definida (ex: Exercicio)
+      db[modelFactory.name] = modelFactory;
+    } else {
+      // É uma factory function (ex: Alimento)
+      const model = modelFactory(sequelize, DataTypes);
+      db[model.name] = model;
+    }
   }
 }
 
