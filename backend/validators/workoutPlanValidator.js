@@ -1,5 +1,15 @@
 const VALID_WORKOUT_TYPES = ["calisthenics", "weightlifting", "cardio"];
 const VALID_LEVELS = ["beginner", "intermediate", "advanced"];
+const VALID_MUSCLE_GROUPS = [
+  "peito",
+  "ombros",
+  "costas",
+  "pernas",
+  "bíceps",
+  "tríceps",
+  "abdominais",
+  "cardio",
+];
 
 export default function validateWorkoutPlanParams(body) {
   const {
@@ -41,10 +51,15 @@ export default function validateWorkoutPlanParams(body) {
         field: "duration",
         message: "A duração de treino é obrigatória para cardio!",
       });
-    } else if (Number(duration) <= 1) {
+    } else if (Number.isNaN(Number(duration))) {
       errors.push({
         field: "duration",
-        message: "Duração de treino inválida! Mínimo de 1 minuto!",
+        message: "A duração de treino deve ser um número válido!"
+      });
+    } else if (Number(duration) < 1) {
+      errors.push({
+        field: "duration",
+        message: "A duração de treino deve ser pelo menos 1 minuto!",
       });
     }
   } else if (VALID_WORKOUT_TYPES.includes(workoutType)) {
@@ -52,6 +67,11 @@ export default function validateWorkoutPlanParams(body) {
       errors.push({
         field: "series_number",
         message: "O número de séries é obrigatório!",
+      });
+    } else if (Number.isNaN(Number(series_number))) {
+      errors.push({
+        field: "series_number",
+        message: "O número de séries deve ser um número válido!",
       });
     } else if (Number(series_number) < 1 || Number(series_number) > 4) {
       errors.push({
@@ -65,6 +85,11 @@ export default function validateWorkoutPlanParams(body) {
         field: "exercises_number",
         message: "O número de exercícios é obrigatório!",
       });
+    } else if (Number.isNaN(Number(exercises_number))) {
+      errors.push({
+        field: "exercises_number",
+        message: "O número de exercícios deve ser um número válido!",
+      });
     } else if (Number(exercises_number) < 3 || Number(exercises_number) > 12) {
       errors.push({
         field: "exercises_number",
@@ -75,7 +100,12 @@ export default function validateWorkoutPlanParams(body) {
     if (rest_time == null) {
       errors.push({
         field: "rest_time",
-        message: "O tempo de descanso obrigatório!",
+        message: "O tempo de descanso é obrigatório!",
+      });
+    } else if (Number.isNaN(Number(rest_time))) {
+      errors.push({
+        field: "rest_time",
+        message: "O tempo de descanso deve ser um número válido!",
       });
     } else if (Number(rest_time) < 0 || Number(rest_time) > 600) {
       errors.push({
@@ -89,13 +119,23 @@ export default function validateWorkoutPlanParams(body) {
         field: "muscles",
         message: "Seleciona pelo menos um grupo muscular!",
       });
+    } else {
+      for (const muscle of muscles) {
+        if (!VALID_MUSCLE_GROUPS.includes(muscle)) {
+          errors.push({
+            field: "muscles",
+            message: `Grupo muscular inválido: ${muscle}`,
+          });
+          break;
+        }
+      }
     }
   }
 
   const normalized = {
     workoutType,
     level,
-    muscles,
+    muscles: Array.isArray(muscles) ? muscles : [],
     exercises_number:
       exercises_number != null ? Number(exercises_number) : undefined,
     series_number: series_number != null ? Number(series_number) : undefined,

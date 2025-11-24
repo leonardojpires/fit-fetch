@@ -55,6 +55,14 @@ class WorkoutPlanController {
         selectedExercises = covered;
       }
 
+      if (selectedExercises.length === 0 && normalized.workoutType !== "cardio") {
+        return res.status(422).json({
+          errors: [{
+            field: "exercises_number",
+            message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${normalized.workoutType}, músculos: ${normalized.muscles.join(", ")})`
+          }]
+        })}
+
       // It creates the workout plan in the PlanoTreino table
       const newPlan = await PlanoTreino.create({
         name: `Plano ${normalized.workoutType} - ${new Date()}`,

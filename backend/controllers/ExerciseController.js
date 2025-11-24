@@ -5,7 +5,7 @@ class ExerciseController {
     static validMuscleGroups = ['peito', 'ombros', 'costas', 'pernas', 'bíceps', 'tríceps', 'abdominais', 'cardio'];
     static validTypes = ['calisthenics', 'weightlifting', 'cardio'];
     static validDifficulties = ['beginner', 'intermediate', 'advanced'];
-
+ 
     static async getAllExercises(req, res) {
         try {
             const exercises = await Exercicio.findAll();
