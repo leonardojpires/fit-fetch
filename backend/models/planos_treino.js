@@ -5,7 +5,19 @@ import { Model } from 'sequelize';
 export default (sequelize, DataTypes) => {
   class PlanoTreino extends Model {
     static associate(models) {
-      // Defines associations
+      // Many-to-many relationship with Exercicio through ExerciciosPlano
+      this.belongsToMany(models.Exercicio, {
+        through: models.ExerciciosPlano,
+        foreignKey: 'plano_id',
+        otherKey: 'exercicio_id',
+        as: 'exercicios'
+      });
+
+      // Many-to-one relationship with User
+      this.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        as: 'user'
+      });
     }
   }
 
@@ -17,6 +29,14 @@ export default (sequelize, DataTypes) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Users',
+        key: 'id'
+      }
     },
     workout_type: {
       type: DataTypes.STRING,

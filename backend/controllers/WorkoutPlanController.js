@@ -4,6 +4,61 @@ import validateWorkoutPlanParams from "../validators/workoutPlanValidator.js";
 const { PlanoTreino, Exercicio, ExerciciosPlano } = db;
 
 class WorkoutPlanController {
+  static async getAllWorkoutPlans(req, res) {
+    try {
+      const plans = await PlanoTreino.findAll();
+      return res.status(200).json(plans);
+    } catch(err) {
+      console.error("Erro ao obter planos de treino: ", err);
+      return res.status(500).json({ message: "Erro interno do servidor" });
+    }
+  }
+
+  static async getWorkoutPlanById(req, res) {
+    try {
+      const { id } = req.params;
+      
+      // It fetches the workout plan by its ID, including the associated exercises through many-to-many relationship
+      // The 'include' is the JOIN operation to get related exercises
+      // The 'through' options specifies that we don't want any attributes rom the JOIN table
+      const plan = await PlanoTreino.findByPk(id, {
+        include: [{
+          model: Exercicio,
+          as: 'exercicios',
+          through: { attributes: [] }
+      }]
+    });
+
+    if (!plan) return res.status(404).json({ message: "Plano de treino não encontrado!" });
+
+    return res.status(200).json({ plan });
+
+    } catch(err) {
+      console.error("Erro ao obter plano de treino: ", err);
+      return res.status(500).json({ message: "Erro interno do servidor" });
+    }
+  }
+
+  static async getUserWorkoutPlans(req, res) {
+    try {
+      const userId = req.user.id;
+
+      const plans = await PlanoTreino.findAll({
+        where: { user_id: userId },
+        include: [{
+          model: Exercicio,
+          as: 'exercicios',
+          through: { attributes: [] }
+        }]
+      });
+
+      return res.status(200).json({ plans });
+    } catch(err) {
+      console.error("Erro ao obter planos de treino do utilizador: ", err);
+      return res.status(500).json({ message: "Erro interno do servidor" });
+    }
+  }
+
   static async generateWorkoutPlan(req, res) {
     try {
       const { errors, normalized } = validateWorkoutPlanParams(req.body);
@@ -36,7 +91,7 @@ class WorkoutPlanController {
         // Suffles the filtered exercises to ensure randomness in selection
         const shuffled = filteredExercises.sort(() => Math.random() - 0.5);
 
-        // It tries to civer all the muscle groups specified by the user by iterating through each muscle group and selecting the first exercise that matches and hasn't been selected yet
+        // It tries to cover all the muscle groups specified by the user by iterating through each muscle group and selecting the first exercise that matches and hasn't been selected yet
         // For example: if the user selected "peito" (chest) and "costas" (back), it looks for an exercise that targets "peito" and adds it to the selected list, then looks for an exercise that targets "costas" and adds it to the list as well
         const covered = [];
         for (const muscle of normalized.muscles) {
@@ -46,7 +101,7 @@ class WorkoutPlanController {
           if (exercise) covered.push(exercise);
         }
 
-        // Finally, it fills teh remaining slots with random exercises from the sfuffled list until reaching the specified number of exercises
+        // Finally, it fills the remaining slots with random exercises from the shuffled list until reaching the specified number of exercises
         for (const ex of shuffled) {
           if (covered.length >= normalized.exercises_number) break;
           if (!covered.includes(ex)) covered.push(ex);
@@ -65,6 +120,7 @@ class WorkoutPlanController {
 
       // It creates the workout plan in the PlanoTreino table
       const newPlan = await PlanoTreino.create({
+        user_id: req.user?.id || null, // Get user ID from authenticated request, or null if not authenticated
         name: `Plano ${normalized.workoutType} - ${new Date()}`,
         description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
         workout_type: normalized.workoutType,
