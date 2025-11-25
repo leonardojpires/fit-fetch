@@ -8,7 +8,7 @@ class WorkoutPlanController {
     try {
       const plans = await PlanoTreino.findAll();
       return res.status(200).json(plans);
-    } catch(err) {
+    } catch (err) {
       console.error("Erro ao obter planos de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
@@ -17,23 +17,27 @@ class WorkoutPlanController {
   static async getWorkoutPlanById(req, res) {
     try {
       const { id } = req.params;
-      
+
       // It fetches the workout plan by its ID, including the associated exercises through many-to-many relationship
       // The 'include' is the JOIN operation to get related exercises
       // The 'through' options specifies that we don't want any attributes rom the JOIN table
       const plan = await PlanoTreino.findByPk(id, {
-        include: [{
-          model: Exercicio,
-          as: 'exercicios',
-          through: { attributes: [] }
-      }]
-    });
+        include: [
+          {
+            model: Exercicio,
+            as: "exercicios",
+            through: { attributes: [] },
+          },
+        ],
+      });
 
-    if (!plan) return res.status(404).json({ message: "Plano de treino não encontrado!" });
+      if (!plan)
+        return res
+          .status(404)
+          .json({ message: "Plano de treino não encontrado!" });
 
-    return res.status(200).json({ plan });
-
-    } catch(err) {
+      return res.status(200).json({ plan });
+    } catch (err) {
       console.error("Erro ao obter plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
@@ -45,15 +49,17 @@ class WorkoutPlanController {
 
       const plans = await PlanoTreino.findAll({
         where: { user_id: userId },
-        include: [{
-          model: Exercicio,
-          as: 'exercicios',
-          through: { attributes: [] }
-        }]
+        include: [
+          {
+            model: Exercicio,
+            as: "exercicios",
+            through: { attributes: [] },
+          },
+        ],
       });
 
       return res.status(200).json({ plans });
-    } catch(err) {
+    } catch (err) {
       console.error("Erro ao obter planos de treino do utilizador: ", err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
@@ -110,13 +116,21 @@ class WorkoutPlanController {
         selectedExercises = covered;
       }
 
-      if (selectedExercises.length === 0 && normalized.workoutType !== "cardio") {
+      if (
+        selectedExercises.length === 0 &&
+        normalized.workoutType !== "cardio"
+      ) {
         return res.status(422).json({
-          errors: [{
-            field: "exercises_number",
-            message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${normalized.workoutType}, músculos: ${normalized.muscles.join(", ")})`
-          }]
-        })}
+          errors: [
+            {
+              field: "exercises_number",
+              message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${
+                normalized.workoutType
+              }, músculos: ${normalized.muscles.join(", ")})`,
+            },
+          ],
+        });
+      }
 
       // It creates the workout plan in the PlanoTreino table
       const newPlan = await PlanoTreino.create({
@@ -125,7 +139,8 @@ class WorkoutPlanController {
         description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
         workout_type: normalized.workoutType,
         level: normalized.level,
-        exercises_number: normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
+        exercises_number:
+          normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
         duration: normalized.duration || null,
         muscles: normalized.muscles,
         rest_time: normalized.rest_time || null,

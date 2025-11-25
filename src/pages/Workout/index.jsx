@@ -2,9 +2,14 @@ import "./index.css";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import BodySelector from "../../components/BodySelector";
 import { useState } from "react";
+import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPlan";
+import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
 
 function Workout() {
   useRedirectIfNotAuth();
+
+  const { user, loadingUser } = useCurrentUser();
+  const { workoutPlan, loading, error, generatePlan } = useGenerateWorkoutPlan();
 
   const [formData, setFormData] = useState({
     workoutType: "",
@@ -35,6 +40,35 @@ function Workout() {
     console.log("Payload treino: ", payload);
   };
 
+  async function submitAndGenerate(e) {
+    e.preventDefault();
+    
+    if (loadingUser) return;
+    if (!user) {
+      console.error("Nenhum utilizador autenticado!");
+      return;
+    }
+    
+    try {
+      await generatePlan({
+        ...formData,
+        user,
+        muscles: formData.workoutType === "cardio" ? [] : formData.muscles,
+      });
+      setFormData({
+        workoutType: "",
+        level: "",
+        series_number: "",
+        rest_time: "",
+        exercises_number: "",
+        duration: "",
+        muscles: [],
+      })
+    } catch(err) {
+      console.error("Erro ao gerar plano de treino: ", err);
+    }
+  }
+
   return (
     <>
       <section className="w-full">
@@ -55,7 +89,7 @@ function Workout() {
                 Escolhe as tuas preferências para o teu treino ideal
               </p>
 
-              <form onSubmit={handleFormSubmit} className="font-body">
+              <form onSubmit={submitAndGenerate} className="font-body">
                 <span className="text-lg font-medium">Tipo de treino</span>
                 <div className="flex flex-row gap-6 !mb-6 !mt-2">
                   <div className="flex items-center gap-2">
@@ -234,10 +268,55 @@ function Workout() {
               </form>
             </div>
 
-            <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-center justify-center min-h-[360px]">
-              <p className="font-body text-gray-400 text-center text-base md:text-lg">
-                O teu plano de treino vai aparecer aqui
-              </p>
+            <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center min-h-[360px]">
+              {loading ? (
+                <div className="flex flex-col items-center gap-4">
+                  <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>
+                  <p className="font-body text-gray-600 text-center text-base md:text-lg">
+                    A gerar o plano de treino...
+                  </p>
+                </div>
+              ) : workoutPlan ? (
+                <div className="w-full overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-[var(--primary)] text-white">
+                        <th className="!px-4 !py-3 text-left font-headline font-semibold">Exercício</th>
+                        <th className="!px-4 !py-3 text-left font-headline font-semibold">Músculo</th>
+                        <th className="!px-4 !py-3 text-left font-headline font-semibold">Dificuldade</th>
+                      </tr>
+                    </thead>
+                    <tbody className="font-body">
+                      {workoutPlan.exercises.map((ex, index) => (
+                        <tr 
+                          key={ex.id}
+                          className={`border-b border-gray-200 hover:bg-gray-100 transition-colors ${
+                            index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                          }`}
+                        >
+                          <td className="!px-4 !py-3 text-gray-800 font-medium">{ex.name}</td>
+                          <td className="!px-4 !py-3 text-gray-600 capitalize">{ex.muscle_group}</td>
+                          <td className="!px-4 !py-3">
+                            <span className={`inline-block !px-3 !py-1 rounded-full text-xs font-medium ${
+                              ex.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
+                              ex.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {ex.difficulty === 'beginner' ? 'Iniciante' : 
+                               ex.difficulty === 'intermediate' ? 'Intermédio' : 
+                               'Avançado'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="font-body text-gray-400 text-center text-base md:text-lg">
+                  O plano de treino vai aparecer aqui
+                </p>
+              )}
             </div>
           </div>
           <div className="!mt-12" />

@@ -1,0 +1,44 @@
+import { useState } from "react";
+
+export default function useGenerateWorkoutPlan() {
+  const [workoutPlan, setWorkoutPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const generatePlan = async (formData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const user = formData.user;
+      if (!user) throw new Error("Utilizador não autenticado!");
+
+      const token = await user.getIdToken();
+      const { user: _, ...planData } = formData;
+
+      const responses = await fetch(
+        "http://localhost:3000/api/workout-plans/generate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(planData),
+        }
+      );
+      const data = await responses.json();
+
+      if (!responses.ok) throw new Error(data.message || "Erro ao gerar plano de treino!");
+
+      setWorkoutPlan(data.plan);
+    } catch (err) {
+      setError(err.message);
+      console.error("Erro ao gerar plano de treino: ", err);
+      throw err;
+    } finally {
+        setLoading(false);
+    }
+  };
+
+  return { workoutPlan, loading, error, generatePlan };
+}
