@@ -26,3 +26,5 @@ dist-ssr
 .env
 
 /backend/firebase/serviceAccountKey.json
+
+/docs

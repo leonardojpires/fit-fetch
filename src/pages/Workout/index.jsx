@@ -9,7 +9,8 @@ function Workout() {
   useRedirectIfNotAuth();
 
   const { user, loadingUser } = useCurrentUser();
-  const { workoutPlan, loading, error, generatePlan } = useGenerateWorkoutPlan();
+  const { workoutPlan, loading, error, generatePlan } =
+    useGenerateWorkoutPlan();
 
   const [formData, setFormData] = useState({
     workoutType: "",
@@ -42,29 +43,20 @@ function Workout() {
 
   async function submitAndGenerate(e) {
     e.preventDefault();
-    
+
     if (loadingUser) return;
     if (!user) {
       console.error("Nenhum utilizador autenticado!");
       return;
     }
-    
+
     try {
       await generatePlan({
         ...formData,
         user,
         muscles: formData.workoutType === "cardio" ? [] : formData.muscles,
       });
-      setFormData({
-        workoutType: "",
-        level: "",
-        series_number: "",
-        rest_time: "",
-        exercises_number: "",
-        duration: "",
-        muscles: [],
-      })
-    } catch(err) {
+    } catch (err) {
       console.error("Erro ao gerar plano de treino: ", err);
     }
   }
@@ -80,7 +72,7 @@ function Workout() {
             Escolhe o que queres treinar da forma que quiseres!
           </p>
 
-          <div className="flex flex-col lg:flex-row gap-6 !mt-4">
+          <div className="flex flex-col items-start lg:flex-row gap-6 !mt-4">
             <div className="lg:w-1/2 w-full bg-gray-100 !p-6 rounded-lg shadow-sm">
               <h2 className="font-headline font-bold text-2xl text-[var(--primary)] !mb-4">
                 Seleciona o Tipo de Treino
@@ -268,7 +260,7 @@ function Workout() {
               </form>
             </div>
 
-            <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center min-h-[360px]">
+            <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
               {loading ? (
                 <div className="flex flex-col items-center gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>
@@ -278,39 +270,60 @@ function Workout() {
                 </div>
               ) : workoutPlan ? (
                 <div className="w-full overflow-x-auto">
-                  <table className="w-full border-collapse">
+                  <table className="w-full border-collapse !mb-5">
                     <thead>
                       <tr className="bg-[var(--primary)] text-white">
-                        <th className="!px-4 !py-3 text-left font-headline font-semibold">Exercício</th>
-                        <th className="!px-4 !py-3 text-left font-headline font-semibold">Músculo</th>
-                        <th className="!px-4 !py-3 text-left font-headline font-semibold">Dificuldade</th>
+                        <th className="!px-4 !py-3 text-left font-headline font-semibold">
+                          Exercício
+                        </th>
+                        <th className="!px-4 !py-3 text-left font-headline font-semibold">
+                          Músculo
+                        </th>
+                        <th className="!px-4 !py-3 text-left font-headline font-semibold">
+                          Dificuldade
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="font-body">
                       {workoutPlan.exercises.map((ex, index) => (
-                        <tr 
+                        <tr
                           key={ex.id}
                           className={`border-b border-gray-200 hover:bg-gray-100 transition-colors ${
-                            index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                            index % 2 === 0 ? "bg-white" : "bg-gray-50"
                           }`}
                         >
-                          <td className="!px-4 !py-3 text-gray-800 font-medium">{ex.name}</td>
-                          <td className="!px-4 !py-3 text-gray-600 capitalize">{ex.muscle_group}</td>
+                          <td className="!px-4 !py-3 text-gray-800 font-medium">
+                            {ex.name}
+                          </td>
+                          <td className="!px-4 !py-3 text-gray-600 capitalize">
+                            {ex.muscle_group}
+                          </td>
                           <td className="!px-4 !py-3">
-                            <span className={`inline-block !px-3 !py-1 rounded-full text-xs font-medium ${
-                              ex.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
-                              ex.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {ex.difficulty === 'beginner' ? 'Iniciante' : 
-                               ex.difficulty === 'intermediate' ? 'Intermédio' : 
-                               'Avançado'}
+                            <span
+                              className={`inline-block !px-3 !py-1 rounded-full text-xs font-medium ${
+                                ex.difficulty === "beginner"
+                                  ? "bg-green-100 text-green-800"
+                                  : ex.difficulty === "intermediate"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                              }`}
+                            >
+                              {ex.difficulty === "beginner"
+                                ? "Iniciante"
+                                : ex.difficulty === "intermediate"
+                                ? "Intermédio"
+                                : "Avançado"}
                             </span>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                  {workoutPlan.workoutType !== "cardio" && (
+                    <span className="font-body !mt-5">
+                      Descanso entre séries: {workoutPlan.rest_time}
+                    </span>
+                  )}
                 </div>
               ) : (
                 <p className="font-body text-gray-400 text-center text-base md:text-lg">

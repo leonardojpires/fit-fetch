@@ -91,7 +91,7 @@ class WorkoutPlanController {
 
         // Then, it filters all the exercises (previosly fetched from the database) to only include those who match the difficulty level
         const filteredExercises = allExercises.filter((ex) => {
-          return difficultyOrder[ex.difficulty] === difficulty;
+          return difficultyOrder[ex.difficulty] >= difficulty;
         });
 
         // Suffles the filtered exercises to ensure randomness in selection
@@ -114,6 +114,11 @@ class WorkoutPlanController {
         }
 
         selectedExercises = covered;
+      } else if (normalized.workoutType === "cardio") {
+        const cardioExercises = await Exercicio.findAll({
+          where: { type: "cardio", difficulty: normalized.level }
+        });
+        selectedExercises = cardioExercises;
       }
 
       if (
@@ -143,8 +148,15 @@ class WorkoutPlanController {
           normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
         duration: normalized.duration || null,
         muscles: normalized.muscles,
-        rest_time: normalized.rest_time || null,
-        series_number: normalized.series_number || null,
+        // For cardio, ensure non-null integers per model constraints
+        rest_time:
+          normalized.workoutType === "cardio"
+            ? 0
+            : normalized.rest_time ?? 0,
+        series_number:
+          normalized.workoutType === "cardio"
+            ? 0
+            : normalized.series_number ?? 0,
       });
 
       // If the workout type is not cardio, it relates the selected excercises to the created plan in the pivot table
