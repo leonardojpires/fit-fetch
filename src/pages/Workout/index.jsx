@@ -44,14 +44,20 @@ function Workout() {
     setFormData((prev) => ({ ...prev, muscles: muscles }));
   };
 
-  const handleFormSubmit = (e) => {
+  /*   const handleFormSubmit = (e) => {
     e.preventDefault();
     const payload = {
       ...formData,
       muscles: formData.workoutType === "cardio" ? [] : formData.muscles,
     };
     console.log("Payload treino: ", payload);
-  };
+  }; */
+
+  function convertToMinutes(seconds) {
+    const s = Number(seconds);
+    if (Number.isNaN(s)) return 0;
+    return s >= 60 ? Math.floor(s / 60) : s;
+  }
 
   async function submitAndGenerate(e) {
     e.preventDefault();
@@ -107,6 +113,18 @@ function Workout() {
   const closeSuccessWarning = () => {
     setShowSuccessWarning(false);
   };
+
+  if (validationErrors.length > 0) {
+    setTimeout(() => {
+      clearErrors();
+    }, 5000);
+  }
+
+  if (showSuccessWarning) {
+    setTimeout(() => {
+      closeSuccessWarning();
+    }, 5000);
+  }
 
   return (
     <>
@@ -387,7 +405,9 @@ function Workout() {
                   </table>
                   {workoutPlan.workoutType !== "cardio" && (
                     <span className="font-body !mt-5">
-                      Descanso entre séries: {workoutPlan.rest_time}
+                      Descanso entre séries:{" "}
+                      {convertToMinutes(workoutPlan.rest_time)}{" "}
+                      {workoutPlan.rest_time < 60 ? "segundos" : "minuto(s)"}
                     </span>
                   )}
                 </div>

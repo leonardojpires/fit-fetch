@@ -66,114 +66,94 @@ class WorkoutPlanController {
   }
 
   static async generateWorkoutPlan(req, res) {
+    let transaction;
     try {
+      transaction = await db.sequelize.transaction();
       const { errors, normalized } = validateWorkoutPlanParams(req.body);
-      let selectedExercises = [];
-
-      /* Error handling */
       if (errors.length > 0) {
+        await transaction.rollback();
         return res.status(422).json({ errors });
       }
 
-      // Here, if the workout type is not cardio, the controller will select exercises that match the criteria (type: weightlifting or calisthetnics and muscle groups)
+      let selectedExercises = [];
       if (normalized.workoutType !== "cardio") {
         const allExercises = await Exercicio.findAll({
-          where: {
-            type: normalized.workoutType,
-            muscle_group: normalized.muscles,
-          },
+          where: { type: normalized.workoutType, muscle_group: normalized.muscles },
         });
-
-        // It converts the difficulty level into numeric values for easier comparison, where beginner = 1, intermediate = 2, advanced = 3
-        // The difficulty is then assigned as a numeric value
         const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
         const difficulty = difficultyOrder[normalized.level];
-
-        // Then, it filters all the exercises (previosly fetched from the database) to only include those who match the difficulty level
-        const filteredExercises = allExercises.filter((ex) => {
-          return difficultyOrder[ex.difficulty] <= difficulty;
-        });
-
-        // Suffles the filtered exercises to ensure randomness in selection
+        const filteredExercises = allExercises.filter((ex) => difficultyOrder[ex.difficulty] <= difficulty);
         const shuffled = filteredExercises.sort(() => Math.random() - 0.5);
-
-        // It tries to cover all the muscle groups specified by the user by iterating through each muscle group and selecting the first exercise that matches and hasn't been selected yet
-        // For example: if the user selected "peito" (chest) and "costas" (back), it looks for an exercise that targets "peito" and adds it to the selected list, then looks for an exercise that targets "costas" and adds it to the list as well
         const covered = [];
         for (const muscle of normalized.muscles) {
-          const exercise = shuffled.find(
-            (e) => e.muscle_group === muscle && !covered.includes(e)
-          );
+          const exercise = shuffled.find((e) => e.muscle_group === muscle && !covered.includes(e));
           if (exercise) covered.push(exercise);
         }
-
-        // Finally, it fills the remaining slots with random exercises from the shuffled list until reaching the specified number of exercises
         for (const ex of shuffled) {
           if (covered.length >= normalized.exercises_number) break;
           if (!covered.includes(ex)) covered.push(ex);
         }
-
         selectedExercises = covered;
-      } else if (normalized.workoutType === "cardio") {
-        const cardioExercises = await Exercicio.findAll({
-          where: { type: "cardio", difficulty: normalized.level }
+      } else {
+        selectedExercises = await Exercicio.findAll({
+          where: { type: "cardio", difficulty: normalized.level },
         });
-        selectedExercises = cardioExercises;
       }
 
-      if (
-        selectedExercises.length === 0 &&
-        normalized.workoutType !== "cardio"
-      ) {
+      if (selectedExercises.length === 0 && normalized.workoutType !== "cardio") {
+        await transaction.rollback();
         return res.status(422).json({
           errors: [
             {
               field: "exercises_number",
-              message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${
-                normalized.workoutType
-              }, músculos: ${normalized.muscles.join(", ")})`,
+              message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${normalized.workoutType}, músculos: ${normalized.muscles.join(", ")})`,
             },
           ],
         });
       }
 
-      // It creates the workout plan in the PlanoTreino table
-      const newPlan = await PlanoTreino.create({
-        user_id: req.user?.id || null, // Get user ID from authenticated request, or null if not authenticated
-        name: `Plano ${normalized.workoutType} - ${new Date()}`,
-        description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
-        workout_type: normalized.workoutType,
-        level: normalized.level,
-        exercises_number:
-          normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
-        duration: normalized.duration || null,
-        muscles: normalized.muscles,
-        // For cardio, ensure non-null integers per model constraints
-        rest_time:
-          normalized.workoutType === "cardio"
-            ? 0
-            : normalized.rest_time ?? 0,
-        series_number:
-          normalized.workoutType === "cardio"
-            ? 0
-            : normalized.series_number ?? 0,
-        reps_number:
-          normalized.workoutType === "cardio"
-            ? 0
-            : normalized.reps_number ?? 0
-      });
-
-      // If the workout type is not cardio, it relates the selected excercises to the created plan in the pivot table
-      if (normalized.workoutType !== "cardio" && selectedExercises.length > 0) {
-        for (const exercise of selectedExercises) {
-          await ExerciciosPlano.create({
-            plano_id: newPlan.id,
-            exercicio_id: exercise.id,
-          });
+      const currentUserId = req.user?.id || null;
+      if (currentUserId) {
+        const existingPlans = await PlanoTreino.findAll({
+          where: { user_id: currentUserId },
+          attributes: ["id"],
+          transaction,
+        });
+        const planIds = existingPlans.map((p) => p.id);
+        if (planIds.length) {
+          await ExerciciosPlano.destroy({ where: { plano_id: planIds }, transaction });
+          await PlanoTreino.destroy({ where: { user_id: currentUserId }, transaction });
         }
       }
 
-      // Lastly, it returns the created plan along with a success message
+      const newPlan = await PlanoTreino.create(
+        {
+          user_id: req.user?.id || null,
+          name: `Plano ${normalized.workoutType} - ${new Date()}`,
+          description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
+          workout_type: normalized.workoutType,
+          level: normalized.level,
+          exercises_number: normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
+          duration: normalized.duration || null,
+          muscles: normalized.muscles,
+          rest_time: normalized.workoutType === "cardio" ? 0 : normalized.rest_time ?? 0,
+          series_number: normalized.workoutType === "cardio" ? 0 : normalized.series_number ?? 0,
+          reps_number: normalized.workoutType === "cardio" ? 0 : normalized.reps_number ?? 0,
+        },
+        { transaction }
+      );
+
+      if (normalized.workoutType !== "cardio" && selectedExercises.length > 0) {
+        for (const exercise of selectedExercises) {
+          await ExerciciosPlano.create(
+            { plano_id: newPlan.id, exercicio_id: exercise.id },
+            { transaction }
+          );
+        }
+      }
+
+      await transaction.commit();
+
       return res.status(201).json({
         message: "Plano de treino gerado com sucesso!",
         plan: {
@@ -197,6 +177,11 @@ class WorkoutPlanController {
       });
     } catch (err) {
       console.error("Erro ao gerar plano de treino: ", err);
+      if (transaction) {
+        try { await transaction.rollback(); } catch (rollbackErr) {
+          console.error("Falha ao fazer rollback: ", rollbackErr);
+        }
+      }
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   }

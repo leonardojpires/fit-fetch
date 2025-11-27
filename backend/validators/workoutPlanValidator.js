@@ -182,4 +182,5 @@ export default function validateWorkoutPlanParams(body) {
 
     return { errors, normalized };
   }
+  return { errors, normalized: null };
 }
