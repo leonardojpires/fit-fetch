@@ -4,26 +4,33 @@ import BodySelector from "../../components/BodySelector";
 import { useState } from "react";
 import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPlan";
 import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
-import ErrorWarning from './../../components/ErrorWarning/index';
+import ErrorWarning from "./../../components/ErrorWarning/index";
 import SuccessWarning from "../../components/SuccessWarning";
 
 function Workout() {
   useRedirectIfNotAuth();
 
   const { user, loadingUser } = useCurrentUser();
-  const { workoutPlan, loading, error, validationErrors, generatePlan, clearErrors } =
-    useGenerateWorkoutPlan();
+  const {
+    workoutPlan,
+    loading,
+    error,
+    validationErrors,
+    generatePlan,
+    clearErrors,
+  } = useGenerateWorkoutPlan();
 
   const [formData, setFormData] = useState({
     workoutType: "",
     level: "",
     series_number: "",
+    reps_number: "",
     rest_time: "",
     exercises_number: "",
     duration: "",
     muscles: [],
   });
-  
+
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
 
@@ -99,8 +106,8 @@ function Workout() {
 
   const closeSuccessWarning = () => {
     setShowSuccessWarning(false);
-  }
-  
+  };
+
   return (
     <>
       <section className="w-full">
@@ -229,6 +236,25 @@ function Workout() {
                         min="1"
                         max="4"
                         value={formData.series_number}
+                        onChange={handleChange}
+                        className="workout-input"
+                      />
+                    </div>
+                    <div className="flex flex-col items-start gap-2 !mb-4">
+                      <label
+                        htmlFor="reps_number"
+                        className="text-lg font-medium"
+                      >
+                        Número de repetições
+                      </label>
+                      <input
+                        type="number"
+                        name="reps_number"
+                        id="reps_number"
+                        placeholder="(5 a 20)"
+                        min="5"
+                        max="20"
+                        value={formData.reps_number}
                         onChange={handleChange}
                         className="workout-input"
                       />
@@ -378,11 +404,17 @@ function Workout() {
 
       {/* Warnings */}
       {validationErrors.length > 0 && (
-        <ErrorWarning validationErrors={validationErrors} clearErrors={clearErrors} />
+        <ErrorWarning
+          validationErrors={validationErrors}
+          clearErrors={clearErrors}
+        />
       )}
 
       {workoutPlan && showSuccessWarning && (
-        <SuccessWarning message={successMessage} closeWarning={closeSuccessWarning} />
+        <SuccessWarning
+          message={successMessage}
+          closeWarning={closeSuccessWarning}
+        />
       )}
     </>
   );

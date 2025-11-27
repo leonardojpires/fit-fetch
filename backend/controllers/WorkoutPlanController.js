@@ -157,6 +157,10 @@ class WorkoutPlanController {
           normalized.workoutType === "cardio"
             ? 0
             : normalized.series_number ?? 0,
+        reps_number:
+          normalized.workoutType === "cardio"
+            ? 0
+            : normalized.reps_number ?? 0
       });
 
       // If the workout type is not cardio, it relates the selected excercises to the created plan in the pivot table
@@ -182,6 +186,7 @@ class WorkoutPlanController {
           muscles: newPlan.muscles,
           rest_time: newPlan.rest_time,
           series_number: newPlan.series_number,
+          reps_number: newPlan.reps_number,
           exercises: selectedExercises.map((ex) => ({
             id: ex.id,
             name: ex.name,
