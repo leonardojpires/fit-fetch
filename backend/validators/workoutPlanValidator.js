@@ -27,17 +27,17 @@ export default function validateWorkoutPlanParams(body) {
   /* Validates the workout type */
   if (!workoutType) {
     errors.push({
-      field: "workoutType",
+      field: "Tipo de Treino",
       message: "O tipo de treino é obrigatório!",
     });
   } else if (!VALID_WORKOUT_TYPES.includes(workoutType)) {
-    errors.push({ field: "workoutType", message: "Tipo de treino inválido!" });
+    errors.push({ field: "Tipo de Treino", message: "Tipo de treino inválido!" });
   }
 
   /* Validates the level */
   if (!level) {
     errors.push({
-      field: "level",
+      field: "Nível",
       message: "O nível de treino é obrigatório!",
     });
   } else if (!VALID_LEVELS.includes(level)) {
@@ -48,63 +48,63 @@ export default function validateWorkoutPlanParams(body) {
   if (workoutType === "cardio") {
     if (duration === undefined || duration === null) {
       errors.push({
-        field: "duration",
+        field: "Duração",
         message: "A duração de treino é obrigatória para cardio!",
       });
     } else if (Number.isNaN(Number(duration))) {
       errors.push({
-        field: "duration",
-        message: "A duração de treino deve ser um número válido!"
+        field: "Duração",
+        message: "A duração de treino deve ser um número válido!",
       });
     } else if (Number(duration) < 1) {
       errors.push({
-        field: "duration",
+        field: "Duração",
         message: "A duração de treino deve ser pelo menos 1 minuto!",
       });
     }
   } else if (VALID_WORKOUT_TYPES.includes(workoutType)) {
     if (series_number == null) {
       errors.push({
-        field: "series_number",
+        field: "Número de Séries",
         message: "O número de séries é obrigatório!",
       });
     } else if (Number.isNaN(Number(series_number))) {
       errors.push({
-        field: "series_number",
+        field: "Número de Séries",
         message: "O número de séries deve ser um número válido!",
       });
     } else if (Number(series_number) < 1 || Number(series_number) > 4) {
       errors.push({
-        field: "series_number",
+        field: "Número de Séries",
         message: "O número de séries deve ser entre 1 e 4!",
       });
     }
 
     if (exercises_number == null) {
       errors.push({
-        field: "exercises_number",
+        field: "Número de Exercícios",
         message: "O número de exercícios é obrigatório!",
       });
     } else if (Number.isNaN(Number(exercises_number))) {
       errors.push({
-        field: "exercises_number",
+        field: "Número de Exercícios",
         message: "O número de exercícios deve ser um número válido!",
       });
     } else if (Number(exercises_number) < 3 || Number(exercises_number) > 12) {
       errors.push({
-        field: "exercises_number",
+        field: "Número de Exercícios",
         message: "O número de exercícios deve ser entre 3 e 12!",
       });
     }
 
     if (rest_time == null) {
       errors.push({
-        field: "rest_time",
+        field: "Tempo de Descanso",
         message: "O tempo de descanso é obrigatório!",
       });
     } else if (Number.isNaN(Number(rest_time))) {
       errors.push({
-        field: "rest_time",
+        field: "Tempo de Descanso",
         message: "O tempo de descanso deve ser um número válido!",
       });
     } else if (Number(rest_time) < 0 || Number(rest_time) > 600) {
@@ -116,19 +116,29 @@ export default function validateWorkoutPlanParams(body) {
 
     if (!Array.isArray(muscles) || muscles.length === 0) {
       errors.push({
-        field: "muscles",
+        field: "Grupos Musculares",
         message: "Seleciona pelo menos um grupo muscular!",
       });
     } else {
       for (const muscle of muscles) {
         if (!VALID_MUSCLE_GROUPS.includes(muscle)) {
           errors.push({
-            field: "muscles",
+            field: "Grupos Musculares",
             message: `Grupo muscular inválido: ${muscle}`,
           });
           break;
         }
       }
+    }
+  }
+
+  if (workoutType !== "cardio" && Array.isArray(muscles) && exercises_number) {
+    if (muscles.length > Number(exercises_number)) {
+      errors.push({
+        field: "Grupos Musculares",
+        message:
+          "O número de grupos musculares não pode ser maior que o número de exercícios!",
+      });
     }
   }
 

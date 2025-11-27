@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { DataArrayTexture } from "three";
 
 export default function useGenerateWorkoutPlan() {
   const [workoutPlan, setWorkoutPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState([]);
 
   const generatePlan = async (formData) => {
     try {
@@ -21,24 +23,40 @@ export default function useGenerateWorkoutPlan() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(planData),
         }
       );
       const data = await responses.json();
 
-      if (!responses.ok) throw new Error(data.message || "Erro ao gerar plano de treino!");
+      if (responses.status === 422) {
+        setValidationErrors(data.errors || []);
+        setLoading(false);
+        return;
+      }
 
-      setWorkoutPlan(data.plan);
+      if (!responses.ok)
+        throw new Error(data.message || "Erro ao gerar plano de treino!");
+
+      // Normalize backend snake_case to frontend camelCase for consistency
+      const normalizedPlan = {
+        ...data.plan,
+        workoutType: data.plan?.workout_type,
+      };
+      setWorkoutPlan(normalizedPlan);
     } catch (err) {
       setError(err.message);
       console.error("Erro ao gerar plano de treino: ", err);
       throw err;
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
-  return { workoutPlan, loading, error, generatePlan };
+  const clearErrors = () => {
+    setValidationErrors([]);
+  }
+
+  return { workoutPlan, loading, error, validationErrors, generatePlan, clearErrors };
 }

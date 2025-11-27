@@ -4,12 +4,14 @@ import BodySelector from "../../components/BodySelector";
 import { useState } from "react";
 import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPlan";
 import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
+import ErrorWarning from './../../components/ErrorWarning/index';
+import SuccessWarning from "../../components/SuccessWarning";
 
 function Workout() {
   useRedirectIfNotAuth();
 
   const { user, loadingUser } = useCurrentUser();
-  const { workoutPlan, loading, error, generatePlan } =
+  const { workoutPlan, loading, error, validationErrors, generatePlan, clearErrors } =
     useGenerateWorkoutPlan();
 
   const [formData, setFormData] = useState({
@@ -21,6 +23,9 @@ function Workout() {
     duration: "",
     muscles: [],
   });
+  
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessWarning, setShowSuccessWarning] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,16 +56,51 @@ function Workout() {
     }
 
     try {
-      await generatePlan({
-        ...formData,
+      // Build payload based on workout type to avoid sending irrelevant fields
+      const basePayload = {
+        workoutType: formData.workoutType,
+        level: formData.level,
         user,
-        muscles: formData.workoutType === "cardio" ? [] : formData.muscles,
-      });
+      };
+
+      let payload;
+      if (formData.workoutType === "cardio") {
+        payload = {
+          ...basePayload,
+          duration:
+            formData.duration !== "" ? Number(formData.duration) : undefined,
+          muscles: [],
+        };
+      } else {
+        payload = {
+          ...basePayload,
+          series_number:
+            formData.series_number !== ""
+              ? Number(formData.series_number)
+              : undefined,
+          exercises_number:
+            formData.exercises_number !== ""
+              ? Number(formData.exercises_number)
+              : undefined,
+          rest_time:
+            formData.rest_time !== "" ? Number(formData.rest_time) : undefined,
+          muscles: formData.muscles,
+        };
+      }
+
+      console.log("Payload enviado:", payload);
+      await generatePlan(payload);
+      setSuccessMessage("Plano de treino criado com sucesso!");
+      setShowSuccessWarning(true);
     } catch (err) {
       console.error("Erro ao gerar plano de treino: ", err);
     }
   }
 
+  const closeSuccessWarning = () => {
+    setShowSuccessWarning(false);
+  }
+  
   return (
     <>
       <section className="w-full">
@@ -83,7 +123,7 @@ function Workout() {
 
               <form onSubmit={submitAndGenerate} className="font-body">
                 <span className="text-lg font-medium">Tipo de treino</span>
-                <div className="flex flex-row gap-6 !mb-6 !mt-2">
+                <div className="flex flex-col lg:flex-row gap-6 !mb-6 !mt-2">
                   <div className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -92,7 +132,7 @@ function Workout() {
                       value="calisthenics"
                       checked={formData.workoutType === "calisthenics"}
                       onChange={handleChange}
-                      className="w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
+                      className="workout-radio"
                     />
                     <label htmlFor="calisthenics" className="cursor-pointer">
                       Calistenia
@@ -106,7 +146,7 @@ function Workout() {
                       value="weightlifting"
                       checked={formData.workoutType === "weightlifting"}
                       onChange={handleChange}
-                      className="w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
+                      className="workout-radio"
                     />
                     <label htmlFor="weightlifting" className="cursor-pointer">
                       Musculação
@@ -120,7 +160,7 @@ function Workout() {
                       value="cardio"
                       checked={formData.workoutType === "cardio"}
                       onChange={handleChange}
-                      className="w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
+                      className="workout-radio"
                     />
                     <label htmlFor="cardio" className="cursor-pointer">
                       Cardio
@@ -128,7 +168,7 @@ function Workout() {
                   </div>
                 </div>
                 <span className="text-lg font-medium">Nível</span>
-                <div className="flex flex-row gap-6 !mb-6 !mt-2">
+                <div className="flex flex-col lg:flex-row gap-6 !mb-6 !mt-2">
                   <div className="flex items-center gap-2">
                     <input
                       type="radio"
@@ -137,7 +177,7 @@ function Workout() {
                       value="beginner"
                       checked={formData.level === "beginner"}
                       onChange={handleChange}
-                      className="w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
+                      className="workout-radio"
                     />
                     <label htmlFor="beginner" className="cursor-pointer">
                       Iniciante
@@ -151,7 +191,7 @@ function Workout() {
                       value="intermediate"
                       checked={formData.level === "intermediate"}
                       onChange={handleChange}
-                      className="w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
+                      className="workout-radio"
                     />
                     <label htmlFor="intermediate" className="cursor-pointer">
                       Intermédio
@@ -165,7 +205,7 @@ function Workout() {
                       value="advanced"
                       checked={formData.level === "advanced"}
                       onChange={handleChange}
-                      className="w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer"
+                      className="workout-radio"
                     />
                     <label htmlFor="advanced" className="cursor-pointer">
                       Avançado
@@ -335,6 +375,15 @@ function Workout() {
           <div className="!mt-12" />
         </div>
       </section>
+
+      {/* Warnings */}
+      {validationErrors.length > 0 && (
+        <ErrorWarning validationErrors={validationErrors} clearErrors={clearErrors} />
+      )}
+
+      {workoutPlan && showSuccessWarning && (
+        <SuccessWarning message={successMessage} closeWarning={closeSuccessWarning} />
+      )}
     </>
   );
 }

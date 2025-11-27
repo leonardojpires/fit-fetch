@@ -91,7 +91,7 @@ class WorkoutPlanController {
 
         // Then, it filters all the exercises (previosly fetched from the database) to only include those who match the difficulty level
         const filteredExercises = allExercises.filter((ex) => {
-          return difficultyOrder[ex.difficulty] >= difficulty;
+          return difficultyOrder[ex.difficulty] <= difficulty;
         });
 
         // Suffles the filtered exercises to ensure randomness in selection
