@@ -5,7 +5,7 @@ import { useState } from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
-import DeleteModal from './../../../components/DeleteModal/index';
+import DeleteModal from "./../../../components/DeleteModal/index";
 import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
 import useAddExercise from "../../../hooks/Exercises/useAddExercise";
 import useUpdateExercise from "../../../hooks/Exercises/useUpdateExercise";
@@ -18,13 +18,15 @@ function ExercisesPage() {
   const addExercise = useAddExercise();
   const updateExercise = useUpdateExercise();
   const deleteExercise = useDeleteExercise();
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [exerciseToEdit, setExerciseToEdit] = useState(null); 
+  const [exerciseToEdit, setExerciseToEdit] = useState(null);
   const [exerciseToDelete, setExerciseToDelete] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [formData, setFormData] = useState({
     name: "",
     muscle_group: "",
@@ -35,16 +37,22 @@ function ExercisesPage() {
     difficulty: "beginner",
   });
 
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentExercises = exercises.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(exercises.length / itemsPerPage);
+
   function openAddModal() {
     setImageFile(null);
-    setFormData({ 
-      name: "", 
-      muscle_group: "", 
-      description: "", 
-      image_url: "", 
+    setFormData({
+      name: "",
+      muscle_group: "",
+      description: "",
+      image_url: "",
       video_url: "",
       type: "weightlifting",
-      difficulty: "beginner"
+      difficulty: "beginner",
     });
     setIsModalOpen(true);
   }
@@ -83,8 +91,8 @@ function ExercisesPage() {
 
   function handleInputChange(e) {
     const { name, value, type, files } = e.target;
-    
-    if (type === 'file' && name === 'image_file') {
+
+    if (type === "file" && name === "image_file") {
       setImageFile(files[0]);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -95,39 +103,45 @@ function ExercisesPage() {
     e.preventDefault();
 
     const dataToSend = { ...formData };
-    
+
     // Se houver ficheiro de imagem, fazer upload primeiro
     if (imageFile) {
       const uploadFormData = new FormData();
-      uploadFormData.append('image', imageFile);
-      
+      uploadFormData.append("image", imageFile);
+
       try {
         const token = await auth.currentUser.getIdToken();
-        const uploadResponse = await fetch('http://localhost:3000/api/upload/image', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: uploadFormData,
-        });
-        
+        const uploadResponse = await fetch(
+          "http://localhost:3000/api/upload/image",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: uploadFormData,
+          }
+        );
+
         if (uploadResponse.ok) {
           const { imageUrl } = await uploadResponse.json();
           dataToSend.image_url = imageUrl;
         }
       } catch (err) {
-        console.error('Erro ao fazer upload da imagem:', err);
+        console.error("Erro ao fazer upload da imagem:", err);
       }
     }
 
     const newExercise = await addExercise(dataToSend);
 
     if (newExercise) {
-      const updatedExercises = await fetch("http://localhost:3000/api/exercises/all", {
-        headers: {
-          Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
-        },
-      }).then((res) => res.json());
+      const updatedExercises = await fetch(
+        "http://localhost:3000/api/exercises/all",
+        {
+          headers: {
+            Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+          },
+        }
+      ).then((res) => res.json());
       setExercises(updatedExercises);
     }
     closeModal();
@@ -138,34 +152,39 @@ function ExercisesPage() {
     if (!exerciseToEdit) return;
 
     const dataToSend = { ...formData };
-    
+
     // Se houver ficheiro de imagem, fazer upload primeiro
     if (imageFile) {
       const uploadFormData = new FormData();
-      uploadFormData.append('image', imageFile);
-      
+      uploadFormData.append("image", imageFile);
+
       try {
         const token = await auth.currentUser.getIdToken();
-        const uploadResponse = await fetch('http://localhost:3000/api/upload/image', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: uploadFormData,
-        });
-        
+        const uploadResponse = await fetch(
+          "http://localhost:3000/api/upload/image",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: uploadFormData,
+          }
+        );
+
         if (uploadResponse.ok) {
           const { imageUrl } = await uploadResponse.json();
           dataToSend.image_url = imageUrl;
         }
       } catch (err) {
-        console.error('Erro ao fazer upload da imagem:', err);
+        console.error("Erro ao fazer upload da imagem:", err);
       }
     }
 
     const updatedExercise = await updateExercise(exerciseToEdit.id, dataToSend);
     if (updatedExercise) {
-      setExercises((prev) => prev.map((ex) => ex.id === updatedExercise.id ? updatedExercise : ex));
+      setExercises((prev) =>
+        prev.map((ex) => (ex.id === updatedExercise.id ? updatedExercise : ex))
+      );
     }
 
     closeModal();
@@ -176,7 +195,9 @@ function ExercisesPage() {
 
     const result = await deleteExercise(exerciseToDelete.id);
     if (result) {
-      setExercises((prev) => prev.filter((ex) => ex.id !== exerciseToDelete.id));
+      setExercises((prev) =>
+        prev.filter((ex) => ex.id !== exerciseToDelete.id)
+      );
       closeDeleteModal();
     }
   }
@@ -220,7 +241,7 @@ function ExercisesPage() {
                   </td>
                 </tr>
               ) : (
-                exercises.map((exercise) => (
+                currentExercises.map((exercise) => (
                   <tr
                     key={exercise.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
@@ -228,26 +249,35 @@ function ExercisesPage() {
                     <td className="!p-3">
                       <div className="flex items-center gap-3">
                         <div>
-                          <div className="font-medium">{exercise.name.charAt(0).toUpperCase() + exercise.name.slice(1)}</div>
+                          <div className="font-medium">
+                            {exercise.name.charAt(0).toUpperCase() +
+                              exercise.name.slice(1)}
+                          </div>
                           <div className="text-xs text-gray-500">
                             ID: {exercise.id}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="!p-3 text-sm text-gray-700">{exercise.muscle_group}</td>
+                    <td className="!p-3 text-sm text-gray-700">
+                      {exercise.muscle_group}
+                    </td>
                     <td className="!p-3 text-sm text-gray-700">
                       <span className="inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {exercise.type || 'weightlifting'}
+                        {exercise.type || "weightlifting"}
                       </span>
                     </td>
                     <td className="!p-3 text-sm text-gray-700">
-                      <span className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
-                        exercise.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
-                        exercise.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {exercise.difficulty || 'beginner'}
+                      <span
+                        className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
+                          exercise.difficulty === "beginner"
+                            ? "bg-green-100 text-green-800"
+                            : exercise.difficulty === "intermediate"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {exercise.difficulty || "beginner"}
                       </span>
                     </td>
                     <td className="!p-3">
@@ -273,12 +303,39 @@ function ExercisesPage() {
               )}
             </tbody>
           </table>
+          <div className="flex items-center justify-between !mt-4 !px-4 !py-3">
+            {/* Page info */}
+            <div className="text-sm text-gray-700">
+              Showing {indexOfFirstItem + 1} to{" "}
+              {Math.min(indexOfLastItem, exercises.length)} of{" "}
+              {exercises.length} exercises
+            </div>
+
+            {/* Navigation buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="!px-3 !py-1 border rounded disabled:opacity-50"
+              >
+                &lt;
+              </button>
+
+              <input type="number" name="page" id="page" value={currentPage} onChange={(e) => setCurrentPage(e.target.value)} className="!px-3 !py-1 border rounded w-12 text-center" />
+
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="!px-3 !py-1 border rounded disabled:opacity-50"
+              >
+                &gt;
+              </button>
+            </div>
+          </div>
         </div>
-
-
-
-
-
 
         {/* Modal: Adicionar/Editar Exercício */}
         {isModalOpen && (
@@ -291,10 +348,13 @@ function ExercisesPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
-                { isEditModalOpen ? "Editar exercício" : "Adicionar exercício" }
+                {isEditModalOpen ? "Editar exercício" : "Adicionar exercício"}
               </h2>
 
-              <form onSubmit={ isEditModalOpen ? handleEditSubmit : handleSubmit } className="flex flex-col gap-4">
+              <form
+                onSubmit={isEditModalOpen ? handleEditSubmit : handleSubmit}
+                className="flex flex-col gap-4"
+              >
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
                     Nome
@@ -344,8 +404,12 @@ function ExercisesPage() {
                     required
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   >
-                    <option value="weightlifting">Musculação (Weightlifting)</option>
-                    <option value="calisthenics">Calistenia (Calisthenics)</option>
+                    <option value="weightlifting">
+                      Musculação (Weightlifting)
+                    </option>
+                    <option value="calisthenics">
+                      Calistenia (Calisthenics)
+                    </option>
                     <option value="cardio">Cardio</option>
                   </select>
                 </div>
@@ -362,7 +426,9 @@ function ExercisesPage() {
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   >
                     <option value="beginner">Iniciante (Beginner)</option>
-                    <option value="intermediate">Intermediário (Intermediate)</option>
+                    <option value="intermediate">
+                      Intermediário (Intermediate)
+                    </option>
                     <option value="advanced">Avançado (Advanced)</option>
                   </select>
                 </div>
@@ -392,7 +458,9 @@ function ExercisesPage() {
                     onChange={handleInputChange}
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-white hover:file:bg-[var(--accent)] file:cursor-pointer"
                   />
-                  <p className="text-xs text-gray-500 !mt-1">Ou adicione uma URL abaixo</p>
+                  <p className="text-xs text-gray-500 !mt-1">
+                    Ou adicione uma URL abaixo
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
@@ -420,7 +488,7 @@ function ExercisesPage() {
                     type="submit"
                     className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-colors font-body font-medium cursor-pointer"
                   >
-                    { isEditModalOpen ? "Guardar" : "Adicionar" }
+                    {isEditModalOpen ? "Guardar" : "Adicionar"}
                   </button>
                 </div>
               </form>
