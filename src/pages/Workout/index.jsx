@@ -6,6 +6,9 @@ import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPl
 import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
 import ErrorWarning from "./../../components/ErrorWarning/index";
 import SuccessWarning from "../../components/SuccessWarning";
+import { IoMdDownload } from "react-icons/io";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 function Workout() {
   useRedirectIfNotAuth();
@@ -61,6 +64,7 @@ function Workout() {
 
   async function submitAndGenerate(e) {
     e.preventDefault();
+    window.scrollTo(0, 0);
 
     if (loadingUser) return;
     if (!user) {
@@ -95,6 +99,10 @@ function Workout() {
             formData.exercises_number !== ""
               ? Number(formData.exercises_number)
               : undefined,
+          reps_number:
+            formData.reps_number !== ""
+              ? Number(formData.reps_number)
+              : undefined,
           rest_time:
             formData.rest_time !== "" ? Number(formData.rest_time) : undefined,
           muscles: formData.muscles,
@@ -112,6 +120,127 @@ function Workout() {
 
   const closeSuccessWarning = () => {
     setShowSuccessWarning(false);
+  };
+
+  const exportToPDF = () => {
+    if (!workoutPlan) return;
+
+    const doc = new jsPDF();
+    const currentDate = new Date().toLocaleDateString("pt-PT");
+
+    // Add title
+    doc.setFontSize(20);
+    doc.setTextColor(40, 40, 40);
+    doc.text("Plano de Treino Personalizado", 105, 20, { align: "center" });
+
+    // Add date
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Gerado em: ${currentDate}`, 105, 28, { align: "center" });
+
+    // Add user info if available
+    if (user) {
+      doc.text(`Utilizador: ${user.displayName || user.email}`, 20, 38);
+    }
+
+    // Add workout details
+    doc.setFontSize(12);
+    doc.setTextColor(40, 40, 40);
+    let yPosition = 48;
+
+    const workoutTypeLabel =
+      workoutPlan.workoutType === "calisthenics"
+        ? "Calistenia"
+        : workoutPlan.workoutType === "weightlifting"
+        ? "Musculação"
+        : "Cardio";
+
+    const levelLabel =
+      workoutPlan.level === "beginner"
+        ? "Iniciante"
+        : workoutPlan.level === "intermediate"
+        ? "Intermédio"
+        : "Avançado";
+
+    doc.text(`Tipo de treino: ${workoutTypeLabel}`, 20, yPosition);
+    yPosition += 7;
+    doc.text(`Nível: ${levelLabel}`, 20, yPosition);
+    yPosition += 7;
+
+    if (workoutPlan.workoutType !== "cardio") {
+      doc.text(
+        `Descanso entre séries: ${convertToMinutes(workoutPlan.rest_time)} ${
+          workoutPlan.rest_time < 60 ? "segundos" : "minuto(s)"
+        }`,
+        20,
+        yPosition
+      );
+      yPosition += 7;
+
+      if (workoutPlan.series_number) {
+        doc.text(`Séries: ${workoutPlan.series_number}`, 20, yPosition);
+        yPosition += 7;
+      }
+
+      if (workoutPlan.reps_number) {
+        doc.text(`Repetições: ${workoutPlan.reps_number}`, 20, yPosition);
+        yPosition += 7;
+      }
+    } else if (workoutPlan.duration) {
+      doc.text(`Duração: ${workoutPlan.duration} minutos`, 20, yPosition);
+      yPosition += 7;
+    }
+
+    // Add exercises table
+    yPosition += 5;
+    const tableData = workoutPlan.exercises.map((ex) => {
+      const difficultyLabel =
+        ex.difficulty === "beginner"
+          ? "Iniciante"
+          : ex.difficulty === "intermediate"
+          ? "Intermédio"
+          : "Avançado";
+
+      return [ex.name, ex.muscle_group, difficultyLabel];
+    });
+
+    autoTable(doc, {
+      startY: yPosition,
+      head: [["Exercício", "Músculo", "Dificuldade"]],
+      body: tableData,
+      theme: "striped",
+      headStyles: {
+        fillColor: [0, 123, 255],
+        textColor: 255,
+        fontStyle: "bold",
+      },
+      styles: {
+        fontSize: 10,
+        cellPadding: 5,
+      },
+      columnStyles: {
+        0: { cellWidth: 70 },
+        1: { cellWidth: 60 },
+        2: { cellWidth: 50 },
+      },
+    });
+
+    // Add footer
+    const pageCount = doc.internal.getNumberOfPages();
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.text(
+        "FitFetch - Plano de Treino",
+        105,
+        doc.internal.pageSize.height - 10,
+        { align: "center" }
+      );
+    }
+
+    // Save the PDF
+    doc.save(`plano-treino-${currentDate.replace(/\//g, "-")}.pdf`);
   };
 
   if (validationErrors.length > 0) {
@@ -317,7 +446,7 @@ function Workout() {
                 {formData.workoutType === "cardio" && (
                   <div className="flex flex-col items-start gap-2 !mb-4">
                     <label
-                      htmlFor="series_number"
+                      htmlFor="duration"
                       className="text-lg font-medium"
                     >
                       Duração (minutos)
@@ -404,12 +533,28 @@ function Workout() {
                     </tbody>
                   </table>
                   {workoutPlan.workoutType !== "cardio" && (
-                    <span className="font-body !mt-5">
-                      Descanso entre séries:{" "}
-                      {convertToMinutes(workoutPlan.rest_time)}{" "}
-                      {workoutPlan.rest_time < 60 ? "segundos" : "minuto(s)"}
-                    </span>
+                    <div className="flex flex-col gap-2">
+                      <span className="font-body">
+                        <strong>Descanso entre séries:</strong> {" "}
+                        {convertToMinutes(workoutPlan.rest_time)}{" "}
+                        {workoutPlan.rest_time < 60 ? "segundos" : "minuto(s)"}
+                      </span>
+                      <span className="font-body">
+                        <strong>Séries:</strong> {workoutPlan.series_number}
+                      </span>
+                     <span className="font-body">
+                        <strong>Repetições:</strong> {workoutPlan.reps_number}
+                      </span>
+                    </div>
                   )}
+                  <div>
+                    <button
+                      onClick={exportToPDF}
+                      className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                    >
+                      <IoMdDownload /> Exportar para PDF
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <p className="font-body text-gray-400 text-center text-base md:text-lg">

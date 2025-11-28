@@ -176,6 +176,7 @@ export default function validateWorkoutPlanParams(body) {
       exercises_number:
         exercises_number != null ? Number(exercises_number) : undefined,
       series_number: series_number != null ? Number(series_number) : undefined,
+      reps_number: reps_number != null ? Number(reps_number) : undefined,
       rest_time: rest_time != null ? Number(rest_time) : undefined,
       duration: duration != null ? Number(duration) : undefined,
     };
