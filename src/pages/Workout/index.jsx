@@ -246,13 +246,13 @@ function Workout() {
   if (validationErrors.length > 0) {
     setTimeout(() => {
       clearErrors();
-    }, 5000);
+    }, 3000);
   }
 
   if (showSuccessWarning) {
     setTimeout(() => {
       closeSuccessWarning();
-    }, 5000);
+    }, 3000);
   }
 
   return (
