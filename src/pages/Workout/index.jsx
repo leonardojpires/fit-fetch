@@ -2,13 +2,15 @@ import "./index.css";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import BodySelector from "../../components/BodySelector";
 import { useState } from "react";
+import { auth } from "../../services/firebase.js";
 import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPlan";
 import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
 import ErrorWarning from "./../../components/ErrorWarning/index";
 import SuccessWarning from "../../components/SuccessWarning";
-import { IoMdDownload } from "react-icons/io";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { IoMdDownload } from "react-icons/io";
+import { CiBookmark } from "react-icons/ci";
 
 function Workout() {
   useRedirectIfNotAuth();
@@ -242,6 +244,32 @@ function Workout() {
     // Save the PDF
     doc.save(`plano-treino-${currentDate.replace(/\//g, "-")}.pdf`);
   };
+
+  const handleSavePlan = async (planId) => {
+    try {
+      const token = await auth.currentUser.getIdToken();
+      
+      const response = await fetch(`http://localhost:3000/api/workout-plans/save/${planId}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) throw new Error("Erro ao guardar o plano de treino!");
+
+      const data = await response.json();
+      console.log("Plano de treino guardado com sucesso: ", data);
+      setSuccessMessage("Plano de treino guardado com sucesso!");
+      setShowSuccessWarning(true);
+
+    } catch(err) {
+      console.error("Erro ao guardar o plano de treino: ", err);
+      setError("Erro ao guardar o plano de treino!");
+      setShowErrorWarning(true);
+    }
+  }
 
   if (validationErrors.length > 0) {
     setTimeout(() => {
@@ -553,6 +581,13 @@ function Workout() {
                       className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                     >
                       <IoMdDownload /> Exportar para PDF
+                    </button>
+
+                    <button
+                      onClick={() => handleSavePlan(workoutPlan.id)}
+                      className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                    >
+                      <CiBookmark  /> Guardar Plano
                     </button>
                   </div>
                 </div>

@@ -6,6 +6,7 @@ import useRedirectIfNotAuth from "./../../hooks/useIfNotAuth";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
+import PlanPreview from "../../components/PlanPreview/index.jsx";
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -25,7 +26,7 @@ function Profile() {
         const token = await auth.currentUser.getIdToken();
 
         const workoutResponse = await fetch(
-          `https://localhost:3000/api/workout-plans/user/plans`,
+          `http://localhost:3000/api/workout-plans/user/plans`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -166,25 +167,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
-                      <div
-                        key={plan.id}
-                        className="border rounded-lg !p-4 hover:shadow-lg transition-shadow"
-                      >
-                        <h3 className="font-headline font-bold text-lg !mb-2">
-                          {plan.name}
-                        </h3>
-                        <p className="font-body text-sm text-black/70 !mb-2">
-                          {plan.description}
-                        </p>
-                        <div className="flex gap-2 flex-wrap">
-                          <span className="text-xs bg-[var(--primary)]/10 text-[var(--primary)] !px-2 !py-1 rounded">
-                            {plan.workout_type}
-                          </span>
-                          <span className="text-xs bg-[var(--accent)]/10 text-[var(--accent)] !px-2 !py-1 rounded">
-                            {plan.level}
-                          </span>
-                        </div>
-                      </div>
+                      <PlanPreview key={plan.id} plan={plan} />
                     ))
                   ) : (
                     <p className="font-body text-black/50">

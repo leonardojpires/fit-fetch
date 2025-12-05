@@ -48,7 +48,7 @@ class WorkoutPlanController {
       const userId = req.user.id;
 
       const plans = await PlanoTreino.findAll({
-        where: { user_id: userId },
+        where: { user_id: userId, is_saved: true },
         include: [
           {
             model: Exercicio,
@@ -115,14 +115,14 @@ class WorkoutPlanController {
       const currentUserId = req.user?.id || null;
       if (currentUserId) {
         const existingPlans = await PlanoTreino.findAll({
-          where: { user_id: currentUserId },
+          where: { user_id: currentUserId, is_saved: false },
           attributes: ["id"],
           transaction,
         });
         const planIds = existingPlans.map((p) => p.id);
         if (planIds.length) {
           await ExerciciosPlano.destroy({ where: { plano_id: planIds }, transaction });
-          await PlanoTreino.destroy({ where: { user_id: currentUserId }, transaction });
+          await PlanoTreino.destroy({ where: { user_id: currentUserId, is_saved: false }, transaction });
         }
       }
 
@@ -133,12 +133,13 @@ class WorkoutPlanController {
           description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
           workout_type: normalized.workoutType,
           level: normalized.level,
-          exercises_number: normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
+          exercises_number: normalized.workoutType === 'cardio' ? 0 : selectedExercises.length,
           duration: normalized.duration || null,
           muscles: normalized.muscles,
-          rest_time: normalized.workoutType === "cardio" ? 0 : normalized.rest_time ?? 0,
-          series_number: normalized.workoutType === "cardio" ? 0 : normalized.series_number ?? 0,
-          reps_number: normalized.workoutType === "cardio" ? 0 : normalized.reps_number ?? 0,
+          rest_time: normalized.workoutType === 'cardio' ? 0 : normalized.rest_time ?? 0,
+          series_number: normalized.workoutType === 'cardio' ? 0 : normalized.series_number ?? 0,
+          reps_number: normalized.workoutType === 'cardio' ? 0 : normalized.reps_number ?? 0,
+          is_saved: false,
         },
         { transaction }
       );
@@ -182,6 +183,31 @@ class WorkoutPlanController {
           console.error("Falha ao fazer rollback: ", rollbackErr);
         }
       }
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  }
+
+  static async saveWorkoutPlan(req, res) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const plan = await PlanoTreino.findOne({ where: { id, user_id: userId  }});
+      if (!plan) return res.status(404).json({ message: "Plano de treino não encontrado!" });
+      if (plan.is_saved) return res.status(200).json({
+        message: "Este plano de treino já está guardado na tua conta!",
+        plan
+      });
+
+      await plan.update({ is_saved: true });
+
+      return res.status(200).json({
+        message: "Plano de treino guardado com sucesso na tua conta!",
+        plan
+      });
+
+    } catch(err) {
+      console.error("Erro ao guardar plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   }

@@ -78,6 +78,12 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    is_saved: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+      comment: 'Flag para indicar se o plano foi guardado pelo utilizador'
     }
   }, {
     sequelize,
