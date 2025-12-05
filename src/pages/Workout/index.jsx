@@ -151,18 +151,9 @@ function Workout() {
     let yPosition = 48;
 
     const workoutTypeLabel =
-      workoutPlan.workoutType === "calisthenics"
-        ? "Calistenia"
-        : workoutPlan.workoutType === "weightlifting"
-        ? "Musculação"
-        : "Cardio";
+      tWorkoutType[workoutPlan.workoutType] || workoutPlan.workoutType;
 
-    const levelLabel =
-      workoutPlan.level === "beginner"
-        ? "Iniciante"
-        : workoutPlan.level === "intermediate"
-        ? "Intermédio"
-        : "Avançado";
+    const levelLabel = tLevel[workoutPlan.level] || workoutPlan.level;
 
     doc.text(`Tipo de treino: ${workoutTypeLabel}`, 20, yPosition);
     yPosition += 7;
