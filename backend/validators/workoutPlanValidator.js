@@ -21,17 +21,21 @@ export default function validateWorkoutPlanParams(body) {
     series_number,
     reps_number,
     workoutType,
+    workout_type,
   } = body;
   const errors = [];
 
+  // Aceita tanto camelCase (workoutType) como snake_case (workout_type)
+  const normalizedWorkoutType = workoutType || workout_type;
+
   /* ERROR HANDLING */
   /* Validates the workout type */
-  if (!workoutType) {
+  if (!normalizedWorkoutType) {
     errors.push({
       field: "Tipo de Treino",
       message: "O tipo de treino é obrigatório!",
     });
-  } else if (!VALID_WORKOUT_TYPES.includes(workoutType)) {
+  } else if (!VALID_WORKOUT_TYPES.includes(normalizedWorkoutType)) {
     errors.push({
       field: "Tipo de Treino",
       message: "Tipo de treino inválido!",
@@ -49,7 +53,7 @@ export default function validateWorkoutPlanParams(body) {
   }
 
   /* Validates the input fields */
-  if (workoutType === "cardio") {
+  if (normalizedWorkoutType === "cardio") {
     if (duration === undefined || duration === null) {
       errors.push({
         field: "Duração",
@@ -66,7 +70,7 @@ export default function validateWorkoutPlanParams(body) {
         message: "A duração de treino deve ser pelo menos 1 minuto!",
       });
     }
-  } else if (VALID_WORKOUT_TYPES.includes(workoutType)) {
+  } else if (VALID_WORKOUT_TYPES.includes(normalizedWorkoutType)) {
     if (series_number == null) {
       errors.push({
         field: "Número de Séries",
@@ -156,7 +160,7 @@ export default function validateWorkoutPlanParams(body) {
     }
 
     if (
-      workoutType !== "cardio" &&
+      normalizedWorkoutType !== "cardio" &&
       Array.isArray(muscles) &&
       exercises_number
     ) {
@@ -168,20 +172,18 @@ export default function validateWorkoutPlanParams(body) {
         });
       }
     }
-
-    const normalized = {
-      workoutType,
-      level,
-      muscles: Array.isArray(muscles) ? muscles : [],
-      exercises_number:
-        exercises_number != null ? Number(exercises_number) : undefined,
-      series_number: series_number != null ? Number(series_number) : undefined,
-      reps_number: reps_number != null ? Number(reps_number) : undefined,
-      rest_time: rest_time != null ? Number(rest_time) : undefined,
-      duration: duration != null ? Number(duration) : undefined,
-    };
-
-    return { errors, normalized };
   }
-  return { errors, normalized: null };
+  const normalized = {
+    workoutType: normalizedWorkoutType,
+    level,
+    muscles: Array.isArray(muscles) ? muscles : [],
+    exercises_number:
+      exercises_number != null ? Number(exercises_number) : undefined,
+    series_number: series_number != null ? Number(series_number) : undefined,
+    reps_number: reps_number != null ? Number(reps_number) : undefined,
+    rest_time: rest_time != null ? Number(rest_time) : undefined,
+    duration: duration != null ? Number(duration) : undefined,
+  };
+
+  return { errors, normalized };
 }

@@ -78,15 +78,22 @@ class WorkoutPlanController {
       let selectedExercises = [];
       if (normalized.workoutType !== "cardio") {
         const allExercises = await Exercicio.findAll({
-          where: { type: normalized.workoutType, muscle_group: normalized.muscles },
+          where: {
+            type: normalized.workoutType,
+            muscle_group: normalized.muscles,
+          },
         });
         const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
         const difficulty = difficultyOrder[normalized.level];
-        const filteredExercises = allExercises.filter((ex) => difficultyOrder[ex.difficulty] <= difficulty);
+        const filteredExercises = allExercises.filter(
+          (ex) => difficultyOrder[ex.difficulty] <= difficulty
+        );
         const shuffled = filteredExercises.sort(() => Math.random() - 0.5);
         const covered = [];
         for (const muscle of normalized.muscles) {
-          const exercise = shuffled.find((e) => e.muscle_group === muscle && !covered.includes(e));
+          const exercise = shuffled.find(
+            (e) => e.muscle_group === muscle && !covered.includes(e)
+          );
           if (exercise) covered.push(exercise);
         }
         for (const ex of shuffled) {
@@ -100,13 +107,18 @@ class WorkoutPlanController {
         });
       }
 
-      if (selectedExercises.length === 0 && normalized.workoutType !== "cardio") {
+      if (
+        selectedExercises.length === 0 &&
+        normalized.workoutType !== "cardio"
+      ) {
         await transaction.rollback();
         return res.status(422).json({
           errors: [
             {
               field: "exercises_number",
-              message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${normalized.workoutType}, músculos: ${normalized.muscles.join(", ")})`,
+              message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${
+                normalized.workoutType
+              }, músculos: ${normalized.muscles.join(", ")})`,
             },
           ],
         });
@@ -121,8 +133,14 @@ class WorkoutPlanController {
         });
         const planIds = existingPlans.map((p) => p.id);
         if (planIds.length) {
-          await ExerciciosPlano.destroy({ where: { plano_id: planIds }, transaction });
-          await PlanoTreino.destroy({ where: { user_id: currentUserId, is_saved: false }, transaction });
+          await ExerciciosPlano.destroy({
+            where: { plano_id: planIds },
+            transaction,
+          });
+          await PlanoTreino.destroy({
+            where: { user_id: currentUserId, is_saved: false },
+            transaction,
+          });
         }
       }
 
@@ -131,14 +149,23 @@ class WorkoutPlanController {
           user_id: req.user?.id || null,
           name: `Plano ${normalized.workoutType} - ${new Date()}`,
           description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
-          workout_type: normalized.workoutType,
+          workoutType: normalized.workoutType,
           level: normalized.level,
-          exercises_number: normalized.workoutType === 'cardio' ? 0 : selectedExercises.length,
+          exercises_number:
+            normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
           duration: normalized.duration || null,
-          muscles: normalized.muscles,
-          rest_time: normalized.workoutType === 'cardio' ? 0 : normalized.rest_time ?? 0,
-          series_number: normalized.workoutType === 'cardio' ? 0 : normalized.series_number ?? 0,
-          reps_number: normalized.workoutType === 'cardio' ? 0 : normalized.reps_number ?? 0,
+          muscles:
+            normalized.workoutType === "cardio" ? [] : normalized.muscles,
+          rest_time:
+            normalized.workoutType === "cardio" ? 0 : normalized.rest_time ?? 0,
+          series_number:
+            normalized.workoutType === "cardio"
+              ? 0
+              : normalized.series_number ?? 0,
+          reps_number:
+            normalized.workoutType === "cardio"
+              ? 0
+              : normalized.reps_number ?? 0,
           is_saved: false,
         },
         { transaction }
@@ -160,7 +187,7 @@ class WorkoutPlanController {
         plan: {
           id: newPlan.id,
           name: newPlan.name,
-          workout_type: newPlan.workout_type,
+          workoutType: newPlan.workoutType,
           level: newPlan.level,
           exercises_number: newPlan.exercises_number,
           duration: newPlan.duration,
@@ -179,7 +206,9 @@ class WorkoutPlanController {
     } catch (err) {
       console.error("Erro ao gerar plano de treino: ", err);
       if (transaction) {
-        try { await transaction.rollback(); } catch (rollbackErr) {
+        try {
+          await transaction.rollback();
+        } catch (rollbackErr) {
           console.error("Falha ao fazer rollback: ", rollbackErr);
         }
       }
@@ -192,21 +221,25 @@ class WorkoutPlanController {
       const { id } = req.params;
       const userId = req.user.id;
 
-      const plan = await PlanoTreino.findOne({ where: { id, user_id: userId  }});
-      if (!plan) return res.status(404).json({ message: "Plano de treino não encontrado!" });
-      if (plan.is_saved) return res.status(200).json({
-        message: "Este plano de treino já está guardado na tua conta!",
-        plan
+      const plan = await PlanoTreino.findOne({
+        where: { id, user_id: userId },
       });
 
-      await plan.update({ is_saved: true });
+      if (!plan) {
+        return res .status(404).json({ message: "Plano de treino não encontrado!" });
+      }
+        const newSavedState = !plan.is_saved;
+        await plan.update({ is_saved: newSavedState })
+
+        const message = newSavedState ? "Plano de treino guardado com sucesso na tua conta!" : "Plano de treino removido dos teus guardados com sucesso!"
 
       return res.status(200).json({
-        message: "Plano de treino guardado com sucesso na tua conta!",
-        plan
+        message,
+        plan,
+        is_saved: newSavedState
       });
-
-    } catch(err) {
+      
+    } catch (err) {
       console.error("Erro ao guardar plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor." });
     }

@@ -1,8 +1,8 @@
 import "./index.css";
-import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import BodySelector from "../../components/BodySelector";
 import { useState } from "react";
 import { auth } from "../../services/firebase.js";
+import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPlan";
 import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
 import ErrorWarning from "./../../components/ErrorWarning/index";
@@ -10,10 +10,11 @@ import SuccessWarning from "../../components/SuccessWarning";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { IoMdDownload } from "react-icons/io";
-import { CiBookmark } from "react-icons/ci";
+import { IoBookmarksOutline, IoBookmarksSharp  } from "react-icons/io5";
 
 function Workout() {
   useRedirectIfNotAuth();
+  const [isSaved, setIsSaved] = useState(false);
 
   const { user, loadingUser } = useCurrentUser();
   const {
@@ -252,6 +253,7 @@ function Workout() {
 
       const data = await response.json();
       console.log("Plano de treino guardado com sucesso: ", data);
+      setIsSaved(!isSaved);
       setSuccessMessage("Plano de treino guardado com sucesso!");
       setShowSuccessWarning(true);
 
@@ -578,7 +580,7 @@ function Workout() {
                       onClick={() => handleSavePlan(workoutPlan.id)}
                       className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                     >
-                      <CiBookmark  /> Guardar Plano
+                      { isSaved ? <IoBookmarksSharp /> : <IoBookmarksOutline /> } { isSaved ? "Plano Guardado" : "Guardar Plano" }
                     </button>
                   </div>
                 </div>
