@@ -149,7 +149,7 @@ class WorkoutPlanController {
           user_id: req.user?.id || null,
           name: `Plano ${normalized.workoutType} - ${new Date()}`,
           description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
-          workoutType: normalized.workoutType,
+          workout_type: normalized.workoutType,
           level: normalized.level,
           exercises_number:
             normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
@@ -187,7 +187,7 @@ class WorkoutPlanController {
         plan: {
           id: newPlan.id,
           name: newPlan.name,
-          workoutType: newPlan.workoutType,
+          workout_type: newPlan.workout_type,
           level: newPlan.level,
           exercises_number: newPlan.exercises_number,
           duration: newPlan.duration,
@@ -225,13 +225,12 @@ class WorkoutPlanController {
         where: { id, user_id: userId },
       });
 
-      if (!plan) {
-        return res .status(404).json({ message: "Plano de treino não encontrado!" });
-      }
-        const newSavedState = !plan.is_saved;
-        await plan.update({ is_saved: newSavedState })
+      if (!plan) return res .status(404).json({ message: "Plano de treino não encontrado!" });
 
-        const message = newSavedState ? "Plano de treino guardado com sucesso na tua conta!" : "Plano de treino removido dos teus guardados com sucesso!"
+      const newSavedState = !plan.is_saved;
+      await plan.update({ is_saved: newSavedState })
+
+      const message = newSavedState ? "Plano de treino guardado com sucesso na tua conta!" : "Plano de treino removido dos teus guardados com sucesso!";
 
       return res.status(200).json({
         message,
@@ -241,6 +240,31 @@ class WorkoutPlanController {
       
     } catch (err) {
       console.error("Erro ao guardar plano de treino: ", err);
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  }
+
+  static async deleteWorkoutPlan(req, res) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
+
+      const plan = await PlanoTreino.findOne({
+        where: { id: id, user_id: userId }
+      });
+
+      if (!plan) return res.status(404).json({ mesage: "Plano de treino não encontrado!"});
+
+      await ExerciciosPlano.destroy({
+        where: { plano_id: id }
+      });
+
+      await plan.destroy();
+
+      return res.status(200).json({ message: "Plano de treino eliminado com sucesso!" });
+
+    } catch(err) {
+      console.error("Erro ao eliminar plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   }

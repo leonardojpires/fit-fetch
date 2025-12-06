@@ -51,6 +51,28 @@ function Profile() {
     setPlanType(type);
   };
 
+  const handleDeletePlan = async (planId) => {
+    try {
+      const token = await auth.currentUser.getIdToken();
+
+      const response = await fetch(`http://localhost:3000/api/workout-plans/${planId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) throw new Error("Erro ao eliminar plano!");
+      
+      setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
+
+
+    } catch(err) {
+      console.error("Erro ao eliminar plano: ", err);
+    }
+  }
+
   if (authLoading || userLoading) {
     return (
       <section className="w-full">
@@ -167,7 +189,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
-                      <PlanPreview key={plan.id} plan={plan} />
+                      <PlanPreview key={plan.id} plan={plan} onDeletePlan={handleDeletePlan} />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
