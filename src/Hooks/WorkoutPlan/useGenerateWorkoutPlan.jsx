@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { DataArrayTexture } from "three";
 
 export default function useGenerateWorkoutPlan() {
   const [workoutPlan, setWorkoutPlan] = useState(null);
@@ -43,6 +42,8 @@ export default function useGenerateWorkoutPlan() {
       const normalizedPlan = {
         ...data.plan,
         workoutType: data.plan?.workout_type,
+        // ensure exercises array exists regardless of backend naming
+        exercises: data.plan?.exercises || data.plan?.exercicios || [],
       };
       setWorkoutPlan(normalizedPlan);
     } catch (err) {

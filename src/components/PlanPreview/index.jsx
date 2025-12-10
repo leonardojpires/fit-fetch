@@ -1,4 +1,5 @@
-import { FaTrash } from "react-icons/fa6";
+import { FaArrowUpRightFromSquare, FaTrash } from "react-icons/fa6";
+import { Link } from 'react-router-dom';
 
 function PlanPreview({ plan, onDeletePlan }) {
   return (
@@ -44,8 +45,9 @@ function PlanPreview({ plan, onDeletePlan }) {
             {plan.level === "beginner" ? "iniciante" : plan.level === "intermediate" ? "intermédio" : plan.level === "advanced" ? "avançado" : plan.level}
           </span>
         </div>
-        <div>
-          <button onClick={() => onDeletePlan(plan.id)} className="bg-red-500/50 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"><FaTrash /></button>
+        <div className="flex gap-2">
+          <Link to={`/plano-treino/${plan.id}`} title="Ver Plano" className="bg-[var(--primary)]/70 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"><FaArrowUpRightFromSquare /></Link>
+          <button onClick={() => onDeletePlan(plan.id)} title="Apahar Plano" className="bg-red-500/70 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"><FaTrash /></button>
         </div>
       </div>
     </div>

@@ -12,6 +12,18 @@ import autoTable from "jspdf-autotable";
 import { IoMdDownload } from "react-icons/io";
 import { IoBookmarksOutline, IoBookmarksSharp  } from "react-icons/io5";
 
+const tWorkoutType = {
+  calisthenics: "Calistenia",
+  weightlifting: "Musculação",
+  cardio: "Cardio",
+};
+
+const tLevel = {
+  beginner: "Iniciante",
+  intermediate: "Intermédio",
+  advanced: "Avançado",
+};
+
 function Workout() {
   useRedirectIfNotAuth();
   const [isSaved, setIsSaved] = useState(false);
@@ -187,7 +199,9 @@ function Workout() {
 
     // Add exercises table
     yPosition += 5;
-    const tableData = workoutPlan.exercises.map((ex) => {
+    const exercises = workoutPlan.exercises || workoutPlan.exercicios || [];
+
+    const tableData = exercises.map((ex) => {
       const difficultyLabel =
         ex.difficulty === "beginner"
           ? "Iniciante"
@@ -254,7 +268,7 @@ function Workout() {
       const data = await response.json();
       console.log("Plano de treino guardado com sucesso: ", data);
       setIsSaved(!isSaved);
-      setSuccessMessage("Plano de treino guardado com sucesso!");
+      setSuccessMessage(isSaved ? "Plano de treino removido dos guardados!" : "Plano de treino guardado com sucesso!");
       setShowSuccessWarning(true);
 
     } catch(err) {

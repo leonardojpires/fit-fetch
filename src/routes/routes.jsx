@@ -11,6 +11,7 @@ import UsersPage from "../pages/admin/Users";
 import ExercisesPage from './../pages/admin/Exercises/index';
 import FoodsPage from './../pages/admin/Foods/index';
 import Profile from './../pages/Profile/index';
+import WorkoutPlans from './../pages/WorkoutPlans/index';
 
 function AppRoutes() {
     return (
@@ -23,6 +24,7 @@ function AppRoutes() {
                     <Route path="/contacto" element={<Contact />}></Route>
                     <Route path="/entrar" element={<AuthPage />}></Route>
                     <Route path="/perfil" element={<Profile />}></Route>
+                    <Route path="/plano-treino/:id" element={<WorkoutPlans />}></Route>
 
                     {/* ADMIN ROUTES */}
                     <Route path="/admin" element={<Dashboard />}></Route>
