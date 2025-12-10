@@ -5,8 +5,8 @@ const VALID_MUSCLE_GROUPS = [
   "ombros",
   "costas",
   "pernas",
-  "bíceps",
-  "tríceps",
+  "biceps",
+  "triceps",
   "abdominais",
   "cardio",
 ];
@@ -71,7 +71,7 @@ export default function validateWorkoutPlanParams(body) {
       });
     }
   } else if (VALID_WORKOUT_TYPES.includes(normalizedWorkoutType)) {
-    if (series_number == null) {
+    if (series_number === undefined || series_number === null) {
       errors.push({
         field: "Número de Séries",
         message: "O número de séries é obrigatório!",
@@ -86,75 +86,78 @@ export default function validateWorkoutPlanParams(body) {
         field: "Número de Séries",
         message: "O número de séries deve ser entre 1 e 4!",
       });
+    }
 
-      if (reps_number == null) {
-        errors.push({
-          field: "Número de Repetições",
-          message: "O número de repetições é obrigatório!",
-        });
-      } else if (Number.isNaN(Number(reps_number))) {
-        errors.push({
-          field: "Número de Repetições",
-          message: "O número de repetições deve ser um número válido!",
-        });
-      } else if (Number(reps_number) < 5 || Number(reps_number) > 20) {
-        errors.push({
-          field: "Número de Repetições",
-          message: "O número de repetições deve ser entre 5 e 20!",
-        });
-      }
+    if (reps_number === undefined || reps_number === null) {
+      errors.push({
+        field: "Número de Repetições",
+        message: "O número de repetições é obrigatório!",
+      });
+    } else if (Number.isNaN(Number(reps_number))) {
+      errors.push({
+        field: "Número de Repetições",
+        message: "O número de repetições deve ser um número válido!",
+      });
+    } else if (
+      Number(reps_number) < 5 || 
+      Number(reps_number) > 20
+    ) {
+      errors.push({
+        field: "Número de Repetições",
+        message: "O número de repetições deve ser entre 5 e 20!",
+      });
+    }
 
-      if (exercises_number == null) {
-        errors.push({
-          field: "Número de Exercícios",
-          message: "O número de exercícios é obrigatório!",
-        });
-      } else if (Number.isNaN(Number(exercises_number))) {
-        errors.push({
-          field: "Número de Exercícios",
-          message: "O número de exercícios deve ser um número válido!",
-        });
-      } else if (
-        Number(exercises_number) < 3 ||
-        Number(exercises_number) > 12
-      ) {
-        errors.push({
-          field: "Número de Exercícios",
-          message: "O número de exercícios deve ser entre 3 e 12!",
-        });
-      }
+    if (exercises_number === undefined || exercises_number === null) {
+      errors.push({
+        field: "Número de Exercícios",
+        message: "O número de exercícios é obrigatório!",
+      });
+    } else if (Number.isNaN(Number(exercises_number))) {
+      errors.push({
+        field: "Número de Exercícios",
+        message: "O número de exercícios deve ser um número válido!",
+      });
+    } else if (
+      Number(exercises_number) < 3 ||
+      Number(exercises_number) > 12
+    ) {
+      errors.push({
+        field: "Número de Exercícios",
+        message: "O número de exercícios deve ser entre 3 e 12!",
+      });
+    }
 
-      if (rest_time == null) {
-        errors.push({
-          field: "Tempo de Descanso",
-          message: "O tempo de descanso é obrigatório!",
-        });
-      } else if (Number.isNaN(Number(rest_time))) {
-        errors.push({
-          field: "Tempo de Descanso",
-          message: "O tempo de descanso deve ser um número válido!",
-        });
-      } else if (Number(rest_time) < 0 || Number(rest_time) > 600) {
-        errors.push({
-          field: "rest_time",
-          message: "o descanso deve estar entre 0 e 600 segundos (10 minutos)!",
-        });
-      }
+    if (rest_time === undefined || rest_time === null) {
+      errors.push({
+        field: "Tempo de Descanso",
+        message: "O tempo de descanso é obrigatório!",
+      });
+    } else if (Number.isNaN(Number(rest_time))) {
+      errors.push({
+        field: "Tempo de Descanso",
+        message: "O tempo de descanso deve ser um número válido!",
+      });
+    } else if (Number(rest_time) < 0 || Number(rest_time) > 600) {
+      errors.push({
+        field: "rest_time",
+        message: "O descanso deve estar entre 0 e 600 segundos (10 minutos)!",
+      });
+    }
 
-      if (!Array.isArray(muscles) || muscles.length === 0) {
-        errors.push({
-          field: "Grupos Musculares",
-          message: "Seleciona pelo menos um grupo muscular!",
-        });
-      } else {
-        for (const muscle of muscles) {
-          if (!VALID_MUSCLE_GROUPS.includes(muscle)) {
-            errors.push({
-              field: "Grupos Musculares",
-              message: `Grupo muscular inválido: ${muscle}`,
-            });
-            break;
-          }
+    if (!Array.isArray(muscles) || muscles.length === 0) {
+      errors.push({
+        field: "Grupos Musculares",
+        message: "Seleciona pelo menos um grupo muscular!",
+      });
+    } else {
+      for (const muscle of muscles) {
+        if (!VALID_MUSCLE_GROUPS.includes(muscle)) {
+          errors.push({
+            field: "Grupos Musculares",
+            message: `Grupo muscular inválido: ${muscle}`,
+          });
+          break;
         }
       }
     }

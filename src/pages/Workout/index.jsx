@@ -416,7 +416,6 @@ function Workout() {
                         id="series_number"
                         placeholder="(1 a 4)"
                         min="1"
-                        max="4"
                         value={formData.series_number}
                         onChange={handleChange}
                         className="workout-input"
@@ -435,7 +434,6 @@ function Workout() {
                         id="reps_number"
                         placeholder="(5 a 20)"
                         min="5"
-                        max="20"
                         value={formData.reps_number}
                         onChange={handleChange}
                         className="workout-input"
@@ -452,9 +450,10 @@ function Workout() {
                         type="number"
                         name="exercises_number"
                         id="exercises_number"
+                        placeholder="(3 a 12)"
+                        min="3"
                         value={formData.exercises_number}
                         onChange={handleChange}
-                        placeholder="(3 a 12)"
                         className="workout-input"
                       />
                     </div>
@@ -469,8 +468,9 @@ function Workout() {
                         type="number"
                         name="rest_time"
                         id="rest_time"
-                        value={formData.rest_time}
                         placeholder="ex: 60"
+                        min="0"
+                        value={formData.rest_time}
                         onChange={handleChange}
                         className="workout-input"
                       />
@@ -491,6 +491,7 @@ function Workout() {
                       name="duration"
                       id="duration"
                       placeholder="ex: 30"
+                      min="1"
                       value={formData.duration}
                       onChange={handleChange}
                       className="workout-input"
