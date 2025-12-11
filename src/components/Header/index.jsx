@@ -2,6 +2,7 @@ import "./index.css";
 import { CiLogin } from "react-icons/ci";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
+import { GoGear } from "react-icons/go";
 import { IoMdExit, IoIosArrowDown  } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -43,7 +44,7 @@ function Header() {
   };
 
   return !isInAdmin ? (
-    <header className="header relative w-full flex items-center justify-evenly !px-4 !lg:px-6 !py-5 bg-[#0f172a] supports-[backdrop-filter]:backdrop-blur-md dark:bg-[#0f172a]">
+    <header className="header relative w-full flex items-center justify-evenly !px-4 !lg:px-6 !py-5 bg-[var(--primary)]/80 backdrop-blur-md">
       {/* LOGO */}
       <div>
         <Link to="/">
@@ -57,19 +58,18 @@ function Header() {
 
       {/* NAVIGATION */}
       <nav
-        className={`nav ${showMenu ? "flex flex-col responsive-nav" : ""}`}
-        onClick={toggleMenu}
+        className={`nav ${showMenu ? "responsive-nav" : ""}`}
       >
-        <Link to="/" className="font-headline nav-link underline-hover">
+        <Link to="/" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           INÍCIO
         </Link>
-        <Link to="/treinos" className="font-headline nav-link underline-hover">
+        <Link to="/treinos" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           TREINOS
         </Link>
-        <Link to="/nutricao" className="font-headline nav-link underline-hover">
+        <Link to="/nutricao" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           NUTRIÇÃO
         </Link>
-        <Link to="/contacto" className="font-headline nav-link underline-hover">
+        <Link to="/contacto" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           CONTACTO
         </Link>
 
@@ -79,7 +79,8 @@ function Header() {
         ) : (
           <Link
             to="/entrar"
-            className="font-headline auth-button-mobile flex lg:hidden mt-4"
+            className="font-headline auth-button-mobile flex lg:hidden"
+            onClick={toggleMenu}
           >
             ENTRAR <CiLogin />
           </Link>
@@ -99,7 +100,7 @@ function Header() {
                 className="w-10 h-10 rounded-full shadow-md"
               />
               {showDropdown && (
-                <div className="absolute top-full !mt-2 w-40 bg-[var(--text-secondary)] dark:bg-[var(--primary)] shadow-lg rounded-md !py-2 flex flex-col z-50">
+                <div className="user-dropdown absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] supports-[backdrop-filter]:backdrop-blur-md dark:bg-[var(--primary)]/80 shadow-lg rounded-md !py-2 flex flex-col z-50">
                   <Link
                     to="/perfil"
                     className="profile-button"
@@ -111,7 +112,7 @@ function Header() {
                     to="/admin"
                     className="profile-button"
                   >
-                    <CgProfile /> Admin
+                    <GoGear /> Admin
                   </Link>
                   )
 
