@@ -5,15 +5,27 @@ export default function useGetWorkoutPlanById(planId) {
     const [workoutPlan, setWorkoutPlan] = useState(null);
     const [loadingPlan, setLoadingPlan] = useState(true);
     const [error, setError] = useState(null);
+    const [isAuthReady, setIsAuthReady] = useState(false);
 
     useEffect(() => {
-        if (!planId) {
+        const unsubscribe = auth.onAuthStateChanged(() => {
+            setIsAuthReady(true);
+        });
+
+        return unsubscribe;
+    }, []);
+
+    useEffect(() => {
+        if (!planId || !isAuthReady) {
             setLoadingPlan(false);
             return;
         };
 
         const fetchWorkoutPlan = async () => {
             try {
+                if (!auth.currentUser) {
+                    throw new Error("Utilizador não autenticado");
+                }
                 const token = await auth.currentUser.getIdToken();
 
                 const response = await fetch(`http://localhost:3000/api/workout-plans/${planId}`, {
@@ -37,6 +49,6 @@ export default function useGetWorkoutPlanById(planId) {
         };
 
         fetchWorkoutPlan();
-    }, [planId]);
+    }, [planId, isAuthReady]);
     return { workoutPlan, loadingPlan, error };
 }

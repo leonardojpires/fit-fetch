@@ -1,12 +1,37 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGetWorkoutPlanById from "../../hooks/WorkoutPlan/useGetWorkoutPlanById";
+import pdfWorkoutExporter from "./../../utils/pdfWorkoutExporter.js";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import { IoMdDownload } from "react-icons/io";
+import { FaTrash, FaArrowLeft } from "react-icons/fa";
+import useRemoveWorkoutPlan from "../../hooks/WorkoutPlan/useRemoveWorkoutPlan.jsx";
+
+const tWorkoutType = {
+  calisthenics: "Calistenia",
+  weightlifting: "Musculação",
+  cardio: "Cardio",
+};
+
+const tLevel = {
+  beginner: "Iniciante",
+  intermediate: "Intermédio",
+  advanced: "Avançado",
+};
 
 function WorkoutPlans() {
   const { id } = useParams();
   const { loading } = useRedirectIfNotAuth();
-
+  const { user, loading: loadingUser } = useCurrentUser();
   const { workoutPlan, loadingPlan, error } = useGetWorkoutPlanById(id);
+  const removePlan = useRemoveWorkoutPlan();
+
+  const navigate = useNavigate();
+
+  /*     if (!workoutPlan) { 
+        navigate(-1);
+        return null;
+    } */
 
   function convertToMinutes(seconds) {
     const s = Number(seconds);
@@ -14,11 +39,41 @@ function WorkoutPlans() {
     return s >= 60 ? Math.floor(s / 60) : s;
   }
 
+  async function handleDeletePlan(planId) {
+    const result = await removePlan(planId);
+    if (result) {
+        navigate(-1);
+    }
+  }
+
   if (loading || loadingPlan) {
     return (
       <section className="w-full">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">
           <p className="font-body text-lg">A carregar planos...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !workoutPlan) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <p className="font-body text-lg text-red-600">
+              Erro ao carregar plano
+            </p>
+            <p className="font-body text-sm text-gray-600">
+              {error || "Plano não encontrado"}
+            </p>
+            <button
+              onClick={() => navigate(-1)}
+              className="font-body text-[var(--primary)] hover:underline"
+            >
+              Voltar
+            </button>
+          </div>
         </div>
       </section>
     );
@@ -32,26 +87,8 @@ function WorkoutPlans() {
             {workoutPlan ? workoutPlan.name : "Plano de Treino"}
           </h1>
           <p className="font-body text-lg md:text-xl text-black/70">
-            Consulta, guarda e organiza os teus planos personalizados.
+            Consulta os detalhes do teu plano de treino personalizado
           </p>
-        </div>
-
-        {/* FILTROS */}
-        <div className="containers">
-          <div className="flex flex-col gap-4 !p-6">
-            <div className="flex flex-col gap-1 border-b-2 border-gray-200/50 !pb-4">
-              <h2 className="font-headline font-bold text-2xl">Filtros</h2>
-              <p className="font-body text-black/70">
-                Seleciona filtros para encontrar rapidamente os teus planos.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="h-16 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50" />
-              <div className="h-16 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50" />
-              <div className="h-16 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50" />
-            </div>
-          </div>
         </div>
 
         {/* LISTA DE PLANOS */}
@@ -60,8 +97,7 @@ function WorkoutPlans() {
             <div className="flex flex-col gap-1 border-b-2 border-gray-200/50 !pb-4">
               <h2 className="font-headline font-bold text-2xl">Plano</h2>
               <p className="font-body text-black/70">
-                Os teus planos gerados aparecem aqui. Seleciona um para ver
-                detalhes.
+                Detalhes do plano de treino personalizado
               </p>
             </div>
 
@@ -81,7 +117,7 @@ function WorkoutPlans() {
                   </tr>
                 </thead>
                 <tbody className="font-body">
-                  {workoutPlan.exercicios.map((ex, index) => (
+                  {(workoutPlan.exercicios || []).map((ex, index) => (
                     <tr
                       key={ex.id}
                       className={`border-b border-gray-200 hover:bg-gray-100 transition-colors ${
@@ -115,7 +151,7 @@ function WorkoutPlans() {
                   ))}
                 </tbody>
               </table>
-              {workoutPlan.workoutType !== "cardio" && (
+              {workoutPlan && workoutPlan.workoutType !== "cardio" && (
                 <div className="flex flex-col gap-2">
                   <span className="font-body">
                     <strong>Descanso entre séries:</strong>{" "}
@@ -130,6 +166,38 @@ function WorkoutPlans() {
                   </span>
                 </div>
               )}
+            </div>
+
+            <div className="flex items-center justify-between mt-4">
+              <div>
+                <button
+                  onClick={() =>
+                    pdfWorkoutExporter(
+                      workoutPlan,
+                      user,
+                      convertToMinutes,
+                      tWorkoutType,
+                      tLevel
+                    )
+                  }
+                  className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                >
+                  <IoMdDownload /> Exportar para PDF
+                </button>
+
+                <button
+                  onClick={() =>
+                    handleDeletePlan(workoutPlan.id)
+                  }
+                  className="flex flex-center items-center gap-2 font-body text-red-600 border border-red-600 rounded-lg !px-4 !py-2 hover:text-white hover:bg-red-600 transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                >
+                  <FaTrash /> Remover Plano
+                </button>
+              </div>
+
+              <button onClick={() => navigate(-1)} className="flex items-center gap-1 font-body text-[var(--secondary)] hover:underline cursor-pointer">
+                <FaArrowLeft /> Voltar
+              </button>
             </div>
           </div>
         </div>

@@ -7,15 +7,15 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
 import PlanPreview from "../../components/PlanPreview/index.jsx";
+import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
-
   const { user, loading: userLoading } = useCurrentUser();
-
   const [planType, setPlanType] = useState("workout");
   const [workoutPlans, setWorkoutPlans] = useState([]);
   const [nutritionPlans, setNutritionPlans] = useState([]);
+  const removePlan = useRemoveWorkoutPlan();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,31 +47,16 @@ function Profile() {
     fetchUserPlans();
   }, [user]);
 
+  async function handleDeletePlan(planId) {
+    const result = await removePlan(planId);
+    if (result) {
+      setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
+    }
+  }
+
   const handlePlanTypeChange = (type) => {
     setPlanType(type);
   };
-
-  const handleDeletePlan = async (planId) => {
-    try {
-      const token = await auth.currentUser.getIdToken();
-
-      const response = await fetch(`http://localhost:3000/api/workout-plans/${planId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      });
-
-      if (!response.ok) throw new Error("Erro ao eliminar plano!");
-      
-      setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
-
-
-    } catch(err) {
-      console.error("Erro ao eliminar plano: ", err);
-    }
-  }
 
   if (authLoading || userLoading) {
     return (
@@ -189,7 +174,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
-                      <PlanPreview key={plan.id} plan={plan} onDeletePlan={handleDeletePlan} />
+                      <PlanPreview key={plan.id} plan={plan} onDeletePlan={() => handleDeletePlan(plan.id)} />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
