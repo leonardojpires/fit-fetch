@@ -4,7 +4,7 @@ import { useState } from "react";
 import { auth } from "../../services/firebase.js";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGenerateWorkoutPlan from "../../hooks/WorkoutPlan/useGenerateWorkoutPlan";
-import useCurrentUser from "../../hooks/Users/useGetCurrentUser";
+import useCurrentUser from "../../hooks/useCurrentUser";
 import ErrorWarning from "./../../components/ErrorWarning/index";
 import SuccessWarning from "../../components/SuccessWarning";
 import { IoMdDownload } from "react-icons/io";
@@ -27,7 +27,7 @@ function Workout() {
   useRedirectIfNotAuth();
   const [isSaved, setIsSaved] = useState(false);
 
-  const { user, loadingUser } = useCurrentUser();
+  const { user, loading: userLoading } = useCurrentUser();
   const {
     workoutPlan,
     loading,
@@ -80,7 +80,7 @@ function Workout() {
     e.preventDefault();
     window.scrollTo(0, 0);
 
-    if (loadingUser) return;
+    if (loading) return;
     if (!user) {
       console.error("Nenhum utilizador autenticado!");
       return;

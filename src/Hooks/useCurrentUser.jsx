@@ -42,5 +42,5 @@ export default function useCurrentUser() {
     return () => unsubscribe();
   }, []);
 
-  return { user, loading, error };
+  return { user, setUser, loading, error };
 }

@@ -9,15 +9,25 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../../services/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
-import useGetUserInformation from "../../hooks/Users/useGetUserInformation";
+import useCurrentUser from "../../hooks/useCurrentUser";
 
 function Header() {
-  const userInfo = useGetUserInformation();
+  const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
 
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const toggleDropdown = () => setShowDropdown(!showDropdown);
+  const [dropdownClosing, setDropdownClosing] = useState(false);
+  const toggleDropdown = () => {
+    if (showDropdown) {
+      setDropdownClosing(true);
+      setTimeout(() => {
+        setShowDropdown(false);
+        setDropdownClosing(false);
+      }, 300);
+    } else {
+      setShowDropdown(true);
+    }
+  };
   
   let isInAdmin = false;
 
@@ -26,17 +36,26 @@ function Header() {
     isInAdmin = true;
   }
   
-  useEffect(() => {
+/*   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [setUser]); */
 
   const [showMenu, setShowMenu] = useState(false);
+  const [menuClosing, setMenuClosing] = useState(false);
   const toggleMenu = () => {
-    setShowMenu(!showMenu);
+    if (showMenu) {
+      setMenuClosing(true);
+      setTimeout(() => {
+        setShowMenu(false);
+        setMenuClosing(false);
+      }, 300);
+    } else {
+      setShowMenu(true);
+    }
   };
 
   const handleLogout = async () => {
@@ -58,7 +77,7 @@ function Header() {
 
       {/* NAVIGATION */}
       <nav
-        className={`nav ${showMenu ? "responsive-nav" : ""}`}
+        className={`nav ${showMenu || menuClosing ? "responsive-nav" : ""} ${menuClosing ? "menu-closing" : ""}`}
       >
         <Link to="/" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           INÍCIO
@@ -74,7 +93,7 @@ function Header() {
         </Link>
 
         {/* MOBILE BUTTON */}
-        {user ? (
+        {userInfo ? (
           <div></div>
         ) : (
           <Link
@@ -92,15 +111,15 @@ function Header() {
           className="flex cursor-pointer font-body group"
           onClick={toggleDropdown}
         >
-          {user ? (
+          {userInfo ? (
             <div className="relative flex flex-row items-center gap-3">
               <img
                 src={userInfo?.avatarUrl || defaultAvatar}
                 alt="Avatar"
                 className="w-10 h-10 rounded-full shadow-md"
               />
-              {showDropdown && (
-                <div className="user-dropdown absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] supports-[backdrop-filter]:backdrop-blur-md dark:bg-[var(--primary)]/80 shadow-lg rounded-md !py-2 flex flex-col z-50">
+                {(showDropdown || dropdownClosing) && (
+                <div className={`user-dropdown ${dropdownClosing ? "dropdown-closing" : ""} absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] dark:bg-[var(--primary)] shadow-lg rounded-md !py-2 flex flex-col z-50`}>
                   <Link
                     to="/perfil"
                     className="profile-button"

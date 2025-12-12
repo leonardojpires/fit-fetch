@@ -8,13 +8,19 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
 import PlanPreview from "../../components/PlanPreview/index.jsx";
 import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
+import EditProfileModal from "../../components/EditProfileModal/index.jsx";
+import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
+import useUpdateUser from './../../hooks/Users/useUpdateUser';
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
-  const { user, loading: userLoading } = useCurrentUser();
+  const { user, setUser, loading: userLoading } = useCurrentUser();
   const [planType, setPlanType] = useState("workout");
   const [workoutPlans, setWorkoutPlans] = useState([]);
   const [nutritionPlans, setNutritionPlans] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [submitText, setSubmitText] = useState("Guardar Alterações");
+  const saveChanges = useUpdateUser();
   const removePlan = useRemoveWorkoutPlan();
   const navigate = useNavigate();
 
@@ -76,6 +82,31 @@ function Profile() {
 
   const memberSince = new Date().getFullYear();
 
+  const updateProfile = async (e) => {
+    e.preventDefault();
+    setSubmitText("A guardar...");
+
+    const formData = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+    }
+
+    if (!formData.name || !formData.email) throw new Error("O nome e o email são obrigatórios!");
+    const prevUser = user;
+    setUser((u) => ({ ...u, ...formData }));
+
+    try {
+      const result = await saveChanges(user.id, formData);
+      if (!result) throw new Error("Erro ao atualizar perfil");
+      setIsEditModalOpen(false);
+      setSubmitText("Guardar Alterações");
+    } catch(err) {
+      setUser(prevUser);
+      console.error("Erro ao atualizar perfil: ", err);
+      return;
+    }
+  }
+
   return (
     <section className="w-full">
       <div className="section !mt-40 !mb-40 flex flex-col gap-10">
@@ -88,7 +119,7 @@ function Profile() {
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6 !-mt-20">
               <div className="relative">
                 <img
-                  src={user.avatarUrl || "https://via.placeholder.com/200"}
+                  src={user.avatarUrl || defaultAvatar}
                   alt="Profile image"
                   className="w-48 h-48 object-cover rounded-full border-6 border-white shadow-lg pointer-events-none"
                 />
@@ -105,13 +136,26 @@ function Profile() {
                 </span>
               </div>
               <div>
-                <button className="font-body bg-[var(--primary)] !px-8 !py-3 text-white hover:bg-[var(--accent)] transition-all ease-in-out duration-200 cursor-pointer rounded-xl">
+                <button 
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="font-body bg-[var(--primary)] !px-8 !py-3 text-white hover:bg-[var(--accent)] transition-all ease-in-out duration-200 cursor-pointer rounded-xl"
+                >
                   Editar Perfil
                 </button>
               </div>
             </div>
           </div>
         </div>
+
+        {/* EDIT PROFILE MODAL */}
+        <EditProfileModal 
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          user={user}
+          defaultAvatar={defaultAvatar}
+          submitText={submitText}
+          saveChanges={updateProfile}
+        />
 
         {/* STATS CONTAINER */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

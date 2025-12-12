@@ -1,18 +1,7 @@
-import { useEffect, useState } from "react";
-import { auth } from "../../services/firebase";
+// Deprecated: use `src/hooks/useCurrentUser` instead
+import useCurrentUser from "../useCurrentUser";
 
-
-export default function useCurrentUser() {
-    const [user, setUser] = useState();
-    const [loadingUser, setLoadingUser] = useState(true);
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((u) => {
-            setUser(u || null);
-            setLoadingUser(false);
-        });
-        return () => unsubscribe();
-    }, []);
-    
-    return { user, loadingUser };
+export default function useGetCurrentUser() {
+  const { user, loading } = useCurrentUser();
+  return { user, loadingUser: loading };
 }

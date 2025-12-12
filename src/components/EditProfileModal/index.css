@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* MODAL CONTENT */
+.modal-content {
+  @apply bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* MODAL HEADER */
+.modal-header {
+  @apply flex justify-between items-center !p-6 border-b border-gray-200/50;
+}
+
+.close-button {
+  @apply text-2xl text-gray-500 hover:text-[var(--primary)] transition-colors duration-200 cursor-pointer;
+}
+
+/* MODAL BODY */
+.modal-body {
+  @apply !p-6 flex flex-col gap-6;
+}
+
+/* AVATAR SECTION */
+.avatar-section {
+  @apply flex justify-center items-center;
+}
+
+.avatar-wrapper {
+  @apply relative w-32 h-32 rounded-full overflow-hidden cursor-pointer;
+}
+
+.avatar-image {
+  @apply w-full h-full object-cover;
+}
+
+.avatar-overlay {
+  @apply absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-white cursor-pointer;
+}
+
+.avatar-overlay svg {
+  @apply text-2xl;
+}
+
+.avatar-overlay span {
+  @apply text-sm font-medium;
+}
+
+/* FORM */
+.form-container {
+  @apply flex flex-col gap-6;
+}
+
+.form-group {
+  @apply flex flex-col gap-2;
+}
+
+.form-label {
+  @apply flex items-center gap-2 font-semibold text-gray-700 text-sm;
+}
+
+.form-label svg {
+  @apply text-[var(--primary)];
+}
+
+.form-input {
+  @apply w-full !px-4 !py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all duration-200;
+}
+
+.form-input:disabled {
+  @apply bg-gray-100 text-gray-500 cursor-not-allowed;
+}
+
+.form-hint {
+  @apply text-xs text-gray-500;
+}
+
+/* MODAL FOOTER */
+.modal-footer {
+  @apply flex justify-end items-center gap-4 !p-6 border-t border-gray-200/50;
+}
+
+.button-secondary {
+  @apply font-medium !px-6 !py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-all duration-200 cursor-pointer;
+}
+
+.button-primary {
+  @apply font-medium !px-6 !py-3 bg-[var(--primary)] text-white rounded-xl hover:bg-[var(--accent)] transition-all duration-200 cursor-pointer;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .modal-content {
+    @apply max-h-[95vh];
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    @apply !p-4;
+  }
+
+  .avatar-wrapper {
+    @apply w-24 h-24;
+  }
+
+  .modal-footer {
+    @apply flex-col gap-2;
+  }
+
+  .button-secondary,
+  .button-primary {
+    @apply w-full;
+  }
+}
