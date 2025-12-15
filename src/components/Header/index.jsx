@@ -4,7 +4,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { GoGear } from "react-icons/go";
 import { IoMdExit, IoIosArrowDown  } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { auth } from "../../services/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";

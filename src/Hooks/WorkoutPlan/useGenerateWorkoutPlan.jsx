@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { auth } from "../../services/firebase.js";
 
 export default function useGenerateWorkoutPlan() {
   const [workoutPlan, setWorkoutPlan] = useState(null);
@@ -13,7 +14,7 @@ export default function useGenerateWorkoutPlan() {
       const user = formData.user;
       if (!user) throw new Error("Utilizador não autenticado!");
 
-      const token = await user.getIdToken();
+      const token = await auth.currentUser.getIdToken();
       const { user: _, ...planData } = formData;
 
       const responses = await fetch(
