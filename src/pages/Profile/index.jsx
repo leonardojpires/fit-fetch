@@ -82,13 +82,14 @@ function Profile() {
 
   const memberSince = new Date().getFullYear();
 
-  const updateProfile = async (e) => {
+  const updateProfile = async (e, avatarFile) => {
     e.preventDefault();
     setSubmitText("A guardar...");
 
     const formData = {
       name: e.target.name.value,
       email: e.target.email.value,
+      avatar: avatarFile
     }
 
     if (!formData.name || !formData.email) throw new Error("O nome e o email são obrigatórios!");
@@ -97,7 +98,12 @@ function Profile() {
 
     try {
       const result = await saveChanges(user.id, formData);
+
       if (!result) throw new Error("Erro ao atualizar perfil");
+      if (result.avatarUrl) {
+        setUser((u) => ({ ...u, avatarUrl: `http://localhost:3000${result.avatarUrl}` }));
+      }
+
       setIsEditModalOpen(false);
       setSubmitText("Guardar Alterações");
     } catch(err) {
@@ -119,7 +125,7 @@ function Profile() {
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6 !-mt-20">
               <div className="relative">
                 <img
-                  src={user.avatarUrl || defaultAvatar}
+                  src={user.avatarUrl ? (user.avatarUrl.startsWith('http') ? user.avatarUrl : `http://localhost:3000${user.avatarUrl}`) : defaultAvatar}
                   alt="Profile image"
                   className="w-48 h-48 object-cover rounded-full border-6 border-white shadow-lg pointer-events-none"
                 />
@@ -153,6 +159,7 @@ function Profile() {
           onClose={() => setIsEditModalOpen(false)}
           user={user}
           defaultAvatar={defaultAvatar}
+          newAvatar = {user.avatarUrl || null}
           submitText={submitText}
           saveChanges={updateProfile}
         />

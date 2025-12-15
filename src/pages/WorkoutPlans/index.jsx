@@ -169,7 +169,7 @@ function WorkoutPlans() {
             </div>
 
             <div className="flex items-center justify-between mt-4">
-              <div>
+              <div className="flex flex-col items-start gap-2">
                 <button
                   onClick={() =>
                     pdfWorkoutExporter(
@@ -191,7 +191,7 @@ function WorkoutPlans() {
                   }
                   className="flex flex-center items-center gap-2 font-body text-red-600 border border-red-600 rounded-lg !px-4 !py-2 hover:text-white hover:bg-red-600 transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                 >
-                  <FaTrash /> Remover Plano
+                  <FaTrash />
                 </button>
               </div>
 

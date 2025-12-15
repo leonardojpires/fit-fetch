@@ -149,6 +149,8 @@ class UserController {
             const user = await User.findByPk(userId);
             if (!user) return res.status(404).json({ message: "Utilizador não encontrado!" });
 
+            const avatarUrl = req.file ? `/uploads/avatars/${req.file.filename}` : user.avatarUrl;
+
             if (email && email !== user.email) {
                 const existingUser = await User.findOne({ where: { email } });
                 if (existingUser) return res.status(409).json({ message: "E-Mail já registrado!" });
@@ -164,7 +166,7 @@ class UserController {
                 await admin.auth().setCustomUserClaims(user.firebase_uid, { role });
             }
 
-            await user.update({ name: name || user.name, email: email || user.email, role: role || user.role });
+            await user.update({ name: name || user.name, email: email || user.email, role: role || user.role, avatarUrl });
 
             return res.status(200).json(user);
         } catch(err) {

@@ -2,16 +2,24 @@ import "./index.css";
 import { IoMdClose } from "react-icons/io";
 import { FaUser, FaEnvelope, FaCamera } from "react-icons/fa";
 import { BsPencilSquare } from "react-icons/bs";
+import { useState } from "react";
 
 function EditProfileModal({
   isOpen,
   onClose,
   user,
   defaultAvatar,
+  newAvatar,
   submitText,
   saveChanges,
 }) {
+  const [avatarFile, setAvatarFile] = useState(null);
+  
   if (!isOpen) return null;
+
+  const handleAvatarChange = (e) => {
+    setAvatarFile(e.target.files?.[0] || null);
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -31,12 +39,20 @@ function EditProfileModal({
         {/* BODY */}
         <div className="modal-body">
           {/* FORM FIELDS */}
-          <form onSubmit={saveChanges} className="form-container">
+          <form onSubmit={(e) => saveChanges(e, avatarFile)} className="form-container">
             {/* AVATAR SECTION */}
             <div className="avatar-section">
               <div className="avatar-wrapper">
                 <img
-                  src={user?.avatarUrl || defaultAvatar}
+                  src={
+                    avatarFile
+                      ? URL.createObjectURL(avatarFile)
+                      : user?.avatarUrl
+                        ? (user.avatarUrl.startsWith("http")
+                            ? user.avatarUrl
+                            : `http://localhost:3000${user.avatarUrl}`)
+                        : defaultAvatar
+                  }
                   alt="Avatar"
                   className="avatar-image"
                 />
@@ -49,6 +65,7 @@ function EditProfileModal({
                   id="avatar"
                   name="avatar"
                   accept="image/*"
+                  onChange={handleAvatarChange}
                   className="hidden"
                 />
               </div>

@@ -19,15 +19,21 @@ function Header() {
   const [dropdownClosing, setDropdownClosing] = useState(false);
   const toggleDropdown = () => {
     if (showDropdown) {
+      setShowDropdown(false);
+    } else {
+      setShowDropdown(true);
+    }
+  };
+
+/*   const closeDropdown = () => {
+    if (showDropdown) {
       setDropdownClosing(true);
       setTimeout(() => {
         setShowDropdown(false);
         setDropdownClosing(false);
       }, 300);
-    } else {
-      setShowDropdown(true);
     }
-  };
+  }; */
   
   let isInAdmin = false;
 
@@ -48,11 +54,7 @@ function Header() {
   const [menuClosing, setMenuClosing] = useState(false);
   const toggleMenu = () => {
     if (showMenu) {
-      setMenuClosing(true);
-      setTimeout(() => {
-        setShowMenu(false);
-        setMenuClosing(false);
-      }, 300);
+      setShowMenu(false);
     } else {
       setShowMenu(true);
     }
@@ -106,6 +108,7 @@ function Header() {
         )}
       </nav>
 
+      {/* USER DROPDOWN */}
       <div className="flex flex-row justify-center items-center gap-4">
         <div
           className="flex cursor-pointer font-body group"
@@ -114,9 +117,9 @@ function Header() {
           {userInfo ? (
             <div className="relative flex flex-row items-center gap-3">
               <img
-                src={userInfo?.avatarUrl || defaultAvatar}
+                src={userInfo?.avatarUrl ? (userInfo.avatarUrl.startsWith("http") ? userInfo.avatarUrl : `http://localhost:3000${userInfo.avatarUrl}`) : defaultAvatar}
                 alt="Avatar"
-                className="w-10 h-10 rounded-full shadow-md"
+                className="w-10 h-10 object-cover rounded-full shadow-md pointer-events-none"
               />
                 {(showDropdown || dropdownClosing) && (
                 <div className={`user-dropdown ${dropdownClosing ? "dropdown-closing" : ""} absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] dark:bg-[var(--primary)] shadow-lg rounded-md !py-2 flex flex-col z-50`}>
