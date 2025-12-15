@@ -9,17 +9,16 @@ function EditProfileModal({
   onClose,
   user,
   defaultAvatar,
-  newAvatar,
   submitText,
   saveChanges,
 }) {
   const [avatarFile, setAvatarFile] = useState(null);
-  
+
   if (!isOpen) return null;
 
   const handleAvatarChange = (e) => {
     setAvatarFile(e.target.files?.[0] || null);
-  }
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -39,19 +38,22 @@ function EditProfileModal({
         {/* BODY */}
         <div className="modal-body">
           {/* FORM FIELDS */}
-          <form onSubmit={(e) => saveChanges(e, avatarFile)} className="form-container">
+          <form
+            onSubmit={(e) => saveChanges(e, avatarFile)}
+            className="form-container"
+          >
             {/* AVATAR SECTION */}
             <div className="avatar-section">
-              <div className="avatar-wrapper">
+              <div className="avatar-wrapper group">
                 <img
                   src={
                     avatarFile
                       ? URL.createObjectURL(avatarFile)
                       : user?.avatarUrl
-                        ? (user.avatarUrl.startsWith("http")
-                            ? user.avatarUrl
-                            : `http://localhost:3000${user.avatarUrl}`)
-                        : defaultAvatar
+                      ? user.avatarUrl.startsWith("http")
+                        ? user.avatarUrl
+                        : `http://localhost:3000${user.avatarUrl}`
+                      : defaultAvatar
                   }
                   alt="Avatar"
                   className="avatar-image"

@@ -10,7 +10,7 @@ import PlanPreview from "../../components/PlanPreview/index.jsx";
 import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
 import EditProfileModal from "../../components/EditProfileModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
-import useUpdateUser from './../../hooks/Users/useUpdateUser';
+import useUpdateCurrentUser from "../../hooks/Users/useUpdateCurrentUser.jsx";
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -20,7 +20,7 @@ function Profile() {
   const [nutritionPlans, setNutritionPlans] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [submitText, setSubmitText] = useState("Guardar Alterações");
-  const saveChanges = useUpdateUser();
+  const saveChanges = useUpdateCurrentUser();
   const removePlan = useRemoveWorkoutPlan();
   const navigate = useNavigate();
 
@@ -88,16 +88,15 @@ function Profile() {
 
     const formData = {
       name: e.target.name.value,
-      email: e.target.email.value,
       avatar: avatarFile
     }
 
-    if (!formData.name || !formData.email) throw new Error("O nome e o email são obrigatórios!");
+    if (!formData.name) throw new Error("O nome é obrigatório!");
     const prevUser = user;
     setUser((u) => ({ ...u, ...formData }));
 
     try {
-      const result = await saveChanges(user.id, formData);
+      const result = await saveChanges(formData);
 
       if (!result) throw new Error("Erro ao atualizar perfil");
       if (result.avatarUrl) {

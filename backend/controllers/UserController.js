@@ -175,6 +175,23 @@ class UserController {
         }
     }
 
+    static async updateCurrentUser(req, res) {
+        try {
+            const user = await User.findOne({ where: { firebase_uid: req.user.firebase_uid } });
+
+            if (!user) return res.status(404).json({ message: "Utilizador não encontrado!" });
+
+            const { name } = req.body;
+            const avatarUrl = req.file ? `/uploads/avatars/${req.file.filename}` : user.avatarUrl;
+
+            await user.update({ name: name || user.name, avatarUrl });
+            return res.status(200).json(user);
+        } catch(err) {
+            console.error("Erro ao atualizar o utilizador atual: ", err);
+            return res.status(500).json({ message: UserController.errorMessage });
+        }
+    }
+
     static async deleteUser(req, res) {
         try {
             const { userId } = req.params;

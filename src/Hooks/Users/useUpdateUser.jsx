@@ -3,7 +3,7 @@ import { auth } from "../../services/firebase";
 export default function useUpdateUser() {
     const updateUser = async (userId, formData) => {
         try {
-            const { name, email, role, avatar } = formData;
+            const { name, email, role } = formData;
             const user = auth.currentUser;
 
             if (!user) throw new Error("Utilizador não autenticado!");
@@ -14,14 +14,14 @@ export default function useUpdateUser() {
             data.append("name", name);
             data.append("email", email);
             if (role) data.append("role", role);
-            if (avatar) data.append("avatar", avatar);
 
             const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
                 method: "PUT",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`
                 },
-                body: data
+                body: JSON.stringify(formData)
             });
 
             const responseData = await response.json();
