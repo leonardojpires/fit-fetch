@@ -69,16 +69,6 @@ function Profile() {
     setPlanType(type);
   };
 
-  const closeSuccessWarning = () => {
-    setShowSuccessWarning(false);
-  }
-
-  if (showSuccessWarning) {
-    setTimeout(() => {
-      closeSuccessWarning();
-    });
-  }
-
   if (authLoading || userLoading) {
     return (
       <section className="w-full">
@@ -120,6 +110,8 @@ function Profile() {
 
       setIsEditModalOpen(false);
       setSubmitText("Guardar Alterações");
+      setSuccessMessage("Perfil atualizado com sucesso!");
+      setShowSuccessWarning(true);
     } catch(err) {
       setUser(prevUser);
       console.error("Erro ao atualizar perfil: ", err);
@@ -127,6 +119,16 @@ function Profile() {
     }
   }
 
+  const closeSuccessWarning = () => {
+    setShowSuccessWarning(false);
+  }
+
+  if (showSuccessWarning) {
+    setTimeout(() => {
+      closeSuccessWarning();
+    }, 3000);
+  }
+  
   return (
     <section className="w-full">
       <div className="section !mt-40 !mb-40 flex flex-col gap-10">

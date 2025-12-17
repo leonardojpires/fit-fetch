@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+.how-page {
+  @apply relative min-h-screen overflow-hidden;
+}
+
+.hiw-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08), transparent 45%),
+    radial-gradient(circle at 80% 10%, rgba(0, 200, 83, 0.15), transparent 35%);
+  pointer-events: none;
+}
+
+.hiw-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hiw-badge {
+  @apply inline-flex items-center gap-2 uppercase tracking-[0.28em] text-[0.65rem] rounded-full bg-[var(--primary)]/80 text-white shadow-[0_10px_30px_rgba(36,108,229,0.35)] !px-4 !py-2;
+}
+
+.hiw-cta-primary {
+  @apply inline-flex items-center gap-2 rounded-full bg-[var(--primary)] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-200 !px-5 !py-3;
+}
+
+.hiw-cta-secondary {
+  @apply inline-flex items-center gap-2 rounded-full border-2 border-[var(--secondary)] text-[var(--secondary)] hover:bg-[var(--secondary)]/10 hover:scale-[1.01] transition duration-200 !px-5 !py-3;
+}
+
+.glass-card {
+  @apply relative rounded-3xl border-2 border-black/15 bg-white/75 backdrop-blur-lg shadow-[0_8px_32px_rgba(0,0,0,0.1)] overflow-hidden;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 45%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.glass-card-content {
+  @apply flex flex-col gap-6 !p-6 md:!p-8;
+}
+
+.step-card {
+  @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-sm transition duration-200 !p-3 md:!p-4;
+}
+
+.step-card:hover {
+  @apply -translate-y-1 border-[var(--primary)]/60 bg-white/70 backdrop-blur-sm shadow-md;
+}
+
+.step-icon {
+  @apply flex items-center justify-center rounded-xl bg-[var(--primary)]/20 text-[var(--primary)] !p-2;
+}
+
+.feature-list {
+  @apply flex flex-col gap-3 !mt-4;
+}
+
+.feature-item {
+  @apply flex items-start gap-3 rounded-xl border-2 border-black/10 bg-white/35 backdrop-blur-sm !p-3;
+}
+
+.feature-icon {
+  @apply flex items-center justify-center rounded-lg bg-[var(--primary)]/20 text-[var(--primary)] flex-shrink-0 !p-2 text-lg;
+}
+
+.faq-item {
+  @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)];
+}
+
+.faq-button {
+  @apply w-full flex items-center justify-between text-left text-base text-black !px-4 !py-3 md:!px-6 md:!py-4;
+}
+
+.faq-answer {
+  @apply text-black/70 leading-relaxed border-t-2 border-black/10 !px-4 !pt-4 !pb-4 md:!px-6 md:!pb-5;
+}
+
+.faq-icon {
+  @apply rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/30 text-[var(--primary)] !p-2;
+}
+

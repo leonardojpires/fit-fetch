@@ -83,6 +83,9 @@ function Header() {
         <Link to="/" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           INÍCIO
         </Link>
+        <Link to="/como-funciona" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
+          COMO FUNCIONA
+        </Link>
         <Link to="/treinos" className="font-headline nav-link underline-hover" onClick={toggleMenu}>
           TREINOS
         </Link>

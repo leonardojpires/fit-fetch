@@ -26,6 +26,8 @@
 
 body {
   @apply overflow-x-hidden;
+  background: var(--background) !important;
+  color: #0f172a;
 }
 
 @layer utilities {
