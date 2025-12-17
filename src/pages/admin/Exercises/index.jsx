@@ -1,11 +1,12 @@
 import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
 import DeleteModal from "./../../../components/DeleteModal/index";
+import SuccessWarning from "../../../components/SuccessWarning";
 import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
 import useAddExercise from "../../../hooks/Exercises/useAddExercise";
 import useUpdateExercise from "../../../hooks/Exercises/useUpdateExercise";
@@ -27,6 +28,8 @@ function ExercisesPage() {
   const [imageFile, setImageFile] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     muscle_group: "",
@@ -143,6 +146,8 @@ function ExercisesPage() {
         }
       ).then((res) => res.json());
       setExercises(updatedExercises);
+      setSuccessMessage("Exercício adicionado com sucesso!");
+      setShowSuccessWarning(true);
     }
     closeModal();
   }
@@ -185,6 +190,8 @@ function ExercisesPage() {
       setExercises((prev) =>
         prev.map((ex) => (ex.id === updatedExercise.id ? updatedExercise : ex))
       );
+      setSuccessMessage("Exercício atualizado com sucesso!");
+      setShowSuccessWarning(true);
     }
 
     closeModal();
@@ -199,8 +206,24 @@ function ExercisesPage() {
         prev.filter((ex) => ex.id !== exerciseToDelete.id)
       );
       closeDeleteModal();
+      setSuccessMessage("Exercício removido com sucesso!");
+      setShowSuccessWarning(true);
     }
   }
+
+  const closeSuccessWarning = () => {
+    setShowSuccessWarning(false);
+  };
+
+  useEffect(() => {
+    if (showSuccessWarning) {
+      const timer = setTimeout(() => {
+        setShowSuccessWarning(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessWarning]);
 
   return (
     <section className="section-admin admin-dashboard">
@@ -321,8 +344,14 @@ function ExercisesPage() {
                 &lt;
               </button>
 
-              <input type="number" name="page" id="page" value={currentPage} onChange={(e) => setCurrentPage(e.target.value)} className="!px-3 !py-1 border rounded w-12 text-center" />
-
+              <input
+                type="number"
+                name="page"
+                id="page"
+                value={currentPage}
+                onChange={(e) => setCurrentPage(e.target.value)}
+                className="!px-3 !py-1 border rounded w-12 text-center"
+              />
 
               <button
                 onClick={() =>
@@ -507,6 +536,11 @@ function ExercisesPage() {
           />
         )}
       </div>
+
+      { showSuccessWarning && (
+        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
+      ) }
+
     </section>
   );
 }

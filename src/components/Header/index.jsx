@@ -14,7 +14,6 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 function Header() {
   const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
 
-  const [loading, setLoading] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownClosing, setDropdownClosing] = useState(false);
   const toggleDropdown = () => {
@@ -122,7 +121,7 @@ function Header() {
                 className="w-10 h-10 object-cover rounded-full shadow-md pointer-events-none"
               />
                 {(showDropdown || dropdownClosing) && (
-                <div className={`user-dropdown ${dropdownClosing ? "dropdown-closing" : ""} absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] dark:bg-[var(--primary)] shadow-lg rounded-md !py-2 flex flex-col z-50`}>
+                <div className={`user-dropdown ${dropdownClosing ? "dropdown-closing" : ""} absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] dark:bg-white  shadow-lg rounded-md !py-2 flex flex-col z-50`}>
                   <Link
                     to="/perfil"
                     className="profile-button"
@@ -156,7 +155,7 @@ function Header() {
             </div>
           ) : (
             <Link to="/entrar" className="font-headline auth-button">
-              {loading ? "..." : "ENTRAR"} <CiLogin />
+              {userLoading ? "..." : "ENTRAR"} <CiLogin />
             </Link>
           )}
         </div>

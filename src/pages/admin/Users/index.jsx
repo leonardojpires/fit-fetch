@@ -1,13 +1,14 @@
 import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "./../../../components/AdminSidebar/index";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
 import useAdminRedirect from "./../../../hooks/useAdminRedirect";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers";
 import useAddUser from "../../../hooks/Users/useAddUser";
-import useUpdateUser from './../../../hooks/Users/useUpdateUser';
+import useUpdateUser from "./../../../hooks/Users/useUpdateUser";
 import useDeleteUser from "./../../../hooks/Users/useDeleteUser";
+import SuccessWarning from "../../../components/SuccessWarning";
 
 function UsersPage() {
   useAdminRedirect();
@@ -20,8 +21,10 @@ function UsersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [userToEdit, setUserToEdit] = useState(null); 
+  const [userToEdit, setUserToEdit] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -77,6 +80,8 @@ function UsersPage() {
         },
       }).then((res) => res.json());
       setUsers(updatedUsers);
+      setSuccessMessage("Utilizador adicionado com sucesso!");
+      setShowSuccessWarning(true);
     }
     closeModal();
   }
@@ -87,7 +92,11 @@ function UsersPage() {
 
     const updatedUser = await updateUser(userToEdit.id, formData);
     if (updatedUser) {
-      setUsers((prev) => prev.map((u) => u.id === updatedUser.id ? updatedUser : u));
+      setUsers((prev) =>
+        prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+      );
+      setSuccessMessage("Utilizador editado com sucesso!");
+      setShowSuccessWarning(true);
     }
 
     closeModal();
@@ -100,8 +109,24 @@ function UsersPage() {
     if (result) {
       setUsers((prev) => prev.filter((u) => u.id !== userToDelete.id));
       closeDeleteModal();
+      setSuccessMessage("Utilizador apagado com sucesso!");
+      setShowSuccessWarning(true);
     }
   }
+
+  const closeSuccessWarning = () => {
+    setShowSuccessWarning(false);
+  };
+
+  useEffect(() => {
+    if (showSuccessWarning) {
+      const timer = setTimeout(() => {
+        setShowSuccessWarning(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessWarning]);
 
   return (
     <section className="section-admin admin-dashboard">
@@ -202,10 +227,13 @@ function UsersPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
-                { isEditModalOpen ? "Editar utilizador" : "Adicionar utilizador" }
+                {isEditModalOpen ? "Editar utilizador" : "Adicionar utilizador"}
               </h2>
 
-              <form onSubmit={ isEditModalOpen ? handleEditSubmit : handleSubmit } className="flex flex-col gap-4">
+              <form
+                onSubmit={isEditModalOpen ? handleEditSubmit : handleSubmit}
+                className="flex flex-col gap-4"
+              >
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
                     Nome
@@ -244,13 +272,19 @@ function UsersPage() {
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
-                    disabled={userToEdit?.firebase_uid === auth.currentUser?.uid}
+                    disabled={
+                      userToEdit?.firebase_uid === auth.currentUser?.uid
+                    }
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                   </select>
-                  { userToEdit?.firebase_uid === auth.currentUser?.uid && ( <span className="font-body text-black/70 text-sm">Não podes alterar o teu próprio cargo</span> ) }
+                  {userToEdit?.firebase_uid === auth.currentUser?.uid && (
+                    <span className="font-body text-black/70 text-sm">
+                      Não podes alterar o teu próprio cargo
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex justify-end gap-3 !mt-4">
@@ -265,7 +299,7 @@ function UsersPage() {
                     type="submit"
                     className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-colors font-body font-medium cursor-pointer"
                   >
-                    { isEditModalOpen ? "Guardar" : "Adicionar" }
+                    {isEditModalOpen ? "Guardar" : "Adicionar"}
                   </button>
                 </div>
               </form>
@@ -327,6 +361,10 @@ function UsersPage() {
           </div>
         )}
       </div>
+
+      { showSuccessWarning && (
+        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
+      ) }
     </section>
   );
 }

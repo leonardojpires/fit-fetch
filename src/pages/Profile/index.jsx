@@ -11,6 +11,7 @@ import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan
 import EditProfileModal from "../../components/EditProfileModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useUpdateCurrentUser from "../../hooks/Users/useUpdateCurrentUser.jsx";
+import SuccessWarning from "../../components/SuccessWarning/index.jsx";
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -20,6 +21,8 @@ function Profile() {
   const [nutritionPlans, setNutritionPlans] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [submitText, setSubmitText] = useState("Guardar Alterações");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const saveChanges = useUpdateCurrentUser();
   const removePlan = useRemoveWorkoutPlan();
   const navigate = useNavigate();
@@ -56,6 +59,8 @@ function Profile() {
   async function handleDeletePlan(planId) {
     const result = await removePlan(planId);
     if (result) {
+      setSuccessMessage("Plano removido com sucesso!");
+      setShowSuccessWarning(true);
       setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
     }
   }
@@ -63,6 +68,16 @@ function Profile() {
   const handlePlanTypeChange = (type) => {
     setPlanType(type);
   };
+
+  const closeSuccessWarning = () => {
+    setShowSuccessWarning(false);
+  }
+
+  if (showSuccessWarning) {
+    setTimeout(() => {
+      closeSuccessWarning();
+    });
+  }
 
   if (authLoading || userLoading) {
     return (
@@ -247,6 +262,11 @@ function Profile() {
           </div>
         </div>
       </div>
+
+      { showSuccessWarning && (
+        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
+      ) }
+
     </section>
   );
 }
