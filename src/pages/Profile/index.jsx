@@ -12,6 +12,7 @@ import EditProfileModal from "../../components/EditProfileModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useUpdateCurrentUser from "../../hooks/Users/useUpdateCurrentUser.jsx";
 import SuccessWarning from "../../components/SuccessWarning/index.jsx";
+import { motion } from "framer-motion";
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -130,7 +131,13 @@ function Profile() {
   }
   
   return (
-    <section className="w-full">
+    <motion.section
+      className="w-full"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+    >
       <div className="section !mt-40 !mb-40 flex flex-col gap-10">
         {/* PROFILE CONTAINER */}
         <div className="containers">
@@ -269,7 +276,7 @@ function Profile() {
         <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
       ) }
 
-    </section>
+    </motion.section>
   );
 }
 

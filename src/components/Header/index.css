@@ -17,7 +17,7 @@
 }
 
 .nav {
-    @apply flex flex-row justify-center items-center gap-10;
+  @apply flex flex-row justify-center items-center gap-10;
 }
 
 .nav-link {
@@ -30,6 +30,10 @@
 
 .auth-button-mobile {
   @apply flex lg:hidden items-center gap-2 text-[var(--primary)] border-2 border-[var(--primary)] hover:rounded-xl hover:text-[var(--accent)] hover:border-[var(--accent)] py-2 px-4 cursor-pointer transition-all ease-in-out duration-200;
+}
+
+.sublink {
+  @apply w-full flex flex-row justify-center items-center gap-2 !px-4 !py-2 hover:bg-[var(--secondary)]/20 font-medium
 }
 
 .profile-button {

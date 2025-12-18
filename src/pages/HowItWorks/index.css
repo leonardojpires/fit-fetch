@@ -18,10 +18,6 @@
   z-index: 1;
 }
 
-.hiw-badge {
-  @apply inline-flex items-center gap-2 uppercase tracking-[0.28em] text-[0.65rem] rounded-full bg-[var(--primary)]/80 text-white shadow-[0_10px_30px_rgba(36,108,229,0.35)] !px-4 !py-2;
-}
-
 .hiw-cta-primary {
   @apply inline-flex items-center gap-2 rounded-full bg-[var(--primary)] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-200 !px-5 !py-3;
 }
@@ -69,21 +65,5 @@
 
 .feature-icon {
   @apply flex items-center justify-center rounded-lg bg-[var(--primary)]/20 text-[var(--primary)] flex-shrink-0 !p-2 text-lg;
-}
-
-.faq-item {
-  @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)];
-}
-
-.faq-button {
-  @apply w-full flex items-center justify-between text-left text-base text-black !px-4 !py-3 md:!px-6 md:!py-4;
-}
-
-.faq-answer {
-  @apply text-black/70 leading-relaxed border-t-2 border-black/10 !px-4 !pt-4 !pb-4 md:!px-6 md:!pb-5;
-}
-
-.faq-icon {
-  @apply rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/30 text-[var(--primary)] !p-2;
 }
 

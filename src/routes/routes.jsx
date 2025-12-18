@@ -13,6 +13,7 @@ import FoodsPage from './../pages/admin/Foods/index';
 import Profile from './../pages/Profile/index';
 import WorkoutPlans from './../pages/WorkoutPlans/index';
 import HowItWorks from "../pages/HowItWorks";
+import FAQ from "../pages/FAQ";
 
 function AppRoutes() {
     return (
@@ -21,6 +22,7 @@ function AppRoutes() {
                 <Route path="/" element={<BasePage />}>
                     <Route index element={<Home />}></Route>
                     <Route path="/como-funciona" element={<HowItWorks />}></Route>
+                    <Route path="/faq" element={<FAQ />}></Route>
                     <Route path="/treinos" element={<Workout />}></Route>
                     <Route path="/nutricao" element={<Nutrition />}></Route>
                     <Route path="/contacto" element={<Contact />}></Route>

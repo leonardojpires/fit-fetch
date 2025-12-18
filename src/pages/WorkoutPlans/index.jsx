@@ -6,6 +6,7 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import { IoMdDownload } from "react-icons/io";
 import { FaTrash, FaArrowLeft } from "react-icons/fa";
 import useRemoveWorkoutPlan from "../../hooks/WorkoutPlan/useRemoveWorkoutPlan.jsx";
+import { motion } from "framer-motion";
 
 const tWorkoutType = {
   calisthenics: "Calistenia",
@@ -80,7 +81,13 @@ function WorkoutPlans() {
   }
 
   return (
-    <section className="w-full">
+    <motion.section
+      className="w-full"
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+    >
       <div className="section !mt-40 !mb-40 flex flex-col gap-10">
         <div className="flex flex-col gap-2">
           <h1 className="font-headline font-bold text-4xl md:text-5xl text-black">
@@ -202,7 +209,7 @@ function WorkoutPlans() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 

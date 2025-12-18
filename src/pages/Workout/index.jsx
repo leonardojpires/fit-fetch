@@ -10,6 +10,7 @@ import SuccessWarning from "../../components/SuccessWarning";
 import { IoMdDownload } from "react-icons/io";
 import { IoBookmarksOutline, IoBookmarksSharp  } from "react-icons/io5";
 import pdfWorkoutExporter from "../../utils/pdfWorkoutExporter.js";
+import { motion } from "framer-motion";
 
 const tWorkoutType = {
   calisthenics: "Calistenia",
@@ -177,7 +178,13 @@ function Workout() {
 
   return (
     <>
-      <section className="w-full">
+      <motion.section
+        className="w-full"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+      >
         <div className="section !mt-40 !py-10">
           <h1 className="font-headline font-bold text-4xl md:text-5xl text-black !mb-3">
             Cria o Teu Plano Personalizado
@@ -493,7 +500,7 @@ function Workout() {
           </div>
           <div className="!mt-12" />
         </div>
-      </section>
+      </motion.section>
 
       {/* Warnings */}
       {validationErrors.length > 0 && (

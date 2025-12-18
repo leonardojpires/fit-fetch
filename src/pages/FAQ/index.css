@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+.faq-item {
+  @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)];
+}
+
+.faq-button {
+  @apply w-full flex items-center justify-between text-left text-base text-black !px-4 !py-3 md:!px-6 md:!py-4;
+}
+
+.faq-answer {
+  @apply text-black/70 leading-relaxed border-t-2 border-black/10 !px-4 !pt-4 !pb-4 md:!px-6 md:!pb-5;
+}
+
+.faq-icon {
+  @apply rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/30 text-[var(--primary)] !p-2;
+}

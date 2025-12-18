@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .button, .sec-button {
-    @apply text-lg inline-block border-2 px-6 py-2 lg:px-12 rounded-full z-10;
+    @apply text-lg inline-block border-2 px-6 py-2 lg:px-12 rounded-full z-10 transition-all ease-in-out duration-200;
 }
 
 .button:hover, .sec-button:hover {
@@ -13,7 +13,7 @@
 }
 
 .button:hover {
-    @apply bg-[var(--accent)] border-[var(--accent)]
+    @apply scale-[1.03] bg-[var(--primary)]/90;
 }
 
 .sec-button {
@@ -21,5 +21,5 @@
 }
 
 .sec-button:hover {
-    @apply text-white bg-[var(--accent)]/30 border-2 border-[var(--accent)];
+    @apply text-white bg-[var(--secondary)]/30 border-2 border-[var(--secondary)];
 }
