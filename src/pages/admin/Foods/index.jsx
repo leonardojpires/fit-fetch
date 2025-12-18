@@ -25,6 +25,8 @@ function FoodsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [foodToEdit, setFoodToEdit] = useState(null);
   const [foodToDelete, setFoodToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [formData, setFormData] = useState({
@@ -33,6 +35,12 @@ function FoodsPage() {
     carbs: "",
     fiber: "",
   });
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFoods = foods.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(foods.length / itemsPerPage);
 
   function openAddModal() {
     setFormData({
@@ -176,7 +184,7 @@ function FoodsPage() {
                   </td>
                 </tr>
               ) : (
-                foods.map((food) => (
+                currentFoods.map((food) => (
                   <tr
                     key={food.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
@@ -226,6 +234,47 @@ function FoodsPage() {
               )}
             </tbody>
           </table>
+          <div className="flex items-center justify-between !mt-4 !px-4 !py-3 border-t border-gray-200/50">
+            {/* Page info */}
+            <div className="text-sm font-medium text-gray-600">
+              A mostrar <span className="text-[var(--primary)] font-semibold">{indexOfFirstItem + 1}</span> -{" "}
+              <span className="text-[var(--primary)] font-semibold">{Math.min(indexOfLastItem, foods.length)}</span> de{" "}
+              <span className="text-[var(--primary)] font-semibold">{foods.length}</span> alimentos
+            </div>
+
+            {/* Navigation buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="flex items-center justify-center w-9 h-9 rounded-lg bg-white border-2 border-gray-200 hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-current transition-all cursor-pointer font-bold"
+              >
+                ‹
+              </button>
+
+              <div className="flex items-center gap-2 !px-3 !py-1 bg-white rounded-lg border-2 border-gray-200">
+                <input
+                  type="number"
+                  name="page"
+                  id="page"
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(Number(e.target.value))}
+                  className="w-10 text-center font-semibold text-[var(--primary)] focus:outline-none bg-transparent"
+                />
+                <span className="text-sm text-gray-500">/ {totalPages}</span>
+              </div>
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="flex items-center justify-center w-9 h-9 rounded-lg bg-white border-2 border-gray-200 hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-current transition-all cursor-pointer font-bold"
+              >
+                ›
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Modal: Adicionar/Editar Alimento */}
@@ -343,9 +392,12 @@ function FoodsPage() {
           />
         )}
       </div>
-      { showSuccessWarning && (
-        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
-      ) }
+      {showSuccessWarning && (
+        <SuccessWarning
+          message={successMessage}
+          onClose={closeSuccessWarning}
+        />
+      )}
     </section>
   );
 }

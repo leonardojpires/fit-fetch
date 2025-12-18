@@ -30,6 +30,14 @@ body {
   color: #0f172a;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+
 @layer utilities {
   .font-headline {
     font-family: var(--headline), sans-serif;
