@@ -48,7 +48,7 @@ function FAQ() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="flex flex-col justify-center items-center text-center !mb-12"
+          className="flex flex-col justify-center items-center text-center !mb-6"
         >
           <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-black !mt-4 !mb-4">
             Dúvidas Frequentes

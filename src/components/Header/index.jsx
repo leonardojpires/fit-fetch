@@ -7,7 +7,7 @@ import { IoMdExit, IoIosArrowDown } from "react-icons/io";
 import { FaChevronDown } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { auth } from "../../services/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
@@ -85,7 +85,7 @@ function Header() {
           <img
             src="/img/logos/ff_logo.svg"
             alt="Fit Fetch"
-            className="select-none pointer-none w-[150px] lg:w-[150px]"
+            className="logo select-none pointer-none w-[150px] lg:w-[150px]"
           />
         </Link>
       </div>

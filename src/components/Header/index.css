@@ -16,6 +16,10 @@
   backdrop-filter: blur(20px) saturate(160%) !important;
 }
 
+.logo:hover {
+  animation: rotateSide 1.5s ease-in-out infinite;
+}
+
 .nav {
   @apply flex flex-row justify-center items-center gap-10;
 }
@@ -124,6 +128,28 @@
 }
 
 /* ANIMATIONS */
+@keyframes rotateSide {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(8deg);
+  }
+
+  50% {
+    transform: rotate(0deg);
+  }
+
+  75% {
+    transform: rotate(-8deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 @keyframes jump {
     0% {
         transform: translateY(0);
