@@ -23,6 +23,30 @@ Alimento.init(
       type: DataTypes.FLOAT,
       allowNull: false,
       defaultValue: 0
+    },
+    fat: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0
+    },
+    calories: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0
+    },
+    serving_size: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 100
+    },
+    unit: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'g'
+    },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   },
   {

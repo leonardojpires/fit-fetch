@@ -31,18 +31,22 @@ class FoodController {
 
     static async addFood(req, res) {
         try {
-            const { name, protein, carbs, fiber } = req.body;
+            const { name, protein, carbs, fiber, fat, calories, serving_size, unit, category } = req.body;
 
             if (!name) return res.status(400).json({ message: "O nome é obrigatório!" });
             if (protein === undefined || protein === null) return res.status(400).json({ message: "A proteína é obrigatória!" });
             if (carbs === undefined || carbs === null) return res.status(400).json({ message: "Os carboidratos são obrigatórios!" });
             if (fiber === undefined || fiber === null) return res.status(400).json({ message: "A fibra é obrigatória!" });
+            if (fat === undefined || fat === null) return res.status(400).json({ message: "A gordura é obrigatória!" });
+            if (calories === undefined || calories === null) return res.status(400).json({ message: "As calorias são obrigatórias!" });
+            if (serving_size === undefined || serving_size === null) return res.status(400).json({ message: "O tamanho da porção é obrigatório!" });
+            if (!unit) return res.status(400).json({ message: "A unidade de medida é obrigatória!" });
             
-            if (isNaN(protein) || isNaN(carbs) || isNaN(fiber)) {
-                return res.status(400).json({ message: "Proteína, carboidratos e fibra devem ser números!" });
+            if (isNaN(protein) || isNaN(carbs) || isNaN(fiber) || isNaN(fat) || isNaN(calories) || isNaN(serving_size)) {
+                return res.status(400).json({ message: "Valores nutricionais e tamanho da porção devem ser números!" });
             }
 
-            if (protein < 0 || carbs < 0 || fiber < 0) {
+            if (protein < 0 || carbs < 0 || fiber < 0 || fat < 0 || calories < 0 || serving_size <= 0) {
                 return res.status(400).json({ message: "Os valores nutricionais não podem ser negativos!" });
             }
 
@@ -50,7 +54,12 @@ class FoodController {
                 name,
                 protein: parseFloat(protein),
                 carbs: parseFloat(carbs),
-                fiber: parseFloat(fiber)
+                fiber: parseFloat(fiber),
+                fat: parseFloat(fat),
+                calories: parseFloat(calories),
+                serving_size: parseFloat(serving_size),
+                unit,
+                category: category || null
             });
 
             return res.status(201).json({ food: newFood });
@@ -63,18 +72,22 @@ class FoodController {
     static async updateFood(req, res) {
         try {
             const { id } = req.params;
-            const { name, protein, carbs, fiber } = req.body;
+            const { name, protein, carbs, fiber, fat, calories, serving_size, unit, category } = req.body;
 
             if (!name) return res.status(400).json({ message: "O nome é obrigatório!" });
             if (protein === undefined || protein === null) return res.status(400).json({ message: "A proteína é obrigatória!" });
             if (carbs === undefined || carbs === null) return res.status(400).json({ message: "Os carboidratos são obrigatórios!" });
             if (fiber === undefined || fiber === null) return res.status(400).json({ message: "A fibra é obrigatória!" });
+            if (fat === undefined || fat === null) return res.status(400).json({ message: "A gordura é obrigatória!" });
+            if (calories === undefined || calories === null) return res.status(400).json({ message: "As calorias são obrigatórias!" });
+            if (serving_size === undefined || serving_size === null) return res.status(400).json({ message: "O tamanho da porção é obrigatório!" });
+            if (!unit) return res.status(400).json({ message: "A unidade de medida é obrigatória!" });
             
-            if (isNaN(protein) || isNaN(carbs) || isNaN(fiber)) {
-                return res.status(400).json({ message: "Proteína, carboidratos e fibra devem ser números!" });
+            if (isNaN(protein) || isNaN(carbs) || isNaN(fiber) || isNaN(fat) || isNaN(calories) || isNaN(serving_size)) {
+                return res.status(400).json({ message: "Valores nutricionais e tamanho da porção devem ser números!" });
             }
 
-            if (protein < 0 || carbs < 0 || fiber < 0) {
+            if (protein < 0 || carbs < 0 || fiber < 0 || fat < 0 || calories < 0 || serving_size <= 0) {
                 return res.status(400).json({ message: "Os valores nutricionais não podem ser negativos!" });
             }
 
@@ -85,7 +98,12 @@ class FoodController {
                 name,
                 protein: parseFloat(protein),
                 carbs: parseFloat(carbs),
-                fiber: parseFloat(fiber)
+                fiber: parseFloat(fiber),
+                fat: parseFloat(fat),
+                calories: parseFloat(calories),
+                serving_size: parseFloat(serving_size),
+                unit,
+                category: category || null
             });
 
             return res.status(200).json({ message: "Alimento atualizado com sucesso!", food });

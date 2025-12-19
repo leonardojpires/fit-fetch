@@ -3,7 +3,7 @@ import { auth } from "../../services/firebase";
 export default function useUpdateFood() {
     const updateFood = async (foodId, formData) => {
         try {
-            const { name, protein, carbs, fiber } = formData;
+            const { name, protein, carbs, fiber, fat, calories, serving_size, unit, category } = formData;
             const user = auth.currentUser;
 
             if (!user) throw new Error("Utilizador não autenticado!");
@@ -20,7 +20,12 @@ export default function useUpdateFood() {
                     name, 
                     protein, 
                     carbs, 
-                    fiber
+                    fiber,
+                    fat,
+                    calories,
+                    serving_size,
+                    unit,
+                    category
                 })
             });
 

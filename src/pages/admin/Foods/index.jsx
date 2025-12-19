@@ -34,6 +34,11 @@ function FoodsPage() {
     protein: "",
     carbs: "",
     fiber: "",
+    fat: "",
+    calories: "",
+    serving_size: "100",
+    unit: "g",
+    category: ""
   });
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -48,6 +53,11 @@ function FoodsPage() {
       protein: "",
       carbs: "",
       fiber: "",
+      fat: "",
+      calories: "",
+      serving_size: "100",
+      unit: "g",
+      category: ""
     });
     setIsModalOpen(true);
   }
@@ -59,6 +69,11 @@ function FoodsPage() {
       protein: food.protein,
       carbs: food.carbs,
       fiber: food.fiber,
+      fat: food.fat,
+      calories: food.calories,
+      serving_size: food.serving_size,
+      unit: food.unit,
+      category: food.category || ""
     });
     setIsEditModalOpen(true);
     setIsModalOpen(true);
@@ -170,6 +185,10 @@ function FoodsPage() {
                 <th className="!p-3">Proteína (g)</th>
                 <th className="!p-3">Carboidratos (g)</th>
                 <th className="!p-3">Fibra (g)</th>
+                <th className="!p-3">Gordura (g)</th>
+                <th className="!p-3">Calorias (kcal)</th>
+                <th className="!p-3">Porção</th>
+                <th className="!p-3">Categoria</th>
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
@@ -177,7 +196,7 @@ function FoodsPage() {
               {foods.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={5}
+                    colSpan={9}
                     className="!p-6 text-center text-sm text-gray-500"
                   >
                     Sem alimentos.
@@ -210,6 +229,24 @@ function FoodsPage() {
                     </td>
                     <td className="!p-3 text-sm text-gray-700">
                       {food.fiber}g
+                    </td>
+                    <td className="!p-3 text-sm text-gray-700">
+                      {food.fat}g
+                    </td>
+                    <td className="!p-3 text-sm text-gray-700">
+                      {food.calories} kcal
+                    </td>
+                    <td className="!p-3 text-sm text-gray-700">
+                      {food.serving_size}{food.unit}
+                    </td>
+                    <td className="!p-3 text-sm text-gray-700">
+                      {food.category ? (
+                        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                          {food.category}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
                     </td>
                     <td className="!p-3">
                       <div className="flex items-center gap-2">
@@ -284,7 +321,7 @@ function FoodsPage() {
             onClick={closeModal}
           >
             <div
-              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md !p-6 border border-gray-200/50"
+              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto !p-6 border border-gray-200/50"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
@@ -359,6 +396,100 @@ function FoodsPage() {
                     required
                     className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Gordura (gramas)
+                  </label>
+                  <input
+                    type="number"
+                    name="fat"
+                    value={formData.fat}
+                    onChange={handleInputChange}
+                    placeholder="0"
+                    step="0.1"
+                    min="0"
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Calorias (kcal)
+                  </label>
+                  <input
+                    type="number"
+                    name="calories"
+                    value={formData.calories}
+                    onChange={handleInputChange}
+                    placeholder="0"
+                    step="0.1"
+                    min="0"
+                    required
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                      Tamanho da Porção
+                    </label>
+                    <input
+                      type="number"
+                      name="serving_size"
+                      value={formData.serving_size}
+                      onChange={handleInputChange}
+                      placeholder="100"
+                      step="0.1"
+                      min="0.1"
+                      required
+                      className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                      Unidade
+                    </label>
+                    <select
+                      name="unit"
+                      value={formData.unit}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                    >
+                      <option value="g">Gramas (g)</option>
+                      <option value="ml">Mililitros (ml)</option>
+                      <option value="un">Unidade</option>
+                      <option value="colher">Colher de sopa</option>
+                      <option value="chavena">Chavena</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    Categoria (opcional)
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body"
+                  >
+                    <option value="">Selecionar categoria...</option>
+                    <option value="Carnes">Carnes</option>
+                    <option value="Peixe">Peixe</option>
+                    <option value="Legumes">Legumes</option>
+                    <option value="Frutas">Frutas</option>
+                    <option value="Grãos">Grãos</option>
+                    <option value="Laticínios">Laticínios</option>
+                    <option value="Ovos">Ovos</option>
+                    <option value="Óleos">Óleos</option>
+                    <option value="Comes">Comes</option>
+                  </select>
                 </div>
 
                 <div className="flex justify-end gap-3 !mt-4">
