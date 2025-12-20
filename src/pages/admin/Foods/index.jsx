@@ -2,7 +2,7 @@ import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
 import { useEffect, useState } from "react";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiEdit2, FiTrash2, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { IoRestaurant } from "react-icons/io5";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
 import DeleteModal from "./../../../components/DeleteModal/index";
@@ -29,6 +29,7 @@ function FoodsPage() {
   const [itemsPerPage] = useState(10);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
+  const [sort, setSort] = useState({ field: "name", direction: "asc" });
   const [formData, setFormData] = useState({
     name: "",
     protein: "",
@@ -40,6 +41,17 @@ function FoodsPage() {
     unit: "g",
     category: ""
   });
+
+  const headers = [
+    { key: "name", label: "Nome", width: "1/6" },
+    { key: "protein", label: "Proteína (g)", width: "1/12" },
+    { key: "carbs", label: "Carboidratos (g)", width: "1/12" },
+    { key: "fiber", label: "Fibra (g)", width: "1/12" },
+    { key: "fat", label: "Gordura (g)", width: "1/12" },
+    { key: "calories", label: "Calorias (kcal)", width: "1/12" },
+    { key: "serving_size", label: "Porção", width: "1/12" },
+    { key: "category", label: "Categoria", width: "1/12" }
+  ];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -150,6 +162,27 @@ function FoodsPage() {
     setShowSuccessWarning(false);
   };
 
+  function handleHeaderClick(field) {
+    setSort({
+      field,
+      direction:
+        sort.field === field
+          ? sort.direction === "asc"
+            ? "desc"
+            : "asc"
+          : "desc",
+    });
+  }
+
+  function getSortedFoods(foods) {
+    if (sort.direction === "asc") {
+      return [...foods].sort((a, b) =>
+        a[sort.field] > b[sort.field] ? 1 : -1
+      );
+    }
+    return [...foods].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
+  }
+
   useEffect(() => {
     if (showSuccessWarning) {
       const timer = setTimeout(() => {
@@ -181,14 +214,23 @@ function FoodsPage() {
           <table className="w-full min-w-[700px] table-fixed">
             <thead className="text-left bg-white">
               <tr>
-                <th className="!p-3">Nome</th>
-                <th className="!p-3">Proteína (g)</th>
-                <th className="!p-3">Carboidratos (g)</th>
-                <th className="!p-3">Fibra (g)</th>
-                <th className="!p-3">Gordura (g)</th>
-                <th className="!p-3">Calorias (kcal)</th>
-                <th className="!p-3">Porção</th>
-                <th className="!p-3">Categoria</th>
+                {headers.map((header) => (
+                  <th
+                    key={header.key}
+                    onClick={() => handleHeaderClick(header.key)}
+                    className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
+                  >
+                    <div className="flex items-center gap-1">
+                      {header.label}
+                      {sort.field === header.key && (
+                        sort.direction === "asc" ? (
+                          <FiChevronUp size={16} />
+                        ) : (
+                          <FiChevronDown size={16} />
+                        ))}
+                    </div>
+                  </th>
+                ))}
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
@@ -203,7 +245,7 @@ function FoodsPage() {
                   </td>
                 </tr>
               ) : (
-                currentFoods.map((food) => (
+                getSortedFoods(currentFoods).map((food) => (
                   <tr
                     key={food.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"

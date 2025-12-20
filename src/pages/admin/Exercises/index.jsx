@@ -2,7 +2,7 @@ import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
 import { useState, useEffect } from "react";
-import { FiEdit2, FiTrash2 } from "react-icons/fi";
+import { FiEdit2, FiTrash2, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
 import DeleteModal from "./../../../components/DeleteModal/index";
@@ -30,6 +30,7 @@ function ExercisesPage() {
   const [itemsPerPage] = useState(10);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
+  const [sort, setSort] = useState({ field: "name", direction: "asc" });
   const [formData, setFormData] = useState({
     name: "",
     muscle_group: "",
@@ -39,6 +40,13 @@ function ExercisesPage() {
     type: "weightlifting",
     difficulty: "beginner",
   });
+
+  const headers = [
+    { key: "name", label: "Nome", width: "1/4" },
+    { key: "muscle_group", label: "Grupo Muscular", width: "1/4" },
+    { key: "type", label: "Tipo", width: "1/6" },
+    { key: "difficulty", label: "Dificuldade", width: "1/6" }
+  ];
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -215,6 +223,27 @@ function ExercisesPage() {
     setShowSuccessWarning(false);
   };
 
+  function handleHeaderClick(field) {
+    setSort({
+      field,
+      direction:
+        sort.field === field
+          ? sort.direction === "asc"
+            ? "desc"
+            : "asc"
+          : "desc",
+    });
+  }
+
+  function getSortedExercises(exercises) {
+    if (sort.direction === "asc") {
+      return [...exercises].sort((a, b) =>
+        a[sort.field] > b[sort.field] ? 1 : -1
+      );
+    }
+    return [...exercises].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
+  }
+
   useEffect(() => {
     if (showSuccessWarning) {
       const timer = setTimeout(() => {
@@ -246,10 +275,23 @@ function ExercisesPage() {
           <table className="w-full min-w-[700px] table-fixed">
             <thead className="text-left bg-white">
               <tr>
-                <th className="!p-3">Nome</th>
-                <th className="!p-3">Grupo Muscular</th>
-                <th className="!p-3">Tipo</th>
-                <th className="!p-3">Dificuldade</th>
+                {headers.map((header) => (
+                  <th
+                    key={header.key}
+                    onClick={() => handleHeaderClick(header.key)}
+                    className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
+                  >
+                    <div className="flex items-center gap-1">
+                      {header.label}
+                      {sort.field === header.key && (
+                        sort.direction === "asc" ? (
+                          <FiChevronUp size={16} />
+                        ) : (
+                          <FiChevronDown size={16} />
+                        ))}
+                    </div>
+                  </th>
+                ))}
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
@@ -264,7 +306,7 @@ function ExercisesPage() {
                   </td>
                 </tr>
               ) : (
-                currentExercises.map((exercise) => (
+                getSortedExercises(currentExercises).map((exercise) => (
                   <tr
                     key={exercise.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"

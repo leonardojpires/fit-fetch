@@ -2,7 +2,13 @@ import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "./../../../components/AdminSidebar/index";
 import { useEffect, useState } from "react";
-import { FiEdit2, FiTrash2, FiUserPlus } from "react-icons/fi";
+import {
+  FiEdit2,
+  FiTrash2,
+  FiUserPlus,
+  FiChevronUp,
+  FiChevronDown,
+} from "react-icons/fi";
 import useAdminRedirect from "./../../../hooks/useAdminRedirect";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers";
 import useAddUser from "../../../hooks/Users/useAddUser";
@@ -25,11 +31,19 @@ function UsersPage() {
   const [userToDelete, setUserToDelete] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
+  const [sort, setSort] = useState({ field: "name", direction: "asc" });
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     role: "user",
   });
+
+  const headers = [
+    { key: "name", label: "Utilizador", width: "1/4" },
+    { key: "email", label: "E-Mail", width: "1/4" },
+    { key: "role", label: "Cargo", width: "1/6" },
+    { key: "created_at", label: "Criado em", width: "1/6" }
+  ];
 
   function openAddModal() {
     setFormData({ name: "", email: "", role: "user" });
@@ -128,6 +142,28 @@ function UsersPage() {
     }
   }, [showSuccessWarning]);
 
+  // Sorting users functionallity
+  function handleHeaderClick(field) {
+    setSort({
+      field,
+      direction:
+        sort.field === field
+          ? sort.direction === "asc"
+            ? "desc"
+            : "asc"
+          : "desc",
+    });
+  }
+
+  function getSortedUsers(users) {
+    if (sort.direction === "asc") {
+      return [...users].sort((a, b) =>
+        a[sort.field] > b[sort.field] ? 1 : -1
+      );
+    }
+    return [...users].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
+  }
+
   return (
     <section className="section-admin admin-dashboard">
       <AdminSidebar />
@@ -149,10 +185,23 @@ function UsersPage() {
           <table className="w-full min-w-[700px] table-fixed">
             <thead className="text-left bg-white">
               <tr>
-                <th className="!p-3">Utilizador</th>
-                <th className="!p-3">Email</th>
-                <th className="!p-3">Role</th>
-                <th className="!p-3">Criado em</th>
+                {headers.map((header) => (
+                  <th
+                    key={header.key}
+                    onClick={() => handleHeaderClick(header.key)}
+                    className={`!p-3 cursor-pointer hover:bg-gray-50 select-none ${header.width}`}
+                  >
+                    <div className="flex items-center gap-1">
+                      {header.label}
+                      {sort.field === header.key && (
+                        sort.direction === "asc" ? (
+                          <FiChevronUp size={16} />
+                        ) : (
+                          <FiChevronDown size={16}></FiChevronDown>
+                        ))}
+                    </div>
+                  </th>
+                ))}
                 <th className="!p-3">Ações</th>
               </tr>
             </thead>
@@ -167,7 +216,7 @@ function UsersPage() {
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
+                getSortedUsers(users).map((user) => (
                   <tr
                     key={user.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
@@ -362,9 +411,12 @@ function UsersPage() {
         )}
       </div>
 
-      { showSuccessWarning && (
-        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
-      ) }
+      {showSuccessWarning && (
+        <SuccessWarning
+          message={successMessage}
+          onClose={closeSuccessWarning}
+        />
+      )}
     </section>
   );
 }
