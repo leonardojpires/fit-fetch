@@ -32,6 +32,7 @@ function UsersPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [sort, setSort] = useState({ field: "name", direction: "asc" });
+  const [searchItem, setSearchItem] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -181,6 +182,22 @@ function UsersPage() {
           </div>
         </div>
 
+        <div className="!mb-6 bg-white/40 backdrop-blur-sm rounded-xl shadow-md !p-4">
+          <form className="flex flex-col gap-3">
+            <label htmlFor="searchFilter" className="font-body font-medium text-gray-700">
+              Buscar utilizador
+            </label>
+            <input
+              type="text"
+              name="searchFilter"
+              id="searchFilter"
+              placeholder="Digita o nome do utilizador..."
+              onChange={(e) => setSearchItem(e.target.value)}
+              className="w-full !px-4 !py-2.5 bg-white/70 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body text-gray-800"
+            />
+          </form>
+        </div>
+
         <div className="overflow-auto bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body">
           <table className="w-full min-w-[700px] table-fixed">
             <thead className="text-left bg-white">
@@ -216,7 +233,14 @@ function UsersPage() {
                   </td>
                 </tr>
               ) : (
-                getSortedUsers(users).map((user) => (
+                getSortedUsers(users)
+                  .filter((user) => {
+                    return searchItem === ""
+                      ? true
+                      : user.name.toLowerCase().includes(searchItem.toLowerCase()) ||
+                        user.email.toLowerCase().includes(searchItem.toLowerCase());
+                  })
+                  .map((user) => (
                   <tr
                     key={user.id}
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"

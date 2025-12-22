@@ -31,6 +31,7 @@ function ExercisesPage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [sort, setSort] = useState({ field: "name", direction: "asc" });
+  const [searchItem, setSearchItem] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     muscle_group: "",
@@ -45,7 +46,7 @@ function ExercisesPage() {
     { key: "name", label: "Nome", width: "1/4" },
     { key: "muscle_group", label: "Grupo Muscular", width: "1/4" },
     { key: "type", label: "Tipo", width: "1/6" },
-    { key: "difficulty", label: "Dificuldade", width: "1/6" }
+    { key: "difficulty", label: "Dificuldade", width: "1/6" },
   ];
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -241,7 +242,9 @@ function ExercisesPage() {
         a[sort.field] > b[sort.field] ? 1 : -1
       );
     }
-    return [...exercises].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
+    return [...exercises].sort((a, b) =>
+      a[sort.field] > b[sort.field] ? -1 : 1
+    );
   }
 
   useEffect(() => {
@@ -271,6 +274,22 @@ function ExercisesPage() {
           </div>
         </div>
 
+        <div className="!mb-6 bg-white/40 backdrop-blur-sm rounded-xl shadow-md !p-4">
+          <form className="flex flex-col gap-3">
+            <label htmlFor="searchFilter" className="font-body font-medium text-gray-700">
+              Buscar exercício
+            </label>
+            <input
+              type="text"
+              name="searchFilter"
+              id="searchFilter"
+              placeholder="Digita o nome do exercício..."
+              onChange={(e) => setSearchItem(e.target.value)}
+              className="w-full !px-4 !py-2.5 bg-white/70 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body text-gray-800"
+            />
+          </form>
+        </div>
+
         <div className="overflow-auto bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body">
           <table className="w-full min-w-[700px] table-fixed">
             <thead className="text-left bg-white">
@@ -283,8 +302,8 @@ function ExercisesPage() {
                   >
                     <div className="flex items-center gap-1">
                       {header.label}
-                      {sort.field === header.key && (
-                        sort.direction === "asc" ? (
+                      {sort.field === header.key &&
+                        (sort.direction === "asc" ? (
                           <FiChevronUp size={16} />
                         ) : (
                           <FiChevronDown size={16} />
@@ -306,74 +325,92 @@ function ExercisesPage() {
                   </td>
                 </tr>
               ) : (
-                getSortedExercises(currentExercises).map((exercise) => (
-                  <tr
-                    key={exercise.id}
-                    className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
-                  >
-                    <td className="!p-3">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <div className="font-medium">
-                            {exercise.name.charAt(0).toUpperCase() +
-                              exercise.name.slice(1)}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            ID: {exercise.id}
+                getSortedExercises(currentExercises)
+                  .filter((exercise) => {
+                    return searchItem === ""
+                      ? true
+                      : exercise.name
+                          .toLowerCase()
+                          .includes(searchItem.toLowerCase());
+                  })
+                  .map((exercise) => (
+                    <tr
+                      key={exercise.id}
+                      className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                    >
+                      <td className="!p-3">
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <div className="font-medium">
+                              {exercise.name.charAt(0).toUpperCase() +
+                                exercise.name.slice(1)}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              ID: {exercise.id}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {exercise.muscle_group}
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      <span className="inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {exercise.type || "weightlifting"}
-                      </span>
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      <span
-                        className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
-                          exercise.difficulty === "beginner"
-                            ? "bg-green-100 text-green-800"
-                            : exercise.difficulty === "intermediate"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-red-100 text-red-800"
-                        }`}
-                      >
-                        {exercise.difficulty || "beginner"}
-                      </span>
-                    </td>
-                    <td className="!p-3">
-                      <div className="flex items-center gap-2">
-                        <button
-                          title="Editar"
-                          onClick={() => openEditModal(exercise)}
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {exercise.muscle_group}
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        <span className="inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          {exercise.type || "weightlifting"}
+                        </span>
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        <span
+                          className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
+                            exercise.difficulty === "beginner"
+                              ? "bg-green-100 text-green-800"
+                              : exercise.difficulty === "intermediate"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
                         >
-                          <FiEdit2 />
-                        </button>
-                        <button
-                          title="Eliminar"
-                          onClick={() => openDeleteModal(exercise)}
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
-                        >
-                          <FiTrash2 />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          {exercise.difficulty || "beginner"}
+                        </span>
+                      </td>
+                      <td className="!p-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            title="Editar"
+                            onClick={() => openEditModal(exercise)}
+                            className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                          >
+                            <FiEdit2 />
+                          </button>
+                          <button
+                            title="Eliminar"
+                            onClick={() => openDeleteModal(exercise)}
+                            className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
+                          >
+                            <FiTrash2 />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>
           <div className="flex items-center justify-between !mt-4 !px-4 !py-3 border-t border-gray-200/50">
             {/* Page info */}
             <div className="text-sm font-medium text-gray-600">
-              A mostrar <span className="text-[var(--primary)] font-semibold">{indexOfFirstItem + 1}</span> -{" "}
-              <span className="text-[var(--primary)] font-semibold">{Math.min(indexOfLastItem, exercises.length)}</span> de{" "}
-              <span className="text-[var(--primary)] font-semibold">{exercises.length}</span> exercícios
+              A mostrar{" "}
+              <span className="text-[var(--primary)] font-semibold">
+                {indexOfFirstItem + 1}
+              </span>{" "}
+              -{" "}
+              <span className="text-[var(--primary)] font-semibold">
+                {Math.min(indexOfLastItem, exercises.length)}
+              </span>{" "}
+              de{" "}
+              <span className="text-[var(--primary)] font-semibold">
+                {exercises.length}
+              </span>{" "}
+              exercícios
             </div>
 
             {/* Navigation buttons */}
@@ -582,10 +619,12 @@ function ExercisesPage() {
         )}
       </div>
 
-      { showSuccessWarning && (
-        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
-      ) }
-
+      {showSuccessWarning && (
+        <SuccessWarning
+          message={successMessage}
+          onClose={closeSuccessWarning}
+        />
+      )}
     </section>
   );
 }
