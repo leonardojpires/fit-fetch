@@ -11,6 +11,7 @@ import useAddFood from "../../../hooks/Foods/useAddFood";
 import useUpdateFood from "../../../hooks/Foods/useUpdateFood";
 import useDeleteFood from "../../../hooks/Foods/useDeleteFood";
 import SuccessWarning from "../../../components/SuccessWarning";
+import SearchBar from './../../../components/SearchBar/index';
 
 function FoodsPage() {
   useAdminRedirect();
@@ -40,7 +41,7 @@ function FoodsPage() {
     calories: "",
     serving_size: "100",
     unit: "g",
-    category: ""
+    category: "",
   });
 
   const headers = [
@@ -51,7 +52,7 @@ function FoodsPage() {
     { key: "fat", label: "Gordura (g)", width: "1/12" },
     { key: "calories", label: "Calorias (kcal)", width: "1/12" },
     { key: "serving_size", label: "Porção", width: "1/12" },
-    { key: "category", label: "Categoria", width: "1/12" }
+    { key: "category", label: "Categoria", width: "1/12" },
   ];
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -70,7 +71,7 @@ function FoodsPage() {
       calories: "",
       serving_size: "100",
       unit: "g",
-      category: ""
+      category: "",
     });
     setIsModalOpen(true);
   }
@@ -86,7 +87,7 @@ function FoodsPage() {
       calories: food.calories,
       serving_size: food.serving_size,
       unit: food.unit,
-      category: food.category || ""
+      category: food.category || "",
     });
     setIsEditModalOpen(true);
     setIsModalOpen(true);
@@ -211,21 +212,12 @@ function FoodsPage() {
           </div>
         </div>
 
-        <div className="!mb-6 bg-white/40 backdrop-blur-sm rounded-xl shadow-md !p-4">
-          <form className="flex flex-col gap-3">
-            <label htmlFor="searchFilter" className="font-body font-medium text-gray-700">
-              Buscar alimento
-            </label>
-            <input
-              type="text"
-              name="searchFilter"
-              id="searchFilter"
-              placeholder="Digita o nome do alimento..."
-              onChange={(e) => setSearchItem(e.target.value)}
-              className="w-full !px-4 !py-2.5 bg-white/70 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body text-gray-800"
-            />
-          </form>
-        </div>
+        <SearchBar
+          placeholder="Digita o nome do alimento..."
+          label="Buscar Alimento"
+          searchItem={searchItem}
+          setSearchItem={setSearchItem}
+        />
 
         <div className="overflow-auto bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body">
           <table className="w-full min-w-[700px] table-fixed">
@@ -239,8 +231,8 @@ function FoodsPage() {
                   >
                     <div className="flex items-center gap-1">
                       {header.label}
-                      {sort.field === header.key && (
-                        sort.direction === "asc" ? (
+                      {sort.field === header.key &&
+                        (sort.direction === "asc" ? (
                           <FiChevronUp size={16} />
                         ) : (
                           <FiChevronDown size={16} />
@@ -266,82 +258,95 @@ function FoodsPage() {
                   .filter((food) => {
                     return searchItem === ""
                       ? true
-                      : food.name.toLowerCase().includes(searchItem.toLowerCase());
+                      : food.name
+                          .toLowerCase()
+                          .includes(searchItem.toLowerCase());
                   })
                   .map((food) => (
-                  <tr
-                    key={food.id}
-                    className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
-                  >
-                    <td className="!p-3">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <div className="font-medium">
-                            {food.name.charAt(0).toUpperCase() +
-                              food.name.slice(1)}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            ID: {food.id}
+                    <tr
+                      key={food.id}
+                      className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                    >
+                      <td className="!p-3">
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <div className="font-medium">
+                              {food.name.charAt(0).toUpperCase() +
+                                food.name.slice(1)}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              ID: {food.id}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.protein}g
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.carbs}g
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.fiber}g
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.fat}g
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.calories} kcal
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.serving_size}{food.unit}
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700">
-                      {food.category ? (
-                        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                          {food.category}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="!p-3">
-                      <div className="flex items-center gap-2">
-                        <button
-                          title="Editar"
-                          onClick={() => openEditModal(food)}
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
-                        >
-                          <FiEdit2 />
-                        </button>
-                        <button
-                          title="Eliminar"
-                          onClick={() => openDeleteModal(food)}
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
-                        >
-                          <FiTrash2 />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.protein}g
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.carbs}g
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.fiber}g
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.fat}g
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.calories} kcal
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.serving_size}
+                        {food.unit}
+                      </td>
+                      <td className="!p-3 text-sm text-gray-700">
+                        {food.category ? (
+                          <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                            {food.category}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="!p-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            title="Editar"
+                            onClick={() => openEditModal(food)}
+                            className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                          >
+                            <FiEdit2 />
+                          </button>
+                          <button
+                            title="Eliminar"
+                            onClick={() => openDeleteModal(food)}
+                            className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
+                          >
+                            <FiTrash2 />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>
           <div className="flex items-center justify-between !mt-4 !px-4 !py-3 border-t border-gray-200/50">
             {/* Page info */}
             <div className="text-sm font-medium text-gray-600">
-              A mostrar <span className="text-[var(--primary)] font-semibold">{indexOfFirstItem + 1}</span> -{" "}
-              <span className="text-[var(--primary)] font-semibold">{Math.min(indexOfLastItem, foods.length)}</span> de{" "}
-              <span className="text-[var(--primary)] font-semibold">{foods.length}</span> alimentos
+              A mostrar{" "}
+              <span className="text-[var(--primary)] font-semibold">
+                {indexOfFirstItem + 1}
+              </span>{" "}
+              -{" "}
+              <span className="text-[var(--primary)] font-semibold">
+                {Math.min(indexOfLastItem, foods.length)}
+              </span>{" "}
+              de{" "}
+              <span className="text-[var(--primary)] font-semibold">
+                {foods.length}
+              </span>{" "}
+              alimentos
             </div>
 
             {/* Navigation buttons */}

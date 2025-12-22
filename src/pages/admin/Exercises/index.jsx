@@ -11,6 +11,7 @@ import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
 import useAddExercise from "../../../hooks/Exercises/useAddExercise";
 import useUpdateExercise from "../../../hooks/Exercises/useUpdateExercise";
 import useDeleteExercise from "../../../hooks/Exercises/useDeleteExercise";
+import SearchBar from './../../../components/SearchBar/index';
 
 function ExercisesPage() {
   useAdminRedirect();
@@ -274,21 +275,12 @@ function ExercisesPage() {
           </div>
         </div>
 
-        <div className="!mb-6 bg-white/40 backdrop-blur-sm rounded-xl shadow-md !p-4">
-          <form className="flex flex-col gap-3">
-            <label htmlFor="searchFilter" className="font-body font-medium text-gray-700">
-              Buscar exercício
-            </label>
-            <input
-              type="text"
-              name="searchFilter"
-              id="searchFilter"
-              placeholder="Digita o nome do exercício..."
-              onChange={(e) => setSearchItem(e.target.value)}
-              className="w-full !px-4 !py-2.5 bg-white/70 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body text-gray-800"
-            />
-          </form>
-        </div>
+        <SearchBar
+          placeholder="Digita o nome do exercício..."
+          label="Buscar Exercício"
+          searchItem={searchItem}
+          setSearchItem={setSearchItem}
+        />
 
         <div className="overflow-auto bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body">
           <table className="w-full min-w-[700px] table-fixed">
