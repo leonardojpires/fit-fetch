@@ -14,6 +14,7 @@ import Profile from './../pages/Profile/index';
 import WorkoutPlans from './../pages/WorkoutPlans/index';
 import HowItWorks from "../pages/HowItWorks";
 import FAQ from "../pages/FAQ";
+import Exercise from "../pages/Exercise";
 
 function AppRoutes() {
     return (
@@ -29,6 +30,7 @@ function AppRoutes() {
                     <Route path="/entrar" element={<AuthPage />}></Route>
                     <Route path="/perfil" element={<Profile />}></Route>
                     <Route path="/plano-treino/:id" element={<WorkoutPlans />}></Route>
+                    <Route path="/exercicio/:id" element={<Exercise />}></Route>
 
                     {/* ADMIN ROUTES */}
                     <Route path="/admin" element={<Dashboard />}></Route>

@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+/* Exercise Page Utility Classes */
+
+/* Info Section */
+.info-section {
+  @apply flex flex-col gap-4 !p-6 flex-1;
+}
+
+.info-container {
+  @apply flex flex-col gap-5;
+}
+
+.info-item {
+  @apply flex flex-col;
+}
+
+.info-label {
+  @apply font-semibold text-black/50 text-sm;
+}
+
+.info-value {
+  @apply text-black font-bold;
+}
+
+/* Media Section */
+.media-section {
+  @apply flex flex-col gap-4 !px-6 !pb-6 flex-1;
+}
+
+.exercise-image {
+  @apply w-full h-auto object-cover rounded-lg;
+}
+
+.video-container {
+  @apply relative w-full;
+}
+
+.video-embed {
+  @apply absolute top-0 left-0 w-full h-full rounded-lg;
+}
+
+.video-button {
+  @apply flex items-center justify-center gap-3 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-semibold !px-6 !py-4 rounded-lg hover:opacity-90 transition-all;
+}
+
+.video-placeholder {
+  @apply flex items-center justify-center gap-3 bg-gray-100 text-gray-400 font-semibold !px-6 !py-4 rounded-lg;
+}
+
+/* Header */
+.exercise-header {
+  @apply flex flex-col gap-4 !p-6;
+}
+
+.exercise-title-container {
+  @apply flex flex-col gap-1 border-b-2 border-gray-200/50 !pb-4;
+}
+
+.exercise-back-button {
+  @apply bg-gray-50 hover:bg-gray-100 !p-2 rounded-full text-gray-600 hover:text-gray-800 transition-all;
+}
+
+/* Badges */
+.badge-container {
+  @apply flex flex-row gap-6;
+}
+
+.badge-type {
+  @apply !px-3 !py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)];
+}
+
+.badge-difficulty {
+  @apply !px-3 !py-1 rounded-full bg-[var(--secondary)]/10 text-[var(--secondary)];
+}
+
+.badge-muscle {
+  @apply !px-3 !py-1 rounded-full bg-[var(--accent)]/10 text-[var(--accent)];
+}
+
+/* Description */
+.description-section {
+  @apply !px-6 !pb-6;
+}
+
+.description-title {
+  @apply text-2xl font-semibold;
+}
+
+.description-text {
+  @apply whitespace-pre-line leading-relaxed text-black/80;
+}

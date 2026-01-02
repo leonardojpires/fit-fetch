@@ -1,9 +1,7 @@
 import "./index.css";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  FiZap,
   FiSettings,
   FiFilter,
   FiTrendingUp,
@@ -11,8 +9,6 @@ import {
   FiClock,
   FiDownload,
   FiShield,
-  FiPlus,
-  FiMinus,
   FiArrowRight,
   FiDatabase,
 } from "react-icons/fi";
@@ -63,7 +59,7 @@ function HowItWorks() {
           className="flex flex-col justify-center items-center text-center !mb-12"
         >
           <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-black !mt-4 !mb-4">
-            Cria os teus planos em pouquíssimos cliques
+            Cria os teus planos rapidamente
           </h1>
           <p className="font-body text-black/70 text-xl max-w-2xl mx-auto !mb-6">
             Descobre como funciona, que regras garantem qualidade e como aproveitar cada plano.

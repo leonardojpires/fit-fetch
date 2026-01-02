@@ -12,6 +12,7 @@ export function UserProvider({ children }) {
     const fetchUserData = async (firebaseUser) => {
       try {
         const token = await firebaseUser.getIdToken();
+        console.log("🔑 Firebase Token:", token);
 
         const response = await fetch(`http://localhost:3000/api/users/me`, {
           headers: {
