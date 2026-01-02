@@ -8,9 +8,11 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import ErrorWarning from "./../../components/ErrorWarning/index";
 import SuccessWarning from "../../components/SuccessWarning";
 import { IoMdDownload } from "react-icons/io";
-import { IoBookmarksOutline, IoBookmarksSharp  } from "react-icons/io5";
+import { IoBookmarksOutline, IoBookmarksSharp } from "react-icons/io5";
 import pdfWorkoutExporter from "../../utils/pdfWorkoutExporter.js";
 import { motion } from "framer-motion";
+import { FaExternalLinkAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const tWorkoutType = {
   calisthenics: "Calistenia",
@@ -140,29 +142,35 @@ function Workout() {
   const handleSavePlan = async (planId) => {
     try {
       const token = await auth.currentUser.getIdToken();
-      
-      const response = await fetch(`http://localhost:3000/api/workout-plans/save/${planId}`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+
+      const response = await fetch(
+        `http://localhost:3000/api/workout-plans/save/${planId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       if (!response.ok) throw new Error("Erro ao guardar o plano de treino!");
 
       const data = await response.json();
       console.log("Plano de treino guardado com sucesso: ", data);
       setIsSaved(!isSaved);
-      setSuccessMessage(isSaved ? "Plano de treino removido dos guardados!" : "Plano de treino guardado com sucesso!");
+      setSuccessMessage(
+        isSaved
+          ? "Plano de treino removido dos guardados!"
+          : "Plano de treino guardado com sucesso!"
+      );
       setShowSuccessWarning(true);
-
-    } catch(err) {
+    } catch (err) {
       console.error("Erro ao guardar o plano de treino: ", err);
       setError("Erro ao guardar o plano de treino!");
       setShowErrorWarning(true);
     }
-  }
+  };
 
   if (validationErrors.length > 0) {
     setTimeout(() => {
@@ -372,10 +380,7 @@ function Workout() {
                 )}
                 {formData.workoutType === "cardio" && (
                   <div className="flex flex-col items-start gap-2 !mb-4">
-                    <label
-                      htmlFor="duration"
-                      className="text-lg font-medium"
-                    >
+                    <label htmlFor="duration" className="text-lg font-medium">
                       Duração (minutos)
                     </label>
                     <input
@@ -434,7 +439,14 @@ function Workout() {
                           }`}
                         >
                           <td className="!px-4 !py-3 text-gray-800 font-medium">
-                            {ex.name}
+                            <Link
+                              to={`/exercicio/${ex.id}`}
+                              target="_blank"
+                              className="flex flex-row gap-2 items-center hover:underline"
+                            >
+                              <FaExternalLinkAlt className="text-black/50 text-sm" />{" "}
+                              {ex.name}
+                            </Link>
                           </td>
                           <td className="!px-4 !py-3 text-gray-600 capitalize">
                             {ex.muscle_group}
@@ -463,21 +475,29 @@ function Workout() {
                   {workoutPlan.workoutType !== "cardio" && (
                     <div className="flex flex-col gap-2">
                       <span className="font-body">
-                        <strong>Descanso entre séries:</strong> {" "}
+                        <strong>Descanso entre séries:</strong>{" "}
                         {convertToMinutes(workoutPlan.rest_time)}{" "}
                         {workoutPlan.rest_time < 60 ? "segundos" : "minuto(s)"}
                       </span>
                       <span className="font-body">
                         <strong>Séries:</strong> {workoutPlan.series_number}
                       </span>
-                     <span className="font-body">
+                      <span className="font-body">
                         <strong>Repetições:</strong> {workoutPlan.reps_number}
                       </span>
                     </div>
                   )}
                   <div>
                     <button
-                      onClick={() => pdfWorkoutExporter(workoutPlan, user, convertToMinutes, tWorkoutType, tLevel)}
+                      onClick={() =>
+                        pdfWorkoutExporter(
+                          workoutPlan,
+                          user,
+                          convertToMinutes,
+                          tWorkoutType,
+                          tLevel
+                        )
+                      }
                       className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                     >
                       <IoMdDownload /> Exportar para PDF
@@ -487,7 +507,8 @@ function Workout() {
                       onClick={() => handleSavePlan(workoutPlan.id)}
                       className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                     >
-                      { isSaved ? <IoBookmarksSharp /> : <IoBookmarksOutline /> } { isSaved ? "Plano Guardado" : "Guardar Plano" }
+                      {isSaved ? <IoBookmarksSharp /> : <IoBookmarksOutline />}{" "}
+                      {isSaved ? "Plano Guardado" : "Guardar Plano"}
                     </button>
                   </div>
                 </div>

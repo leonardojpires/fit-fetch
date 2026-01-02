@@ -1,11 +1,11 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGetWorkoutPlanById from "../../hooks/WorkoutPlan/useGetWorkoutPlanById";
 import pdfWorkoutExporter from "./../../utils/pdfWorkoutExporter.js";
 import useCurrentUser from "../../hooks/useCurrentUser";
-import { IoMdDownload } from "react-icons/io";
-import { FaTrash, FaArrowLeft } from "react-icons/fa";
 import useRemoveWorkoutPlan from "../../hooks/WorkoutPlan/useRemoveWorkoutPlan.jsx";
+import { IoMdDownload } from "react-icons/io";
+import { FaTrash, FaArrowLeft, FaExternalLinkAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const tWorkoutType = {
@@ -132,7 +132,9 @@ function WorkoutPlans() {
                       }`}
                     >
                       <td className="!px-4 !py-3 text-gray-800 font-medium">
-                        {ex.name}
+                        <Link to={`/exercicio/${ex.id}`} className="flex flex-row gap-2 items-center hover:underline">
+                          <FaExternalLinkAlt className="text-black/50 text-sm" /> {ex.name}
+                        </Link>
                       </td>
                       <td className="!px-4 !py-3 text-gray-600 capitalize">
                         {ex.muscle_group}
