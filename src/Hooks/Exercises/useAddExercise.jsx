@@ -3,7 +3,7 @@ import { auth } from "../../services/firebase.js";
 export default function useAddExercise() {
   const addExercise = async (formData) => {
     try {
-      const { name, muscle_group, description, image_url, video_url, type, difficulty } = formData;
+      const { name, muscle_group, description, video_url, type, difficulty } = formData;
       const user = auth.currentUser;
 
       if (!user) throw new Error("Utilizador não autenticado!");
@@ -20,7 +20,6 @@ export default function useAddExercise() {
           name, 
           muscle_group, 
           description, 
-          image_url, 
           video_url,
           type,
           difficulty

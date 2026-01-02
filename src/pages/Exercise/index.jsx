@@ -127,14 +127,8 @@ function Exercise() {
           </div>
 
           {/* IMAGE/VIDEO AND INFOS */}
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row justify-center items-start gap-3">
             <div className="media-section">
-              <img
-                src={exercise.image_url || "https://placehold.co/600x400"}
-                alt="Imagem do exercício"
-                className="exercise-image"
-              />
-
               {exercise.video_url && getYouTubeId(exercise.video_url) ? (
                 <div
                   className="video-container"

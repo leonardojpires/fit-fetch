@@ -26,7 +26,6 @@ function ExercisesPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [exerciseToEdit, setExerciseToEdit] = useState(null);
   const [exerciseToDelete, setExerciseToDelete] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [successMessage, setSuccessMessage] = useState("");
@@ -37,7 +36,6 @@ function ExercisesPage() {
     name: "",
     muscle_group: "",
     description: "",
-    image_url: "",
     video_url: "",
     type: "weightlifting",
     difficulty: "beginner",
@@ -57,12 +55,10 @@ function ExercisesPage() {
   const totalPages = Math.ceil(exercises.length / itemsPerPage);
 
   function openAddModal() {
-    setImageFile(null);
     setFormData({
       name: "",
       muscle_group: "",
       description: "",
-      image_url: "",
       video_url: "",
       type: "weightlifting",
       difficulty: "beginner",
@@ -76,7 +72,6 @@ function ExercisesPage() {
       name: exercise.name,
       muscle_group: exercise.muscle_group,
       description: exercise.description || "",
-      image_url: exercise.image_url || "",
       video_url: exercise.video_url || "",
       type: exercise.type || "weightlifting",
       difficulty: exercise.difficulty || "beginner",
@@ -87,7 +82,6 @@ function ExercisesPage() {
 
   function closeModal() {
     setExerciseToEdit(null);
-    setImageFile(null);
     setIsEditModalOpen(false);
     setIsModalOpen(false);
   }
@@ -103,46 +97,14 @@ function ExercisesPage() {
   }
 
   function handleInputChange(e) {
-    const { name, value, type, files } = e.target;
-
-    if (type === "file" && name === "image_file") {
-      setImageFile(files[0]);
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     const dataToSend = { ...formData };
-
-    // Se houver ficheiro de imagem, fazer upload primeiro
-    if (imageFile) {
-      const uploadFormData = new FormData();
-      uploadFormData.append("image", imageFile);
-
-      try {
-        const token = await auth.currentUser.getIdToken();
-        const uploadResponse = await fetch(
-          "http://localhost:3000/api/upload/image",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: uploadFormData,
-          }
-        );
-
-        if (uploadResponse.ok) {
-          const { imageUrl } = await uploadResponse.json();
-          dataToSend.image_url = imageUrl;
-        }
-      } catch (err) {
-        console.error("Erro ao fazer upload da imagem:", err);
-      }
-    }
 
     const newExercise = await addExercise(dataToSend);
 
@@ -167,33 +129,6 @@ function ExercisesPage() {
     if (!exerciseToEdit) return;
 
     const dataToSend = { ...formData };
-
-    // Se houver ficheiro de imagem, fazer upload primeiro
-    if (imageFile) {
-      const uploadFormData = new FormData();
-      uploadFormData.append("image", imageFile);
-
-      try {
-        const token = await auth.currentUser.getIdToken();
-        const uploadResponse = await fetch(
-          "http://localhost:3000/api/upload/image",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: uploadFormData,
-          }
-        );
-
-        if (uploadResponse.ok) {
-          const { imageUrl } = await uploadResponse.json();
-          dataToSend.image_url = imageUrl;
-        }
-      } catch (err) {
-        console.error("Erro ao fazer upload da imagem:", err);
-      }
-    }
 
     const updatedExercise = await updateExercise(exerciseToEdit.id, dataToSend);
     if (updatedExercise) {
@@ -550,21 +485,6 @@ function ExercisesPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
-                    Imagem do Exercício
-                  </label>
-                  <input
-                    type="file"
-                    name="image_file"
-                    accept="image/*"
-                    onChange={handleInputChange}
-                    className="w-full !px-3 !py-2.5 bg-white/70 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/40 focus:border-[var(--primary)] transition-all font-body cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--primary)] file:text-white hover:file:bg-[var(--accent)] file:cursor-pointer"
-                  />
-                  <p className="text-xs text-gray-500 !mt-1">
-                    Ou adicione uma URL abaixo
-                  </p>
-                </div>
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
                     Link do Vídeo

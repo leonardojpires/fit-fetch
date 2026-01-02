@@ -17,10 +17,6 @@ Exercicio.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    image_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     video_url: {
       type: DataTypes.STRING,
       allowNull: true,

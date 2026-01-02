@@ -3,7 +3,7 @@ import { auth } from "../../services/firebase";
 export default function useUpdateExercise() {
     const updateExercise = async (exerciseId, formData) => {
         try {
-            const { name, muscle_group, description, image_url, video_url, type, difficulty } = formData;
+            const { name, muscle_group, description, video_url, type, difficulty } = formData;
             const user = auth.currentUser;
 
             if (!user) throw new Error("Utilizador não autenticado!");
@@ -20,7 +20,6 @@ export default function useUpdateExercise() {
                     name, 
                     muscle_group, 
                     description, 
-                    image_url, 
                     video_url,
                     type,
                     difficulty
