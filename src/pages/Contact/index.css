@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+.contact-page {
+    @apply relative min-h-screen overflow-hidden;
+}
+
+.contact-page label {
+    @apply font-semibold text-black/80 text-sm;
+}
+
+.contact-page input[type="text"],
+.contact-page input[type="email"],
+.contact-page input[type="tel"],
+.contact-page select,
+.contact-page textarea {
+    @apply bg-black/5 border border-black/15 rounded-xl !px-3 !py-2.5 outline-none transition-all duration-200;
+}
+
+.contact-page input[type="text"]:focus,
+.contact-page input[type="email"]:focus,
+.contact-page input[type="tel"]:focus,
+.contact-page select:focus,
+.contact-page textarea:focus {
+    @apply border-[var(--primary)]/50 bg-white;
+}
+
+.contact-page textarea {
+    @apply min-h-[120px] resize-y;
+}
+
+.contact-page select {
+    @apply cursor-pointer;
+}
+
+.contact-page input[type="checkbox"] {
+    @apply w-4 h-4 cursor-pointer accent-[var(--primary)];
+}
