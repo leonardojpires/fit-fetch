@@ -80,10 +80,16 @@ function Contact() {
 
   return (
     <>
-      <section className="!mt-40 contact-page">
+      <motion.section
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="!mt-40 contact-page"
+      >
         <div className="section !py-16">
           {/* HEADING DIV */}
-          <div className="flex flex-col justify-center items-center text-center !mb-12">
+          <div className="flex flex-col justify-center items-center text-center !mb-6">
             <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-black !mt-4 !mb-4">
               Contacta-nos
             </h1>
@@ -93,13 +99,7 @@ function Contact() {
             </p>
           </div>
           {/* CONTACT DIV */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="glass-card"
-          >
+          <div className="glass-card">
             <div className="flex flex-col gap-6 !p-6">
               {/* CONTACT DATA */}
               <div className="flex flex-row justify-center gap-6 flex-wrap">
@@ -228,9 +228,9 @@ function Contact() {
                 </form>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
-      </section>
+      </motion.section>
       {status === "success" && (
         <SuccessWarning
           message="A mensagem foi enviada com sucesso!"

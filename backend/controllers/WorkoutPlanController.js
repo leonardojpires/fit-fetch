@@ -25,7 +25,7 @@ class WorkoutPlanController {
         include: [
           {
             model: Exercicio,
-            as: "exercicios",
+            as: "exercises",
             through: { attributes: [] },
           },
         ],
@@ -52,7 +52,7 @@ class WorkoutPlanController {
         include: [
           {
             model: Exercicio,
-            as: "exercicios",
+            as: "exercises",
             through: { attributes: [] },
           },
         ],

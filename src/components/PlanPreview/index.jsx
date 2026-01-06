@@ -14,9 +14,9 @@ function PlanPreview({ plan, onDeletePlan }) {
         {plan.description}
       </p>
       <div className="flex flex-col gap-1 !mb-4">
-        {plan.exercicios &&
-          plan.exercicios.length > 0 &&
-          plan.exercicios.slice(0, 3).map((ex, index) => (
+        {plan.exercises &&
+          plan.exercises.length > 0 &&
+          plan.exercises.slice(0, 3).map((ex, index) => (
             <span
               key={index}
               className="text-xs bg-[var(--primary)]/10 text-[var(--primary)] !px-2 !py-1 rounded"
@@ -24,7 +24,7 @@ function PlanPreview({ plan, onDeletePlan }) {
               {ex.name}
             </span>
           ))}
-        {plan.exercicios && plan.exercicios.length > 3 && (
+        {plan.exercises && plan.exercises.length > 3 && (
           <span className="text-xs bg-[var(--primary)]/10 text-[var(--primary)] !px-2 !py-1 rounded">
             ...
           </span>

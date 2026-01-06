@@ -11,7 +11,7 @@ import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
 import useAddExercise from "../../../hooks/Exercises/useAddExercise";
 import useUpdateExercise from "../../../hooks/Exercises/useUpdateExercise";
 import useDeleteExercise from "../../../hooks/Exercises/useDeleteExercise";
-import SearchBar from './../../../components/SearchBar/index';
+import SearchBar from "./../../../components/SearchBar/index";
 
 function ExercisesPage() {
   useAdminRedirect();
@@ -30,6 +30,8 @@ function ExercisesPage() {
   const [itemsPerPage] = useState(10);
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [sort, setSort] = useState({ field: "name", direction: "asc" });
   const [searchItem, setSearchItem] = useState("");
   const [formData, setFormData] = useState({
@@ -103,56 +105,78 @@ function ExercisesPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setIsSubmitting(true);
 
-    const dataToSend = { ...formData };
+    try {
+      const dataToSend = { ...formData };
 
-    const newExercise = await addExercise(dataToSend);
+      const newExercise = await addExercise(dataToSend);
 
-    if (newExercise) {
-      const updatedExercises = await fetch(
-        "http://localhost:3000/api/exercises/all",
-        {
-          headers: {
-            Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
-          },
-        }
-      ).then((res) => res.json());
-      setExercises(updatedExercises);
-      setSuccessMessage("Exercício adicionado com sucesso!");
-      setShowSuccessWarning(true);
+      if (newExercise) {
+        const updatedExercises = await fetch(
+          "http://localhost:3000/api/exercises/all",
+          {
+            headers: {
+              Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
+            },
+          }
+        ).then((res) => res.json());
+        setExercises(updatedExercises);
+        setSuccessMessage("Exercício adicionado com sucesso!");
+        setShowSuccessWarning(true);
+      }
+    } finally {
+      setIsSubmitting(false);
+      closeModal();
     }
-    closeModal();
   }
 
   async function handleEditSubmit(e) {
     e.preventDefault();
     if (!exerciseToEdit) return;
+    setIsSubmitting(true);
 
-    const dataToSend = { ...formData };
+    try {
+      const dataToSend = { ...formData };
 
-    const updatedExercise = await updateExercise(exerciseToEdit.id, dataToSend);
-    if (updatedExercise) {
-      setExercises((prev) =>
-        prev.map((ex) => (ex.id === updatedExercise.id ? updatedExercise : ex))
+      const updatedExercise = await updateExercise(
+        exerciseToEdit.id,
+        dataToSend
       );
-      setSuccessMessage("Exercício atualizado com sucesso!");
-      setShowSuccessWarning(true);
+      if (updatedExercise) {
+        setExercises((prev) =>
+          prev.map((ex) =>
+            ex.id === updatedExercise.id ? updatedExercise : ex
+          )
+        );
+        setSuccessMessage("Exercício atualizado com sucesso!");
+        setShowSuccessWarning(true);
+      }
+    } catch (error) {
+        console.error("Erro ao atualizar o exercício:", error);
+    } finally {
+      setIsSubmitting(false);
+      closeModal();
     }
 
-    closeModal();
   }
 
   async function handleDeleteExercise() {
     if (!exerciseToDelete) return;
+    setIsDeleting(true);
 
-    const result = await deleteExercise(exerciseToDelete.id);
-    if (result) {
-      setExercises((prev) =>
-        prev.filter((ex) => ex.id !== exerciseToDelete.id)
-      );
+    try {
+      const result = await deleteExercise(exerciseToDelete.id);
+      if (result) {
+        setExercises((prev) =>
+          prev.filter((ex) => ex.id !== exerciseToDelete.id)
+        );
+        setSuccessMessage("Exercício removido com sucesso!");
+        setShowSuccessWarning(true);
+      }
+    } finally {
+      setIsDeleting(false);
       closeDeleteModal();
-      setSuccessMessage("Exercício removido com sucesso!");
-      setShowSuccessWarning(true);
     }
   }
 
@@ -503,15 +527,27 @@ function ExercisesPage() {
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="!px-4 !py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-body font-medium text-gray-700 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="!px-4 !py-2 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 transition-colors font-body font-medium text-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
-                    className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-colors font-body font-medium cursor-pointer"
+                    disabled={isSubmitting}
+                    className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-colors font-body font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    {isEditModalOpen ? "Guardar" : "Adicionar"}
+                    {isSubmitting ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        A processar...
+                      </>
+                    ) : (
+                      isEditModalOpen ? "Guardar" : "Adicionar"
+                    )}
                   </button>
                 </div>
               </form>
@@ -525,6 +561,7 @@ function ExercisesPage() {
             itemToDelete={exerciseToDelete}
             closeDeleteModal={closeDeleteModal}
             handleDeleteItem={handleDeleteExercise}
+            isDeleting={isDeleting}
             title="Eliminar Exercício"
             message="Tem a certeza que deseja eliminar o exercício?"
           />

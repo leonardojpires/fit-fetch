@@ -24,6 +24,7 @@ function Profile() {
   const [submitText, setSubmitText] = useState("Guardar Alterações");
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
+  const [isDeletingPlan, setIsDeletingPlan] = useState(null);
   const saveChanges = useUpdateCurrentUser();
   const removePlan = useRemoveWorkoutPlan();
   const navigate = useNavigate();
@@ -58,11 +59,16 @@ function Profile() {
   }, [user]);
 
   async function handleDeletePlan(planId) {
-    const result = await removePlan(planId);
-    if (result) {
-      setSuccessMessage("Plano removido com sucesso!");
-      setShowSuccessWarning(true);
-      setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
+    setIsDeletingPlan(planId);
+    try {
+      const result = await removePlan(planId);
+      if (result) {
+        setSuccessMessage("Plano removido com sucesso!");
+        setShowSuccessWarning(true);
+        setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
+      }
+    } finally {
+      setIsDeletingPlan(null);
     }
   }
 

@@ -29,6 +29,7 @@ const tLevel = {
 function Workout() {
   useRedirectIfNotAuth();
   const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const { user, loading: userLoading } = useCurrentUser();
   const {
@@ -140,6 +141,7 @@ function Workout() {
   };
 
   const handleSavePlan = async (planId) => {
+    setIsSaving(true);
     try {
       const token = await auth.currentUser.getIdToken();
 
@@ -168,7 +170,8 @@ function Workout() {
     } catch (err) {
       console.error("Erro ao guardar o plano de treino: ", err);
       setError("Erro ao guardar o plano de treino!");
-      setShowErrorWarning(true);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -505,10 +508,23 @@ function Workout() {
 
                     <button
                       onClick={() => handleSavePlan(workoutPlan.id)}
-                      className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                      disabled={isSaving}
+                      className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {isSaved ? <IoBookmarksSharp /> : <IoBookmarksOutline />}{" "}
-                      {isSaved ? "Plano Guardado" : "Guardar Plano"}
+                      {isSaving ? (
+                        <>
+                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          A processar...
+                        </>
+                      ) : (
+                        <>
+                          {isSaved ? <IoBookmarksSharp /> : <IoBookmarksOutline />}{" "}
+                          {isSaved ? "Plano Guardado" : "Guardar Plano"}
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

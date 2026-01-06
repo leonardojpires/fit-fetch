@@ -1,4 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGetWorkoutPlanById from "../../hooks/WorkoutPlan/useGetWorkoutPlanById";
 import pdfWorkoutExporter from "./../../utils/pdfWorkoutExporter.js";
@@ -26,6 +27,7 @@ function WorkoutPlans() {
   const { user, loading: loadingUser } = useCurrentUser();
   const { workoutPlan, loadingPlan, error } = useGetWorkoutPlanById(id);
   const removePlan = useRemoveWorkoutPlan();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -41,9 +43,14 @@ function WorkoutPlans() {
   }
 
   async function handleDeletePlan(planId) {
-    const result = await removePlan(planId);
-    if (result) {
+    setIsDeleting(true);
+    try {
+      const result = await removePlan(planId);
+      if (result) {
         navigate(-1);
+      }
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -124,7 +131,7 @@ function WorkoutPlans() {
                   </tr>
                 </thead>
                 <tbody className="font-body">
-                  {(workoutPlan.exercicios || []).map((ex, index) => (
+                  {(workoutPlan.exercises || []).map((ex, index) => (
                     <tr
                       key={ex.id}
                       className={`border-b border-gray-200 hover:bg-gray-100 transition-colors ${
@@ -198,9 +205,22 @@ function WorkoutPlans() {
                   onClick={() =>
                     handleDeletePlan(workoutPlan.id)
                   }
-                  className="flex flex-center items-center gap-2 font-body text-red-600 border border-red-600 rounded-lg !px-4 !py-2 hover:text-white hover:bg-red-600 transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                  disabled={isDeleting}
+                  className="flex flex-center items-center gap-2 font-body text-red-600 border border-red-600 rounded-lg !px-4 !py-2 hover:text-white hover:bg-red-600 transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <FaTrash />
+                  {isDeleting ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      A eliminar...
+                    </>
+                  ) : (
+                    <>
+                      <FaTrash /> Eliminar
+                    </>
+                  )}
                 </button>
               </div>
 

@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
         through: models.ExerciciosPlano,
         foreignKey: 'plano_id',
         otherKey: 'exercicio_id',
-        as: 'exercicios'
+        as: 'exercises'
       });
 
       // Many-to-one relationship with User

@@ -43,8 +43,7 @@ export default function useGenerateWorkoutPlan() {
       const normalizedPlan = {
         ...data.plan,
         workoutType: data.plan?.workout_type,
-        // ensure exercises array exists regardless of backend naming
-        exercises: data.plan?.exercises || data.plan?.exercicios || [],
+        exercises: data.plan?.exercises || [],
       };
       setWorkoutPlan(normalizedPlan);
     } catch (err) {

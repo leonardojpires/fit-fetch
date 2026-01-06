@@ -64,7 +64,7 @@ export default function pdfWorkoutExporter(workoutPlan, user, convertToMinutes, 
 
     // Add exercises table
     yPosition += 5;
-    const exercises = workoutPlan.exercises || workoutPlan.exercicios || [];
+    const exercises = workoutPlan.exercises || [];
 
     const tableData = exercises.map((ex) => {
         const difficultyLabel =

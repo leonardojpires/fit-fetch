@@ -1,10 +1,6 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
-import pdfWorkoutExporter from "./../../utils/pdfWorkoutExporter.js";
-import useCurrentUser from "../../hooks/useCurrentUser";
-import { IoMdDownload } from "react-icons/io";
-import { FaTrash, FaArrowLeft } from "react-icons/fa";
-import useRemoveWorkoutPlan from "../../hooks/WorkoutPlan/useRemoveWorkoutPlan.jsx";
+import { FaArrowLeft } from "react-icons/fa";
 import { motion } from "framer-motion";
 import useGetExerciseById from "../../hooks/Exercises/useGetExercisesById.jsx";
 import "./index.css";
@@ -24,10 +20,7 @@ const tDifficulty = {
 function Exercise() {
   const { id } = useParams();
   const { loading } = useRedirectIfNotAuth();
-  const { user, loading: loadingUser } = useCurrentUser();
   const { exercise, loadingExercise, error } = useGetExerciseById(id);
-
-  const navigate = useNavigate();
 
   // Extrair ID do YouTube de diferentes formatos de URL
   const getYouTubeId = (url) => {
@@ -63,7 +56,7 @@ function Exercise() {
               onClick={() => navigate(-1)}
               className="font-body text-[var(--primary)] hover:underline"
             >
-              Voltar
+              Voltarwindow.history.back(
             </button>
           </div>
         </div>
