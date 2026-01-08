@@ -1,35 +1,172 @@
 @import "tailwindcss";
 
+/* Clamp page width on admin views */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 .admin-dashboard {
   @apply flex items-start w-full;
 }
 
 .admin-content {
-  @apply flex-1 !p-4 min-h-screen box-border !py-12;
+  @apply flex-1 !p-3 sm:!p-4 md:!p-6 lg:!p-8 min-h-screen box-border !pt-20 sm:!pt-16 md:!pt-8 lg:!pt-12 !pb-8 sm:!pb-10 lg:!pb-12;
 }
 
-.section.admin-dashboard {
+.section-admin.admin-dashboard {
   @apply !p-0;
 }
 
 .admin-title {
-  @apply text-6xl font-bold !mb-3;
+  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold !mb-2 sm:!mb-3;
 }
 
 .admin-description {
-  @apply text-2xl text-black/70 !mb-10;
+  @apply text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-black/70 !mb-4 sm:!mb-6 md:!mb-8 lg:!mb-10;
 }
 
 .admin-button {
-  @apply flex flex-row items-center gap-2 bg-[var(--primary)] text-white rounded-full !px-8 !py-3 cursor-pointer hover:bg-[var(--accent)] transition-all ease-in-out duration-200;
+  @apply flex flex-row items-center justify-center !gap-2 bg-[var(--primary)] text-white rounded-full !px-3 sm:!px-4 md:!px-6 lg:!px-8 !py-2 sm:!py-2.5 md:!py-3 cursor-pointer hover:bg-[var(--accent)] transition-all ease-in-out duration-200 text-xs sm:text-sm md:text-base font-medium whitespace-nowrap;
 }
 
-@media (max-width: 700px) {
+/* Table Responsive Styles */
+table {
+  @apply border-collapse;
+}
+
+thead {
+  @apply sticky top-0 z-10 bg-white;
+}
+
+th {
+  @apply !p-2 sm:!p-3 text-left font-semibold text-sm sm:text-base;
+}
+
+td {
+  @apply !p-2 sm:!p-3 text-xs sm:text-sm;
+}
+
+/* Table Scroll Container */
+.table-scroll-container {
+  height: 600px;
+  overflow-y: auto;
+  overflow-x: auto;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile - Extra small screens */
+@media (max-width: 375px) {
+  .admin-content {
+    @apply !p-2 !pt-20;
+  }
+
+  .admin-title {
+    @apply text-xl;
+  }
+
+  .admin-description {
+    @apply text-xs;
+  }
+
+  table {
+    @apply text-xs;
+  }
+
+  th, td {
+    @apply !px-1 !py-1.5;
+  }
+
+  .table-scroll-container {
+    height: 500px;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
   .admin-dashboard {
     @apply flex-col;
   }
 
   .admin-content {
-    @apply min-h-auto;
+    @apply min-h-auto overflow-x-auto !pb-6;
+  }
+
+  table {
+    @apply text-xs;
+  }
+
+  th, td {
+    @apply !px-1.5 sm:!px-2 !py-1.5 sm:!py-2;
+  }
+
+  .table-scroll-container {
+    height: auto;
+    max-width: 100vw;
+    margin-inline: -0.5rem;
+    padding-inline: 0.5rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .table-scroll-container table {
+    min-width: 640px;
+  }
+}
+
+/* Tablet responsiveness */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .admin-title {
+    @apply text-4xl;
+  }
+
+  .admin-description {
+    @apply text-lg;
+  }
+
+  table {
+    @apply text-sm;
+  }
+
+  /* Vertical scroll on tablet if needed */
+  .table-scroll-container {
+    height: 700px;
+  }
+}
+
+/* Desktop and larger */
+@media (min-width: 1025px) {
+  .admin-dashboard {
+    @apply flex;
+  }
+
+  .admin-content {
+    @apply min-h-screen;
+  }
+
+  /* Remove scroll height limit on desktop - show all rows */
+  .table-scroll-container {
+    height: auto;
+    overflow-y: visible;
   }
 }

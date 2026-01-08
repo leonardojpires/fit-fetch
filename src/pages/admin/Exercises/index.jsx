@@ -221,16 +221,16 @@ function ExercisesPage() {
     <section className="section-admin admin-dashboard">
       <AdminSidebar />
       <div className="admin-content">
-        <div className="flex items-center justify-between !mb-6">
-          <div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">
+          <div className="w-full sm:flex-1">
             <h1 className="admin-title font-headline">Exercícios</h1>
             <p className="admin-description font-body">
               Gestão de exercícios da plataforma
             </p>
           </div>
-          <div className="admin-button font-body" onClick={openAddModal}>
+          <div className="admin-button font-body w-full sm:w-auto" onClick={openAddModal}>
             <button></button>
-            <CgGym /> Adicionar Exercício
+            <CgGym /> <span className="hidden sm:inline">Adicionar Exercício</span><span className="inline sm:hidden">Adicionar</span>
           </div>
         </div>
 
@@ -241,31 +241,32 @@ function ExercisesPage() {
           setSearchItem={setSearchItem}
         />
 
-        <div className="overflow-auto bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body">
-          <table className="w-full min-w-[700px] table-fixed">
-            <thead className="text-left bg-white">
-              <tr>
-                {headers.map((header) => (
-                  <th
-                    key={header.key}
-                    onClick={() => handleHeaderClick(header.key)}
-                    className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
-                  >
-                    <div className="flex items-center gap-1">
-                      {header.label}
-                      {sort.field === header.key &&
-                        (sort.direction === "asc" ? (
-                          <FiChevronUp size={16} />
-                        ) : (
-                          <FiChevronDown size={16} />
-                        ))}
-                    </div>
-                  </th>
-                ))}
-                <th className="!p-3">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body overflow-hidden">
+          <div className="table-scroll-container overflow-x-auto overflow-y-auto">
+            <table className="w-full table-fixed min-w-[820px] sm:min-w-full">
+              <thead className="text-left bg-white sticky top-0 z-10">
+                <tr>
+                  {headers.map((header) => (
+                    <th
+                      key={header.key}
+                      onClick={() => handleHeaderClick(header.key)}
+                      className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
+                    >
+                      <div className="flex items-center !gap-1">
+                        {header.label}
+                        {sort.field === header.key &&
+                          (sort.direction === "asc" ? (
+                            <FiChevronUp size={16} />
+                          ) : (
+                            <FiChevronDown size={16} />
+                          ))}
+                      </div>
+                    </th>
+                  ))}
+                  <th className="!p-3">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
               {exercises.length === 0 ? (
                 <tr>
                   <td
@@ -324,7 +325,7 @@ function ExercisesPage() {
                         </span>
                       </td>
                       <td className="!p-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center !gap-2">
                           <button
                             title="Editar"
                             onClick={() => openEditModal(exercise)}
@@ -344,11 +345,12 @@ function ExercisesPage() {
                     </tr>
                   ))
               )}
-            </tbody>
-          </table>
-          <div className="flex items-center justify-between !mt-4 !px-4 !py-3 border-t border-gray-200/50">
+              </tbody>
+            </table>
+          </div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-4 !mt-4 !px-4 !py-3 border-t border-gray-200/50 bg-white/20">
             {/* Page info */}
-            <div className="text-sm font-medium text-gray-600">
+            <div className="text-sm font-medium text-gray-600 w-full sm:w-auto">
               A mostrar{" "}
               <span className="text-[var(--primary)] font-semibold">
                 {indexOfFirstItem + 1}
@@ -365,7 +367,7 @@ function ExercisesPage() {
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
@@ -406,7 +408,7 @@ function ExercisesPage() {
             onClick={closeModal}
           >
             <div
-              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto !p-6 border border-gray-200/50"
+              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md max-h-[90vh] overflow-y-auto !p-4 sm:!p-6 border border-gray-200/50"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
@@ -415,7 +417,7 @@ function ExercisesPage() {
 
               <form
                 onSubmit={isEditModalOpen ? handleEditSubmit : handleSubmit}
-                className="flex flex-col gap-4"
+                className="flex flex-col !gap-4"
               >
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
@@ -523,7 +525,7 @@ function ExercisesPage() {
                   />
                 </div>
 
-                <div className="flex justify-end gap-3 !mt-4">
+                <div className="flex justify-end !gap-3 !mt-4">
                   <button
                     type="button"
                     onClick={closeModal}

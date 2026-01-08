@@ -34,23 +34,25 @@ function Dashboard() {
   ];
 
   return (
-    <section className="section-admin admin-dashboard">
+    <section className="section-admin admin-dashboard min-w-full min-h-screen">
       <AdminSidebar />
-      <div className="admin-content">
-        <h1 className="admin-title font-headline">
-          Dashboard Fit Fetch
-        </h1>
-        <p className="admin-description font-body">
-          Bem-vindo(a) ao painel de administração
-        </p>
-        <div className="grid grid-cols-3 grid-rows-1 gap-10">
+      <div className="admin-content flex flex-col items-center">
+        <div className="w-full max-w-5xl text-center">
+          <h1 className="admin-title font-headline">
+            Dashboard Fit Fetch
+          </h1>
+          <p className="admin-description font-body">
+            Bem-vindo(a) ao painel de administração
+          </p>
+        </div>
+        <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center !gap-4 sm:!gap-5 md:!gap-6 lg:!gap-10">
             { dashboardData.map((item, index) => (
-                <div key={index} className="bg-[var(--background)] !p-6 rounded-lg shadow-md font-body hover:translate-y-[-5px] transition-transform">
+                <div key={index} className="w-full bg-[var(--background)] !p-4 sm:!p-5 md:!p-6 rounded-lg shadow-md font-body hover:translate-y-[-5px] transition-transform text-center">
                     <div>
-                        <h2 className="text-lg font-medium !mb-1">{item.titulo}</h2>
+                        <h2 className="text-base sm:text-lg md:text-xl font-medium !mb-2 sm:!mb-3">{item.titulo}</h2>
                     </div>
-                    <span className="text-2xl text-[var(--primary)] font-bold !mb-2">{item.valor}</span>
-                    <p className="text-[0.8rem] text-black/70">{item.descricao}</p>
+                    <span className="text-2xl sm:text-3xl md:text-4xl text-[var(--primary)] font-bold !mb-2 sm:!mb-3">{item.valor}</span>
+                    <p className="text-sm sm:text-base md:text-lg text-black/70">{item.descricao}</p>
                 </div>
             )) }
         </div>

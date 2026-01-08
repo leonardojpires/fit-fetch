@@ -186,16 +186,16 @@ function UsersPage() {
     <section className="section-admin admin-dashboard">
       <AdminSidebar />
       <div className="admin-content">
-        <div className="flex items-center justify-between !mb-6">
-          <div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">
+          <div className="w-full sm:flex-1">
             <h1 className="admin-title font-headline">Utilizadores</h1>
             <p className="admin-description font-body">
               Gestão de utilizadores da plataforma
             </p>
           </div>
-          <div className="admin-button font-body" onClick={openAddModal}>
+          <div className="admin-button font-body w-full sm:w-auto" onClick={openAddModal}>
             <button></button>
-            <FiUserPlus /> Adicionar Utilizador
+            <FiUserPlus /> <span className="hidden sm:inline">Adicionar Utilizador</span><span className="inline sm:hidden">Adicionar</span>
           </div>
         </div>
 
@@ -206,31 +206,32 @@ function UsersPage() {
           setSearchItem={setSearchItem}
         />
 
-        <div className="overflow-auto bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body">
-          <table className="w-full min-w-[700px] table-fixed">
-            <thead className="text-left bg-white">
-              <tr>
-                {headers.map((header) => (
-                  <th
-                    key={header.key}
-                    onClick={() => handleHeaderClick(header.key)}
-                    className={`!p-3 cursor-pointer hover:bg-gray-50 select-none ${header.width}`}
-                  >
-                    <div className="flex items-center gap-1">
-                      {header.label}
-                      {sort.field === header.key && (
-                        sort.direction === "asc" ? (
-                          <FiChevronUp size={16} />
-                        ) : (
-                          <FiChevronDown size={16}></FiChevronDown>
-                        ))}
-                    </div>
-                  </th>
-                ))}
-                <th className="!p-3">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
+        <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body overflow-hidden">
+          <div className="table-scroll-container overflow-x-auto overflow-y-auto">
+            <table className="w-full table-fixed min-w-[700px] sm:min-w-full">
+              <thead className="text-left bg-white sticky top-0 z-10">
+                <tr>
+                  {headers.map((header) => (
+                    <th
+                      key={header.key}
+                      onClick={() => handleHeaderClick(header.key)}
+                      className={`!p-3 cursor-pointer hover:bg-gray-50 select-none ${header.width} ${header.key === "email" ? "min-w-[220px]" : ""}`}
+                    >
+                      <div className="flex items-center !gap-1">
+                        {header.label}
+                        {sort.field === header.key && (
+                          sort.direction === "asc" ? (
+                            <FiChevronUp size={16} />
+                          ) : (
+                            <FiChevronDown size={16}></FiChevronDown>
+                          ))}
+                      </div>
+                    </th>
+                  ))}
+                  <th className="!p-3">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
               {users.length === 0 ? (
                 <tr>
                   <td
@@ -254,7 +255,7 @@ function UsersPage() {
                     className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
                   >
                     <td className="!p-3">
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center !gap-3">
                         <div>
                           <div className="font-medium">{user.name}</div>
                           <div className="text-xs text-gray-500">
@@ -263,8 +264,8 @@ function UsersPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="!p-3 text-sm text-gray-700">{user.email}</td>
-                    <td className="!p-3">
+                    <td className="!p-3 text-sm text-gray-700 break-words">{user.email}</td>
+                    <td className="!p-3 whitespace-nowrap">
                       <span className="inline-block !px-3 !py-1 rounded-full bg-[var(--primary)]/70 text-sm text-white">
                         {user.role}
                       </span>
@@ -273,7 +274,7 @@ function UsersPage() {
                       {user.createdAt.split("T")[0]}
                     </td>
                     <td className="!p-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center !gap-2">
                         <button
                           title="Editar"
                           onClick={() => openEditModal(user)}
@@ -293,18 +294,19 @@ function UsersPage() {
                   </tr>
                 ))
               )}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Modal: Adicionar Utilizador */}
         {isModalOpen && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
             onClick={closeModal}
           >
             <div
-              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md !p-6 border border-gray-200/50"
+              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md !p-4 sm:!p-6 border border-gray-200/50"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-[var(--primary)]">
@@ -313,7 +315,7 @@ function UsersPage() {
 
               <form
                 onSubmit={isEditModalOpen ? handleEditSubmit : handleSubmit}
-                className="flex flex-col gap-4"
+                className="flex flex-col !gap-4"
               >
                 <div>
                   <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
@@ -368,7 +370,7 @@ function UsersPage() {
                   )}
                 </div>
 
-                <div className="flex justify-end gap-3 !mt-4">
+                <div className="flex justify-end !gap-3 !mt-4">
                   <button
                     type="button"
                     onClick={closeModal}
@@ -403,11 +405,11 @@ function UsersPage() {
         {/* Modal: Eliminar Utilizador */}
         {isDeleteModalOpen && userToDelete && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
             onClick={!isDeleting ? closeDeleteModal : undefined}
           >
             <div
-              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-md !p-6 border border-gray-200/50"
+              className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md !p-4 sm:!p-6 border border-gray-200/50"
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="font-headline text-xl !mb-6 text-red-600">
@@ -434,7 +436,7 @@ function UsersPage() {
                 </p>
               </div>
 
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end !gap-3">
                 <button
                   type="button"
                   onClick={closeDeleteModal}
