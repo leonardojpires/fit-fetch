@@ -1,8 +1,18 @@
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
-  return (
+  let isInAdmin = false;
+
+  const location = useLocation();
+  if (
+    location.pathname === "/admin" ||
+    location.pathname.startsWith("/admin")
+  ) {
+    isInAdmin = true;
+  }
+
+  return !isInAdmin &&(
     <footer className="bg-slate-900 text-slate-200 !py-12 !px-8">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 !pb-8">
