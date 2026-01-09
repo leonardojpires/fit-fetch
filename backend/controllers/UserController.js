@@ -17,6 +17,17 @@ class UserController {
             const decodedToken = await admin.auth().verifyIdToken(token);
             console.log('Decoded Firebase Token:', decodedToken);
 
+            // Prefer fresh data from Firebase Admin to avoid stale token claims
+            let fbUserRecord = null;
+            try {
+                fbUserRecord = await admin.auth().getUser(decodedToken.uid);
+            } catch(fetchErr) {
+                console.error('Erro ao obter utilizador do Firebase:', fetchErr);
+            }
+
+            const displayName = fbUserRecord?.displayName ?? decodedToken.name ?? null;
+            const photoURL = fbUserRecord?.photoURL ?? decodedToken.picture ?? null;
+
             let user = await User.findOne({ where: { firebase_uid: decodedToken.uid } })
 
             if (!user && decodedToken.email) {
@@ -29,8 +40,8 @@ class UserController {
                 }
 
                 await user.update({
-                    name: decodedToken.name || user.name,
-                    avatarUrl: decodedToken.picture || user.avatarUrl
+                    name: displayName || user.name || decodedToken.email?.split('@')[0] || 'Utilizador',
+                    avatarUrl: photoURL || user.avatarUrl
                 });
 
                 return res.json({ user, created: false });
@@ -38,10 +49,10 @@ class UserController {
 
             const newUser = await User.create({
                 firebase_uid: decodedToken.uid,
-                name: decodedToken.name || 'Utilizador sem nome',
+                name: displayName || decodedToken.email?.split('@')[0] || 'Utilizador',
                 email: decodedToken.email,
                 role: 'user',
-                avatarUrl: decodedToken.picture || null,
+                avatarUrl: photoURL || null,
             });
 
             res.json({ user: newUser, created: true });

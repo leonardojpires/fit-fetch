@@ -11,12 +11,16 @@ import {
 } from "firebase/auth";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import Toast from "../Toast/index";
 
 function LoginForm({ clickEvent }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ rememberMe, setRememberMe ] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastIsError, setToastIsError] = useState(false);
 
   const loginWithGoogle = async () => {
   try {
@@ -52,7 +56,9 @@ function LoginForm({ clickEvent }) {
       setCurrentUser(data.user);
     } catch (e) {
       console.error(`Erro ao autenticar com a Google: ${e}`);
-      alert("Falha na autenticação. Tenta novamente");
+      setToastMessage("Falha na autenticação. Tenta novamente.");
+      setToastIsError(true);
+      setShowToast(true);
     }
   };
 
@@ -87,11 +93,14 @@ function LoginForm({ clickEvent }) {
       setCurrentUser(data.user);
     } catch (e) {
       console.error("Erro ao entrar na conta", e);
-      alert("Falha ao entrar na conta" + e.message);
+      setToastMessage("Falha ao entrar na conta. Verifica credenciais.");
+      setToastIsError(true);
+      setShowToast(true);
     }
   };
 
   return (
+    <>
     <div className="auth-div w-full lg:w-1/2">
       <h1 className="font-headline text-3xl font-bold text-[var(--primary)] !mb-2">
         Entrar
@@ -190,6 +199,14 @@ function LoginForm({ clickEvent }) {
         </button>
       </div>
     </div>
+    {showToast && (
+      <Toast
+        message={toastMessage}
+        onClose={() => setShowToast(false)}
+        isError={toastIsError}
+      />
+    )}
+    </>
   );
 }
 

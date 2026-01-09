@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../services/firebase.js";
+import { onAuthStateChanged } from "firebase/auth";
 
 const UserContext = createContext(undefined);
 
@@ -9,12 +10,37 @@ export function UserProvider({ children }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async (firebaseUser) => {
+    const fetchAndSyncUser = async (firebaseUser) => {
       try {
-        const token = await firebaseUser.getIdToken();
-        console.log("🔑 Firebase Token:", token);
+        // Force refresh to avoid stale token after sign-in
+        // Using 'true' will fetch a new token from the server, even if the current token hasn't expired yet
+        const token = await firebaseUser.getIdToken(true);
+        console.log("Firebase Token:", token);
 
-        const response = await fetch(`http://localhost:3000/api/users/me`, {
+        // Ensure user exists/updated in DB before fetching
+/*         await fetch("http://localhost:3000/api/users/sync", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }); */
+        const syncResponse = await fetch("http://localhost:3000/api/users/sync", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+          }
+        });
+
+        if (!syncResponse.ok) {
+          const syncError = await syncResponse.text();
+          console.error(`Erro em /api/users/sync: (${syncResponse.status}): `, syncError)
+        } else {
+          console.log("/api/users/shync sucesso!");
+        }
+
+        const response = await fetch("http://localhost:3000/api/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -26,16 +52,16 @@ export function UserProvider({ children }) {
         const userData = await response.json();
         setUser(userData);
       } catch (err) {
-        console.error("Erro ao buscar dados do utilizador: ", err);
+        console.error("Erro ao sincronizar/buscar dados do utilizador: ", err);
         setError(err);
       } finally {
         setLoading(false);
       }
     };
 
-    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
-        fetchUserData(firebaseUser);
+        fetchAndSyncUser(firebaseUser);
       } else {
         setUser(null);
         setLoading(false);

@@ -17,6 +17,8 @@ const verifyFirebaseToken = async (req, res, next) => {
       firebase_uid: decodedToken.uid,
       email: decodedToken.email,
       name: decodedToken.name,
+      displayName: decodedToken.name || null,
+      photoURL: decodedToken.picture || null,
       role: decodedToken.role || "user",
     };
     next();

@@ -68,7 +68,9 @@ function RegisterForm({ clickEvent }) {
         console.log("Utilizador criado com sucesso: ", user);
       } catch(e) {
         console.error("Erro ao criar conta:", e);
-        alert("Falha ao criar conta:" + e.message);
+        setToastMessage("Falha ao criar conta. Tenta novamente.");
+        setToastType(true);
+        setShowToast(true);
       }
 
     }
