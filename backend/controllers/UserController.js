@@ -195,7 +195,23 @@ class UserController {
             const { name } = req.body;
             const avatarUrl = req.file ? `/uploads/avatars/${req.file.filename}` : user.avatarUrl;
 
+            // Atualizar nome no Firebase se foi fornecido
+            if (name) {
+                try {
+                    await admin.auth().updateUser(user.firebase_uid, {
+                        displayName: name
+                    });
+                    console.log(`✅ Utilizador ${user.firebase_uid} atualizado no Firebase com nome: ${name}`);
+                } catch(fbErr) {
+                    console.error(`⚠️ Erro ao atualizar nome no Firebase:`, fbErr);
+                    // Continua mesmo se falhar o Firebase
+                }
+            }
+
+            // Atualizar na base de dados
             await user.update({ name: name || user.name, avatarUrl });
+            console.log(`✅ Utilizador ${user.id} atualizado na BD`);
+            
             return res.status(200).json(user);
         } catch(err) {
             console.error("Erro ao atualizar o utilizador atual: ", err);
