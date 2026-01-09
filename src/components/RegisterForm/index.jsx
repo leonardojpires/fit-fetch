@@ -3,7 +3,7 @@ import { auth } from "../../services/firebase.js"
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
-import Toast from './../Toast/index';
+import ErrorWarning from "../ErrorWarning/index";
 
 function RegisterForm({ clickEvent }) {
     const [ currentUser, setCurrentUser ] = useState(null);
@@ -11,10 +11,7 @@ function RegisterForm({ clickEvent }) {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
-
-    const [showToast, setShowToast] = useState(false);
-    const [ toastType, setToastType ] = useState('');
-    const [ toastMessage, setToastMessage] = useState('');
+    const [validationErrors, setValidationErrors] = useState([]);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;;
@@ -23,23 +20,26 @@ function RegisterForm({ clickEvent }) {
       e.preventDefault();
 
       if (password != confirmPassword) {
-        setToastMessage("As senhas não coincidem!");
-        setToastType(true);
-        setShowToast(true);
+        setValidationErrors([{
+          field: "Senhas",
+          message: "As senhas não coincidem!"
+        }]);
         return;
       }
 
       if (!emailRegex.test(email)) {
-        setToastMessage("O formato do e-mail é inválido!");
-        setToastType(true);
-        setShowToast(true);
+        setValidationErrors([{
+          field: "E-Mail",
+          message: "O formato do e-mail é inválido!"
+        }]);
         return;
       }
 
       if (!passwordRegex.test(password)) {
-        setToastMessage("A password deve conte: 8 ou mais caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial!");
-        setToastType(true);
-        setShowToast(true);
+        setValidationErrors([{
+          field: "Senha",
+          message: "A senha deve conter: 8 ou mais caracteres, pelo menos uma letra maiúscula, uma letra minúscula, um número e um caracter especial!"
+        }]);
         return; 
       }
 
@@ -68,9 +68,10 @@ function RegisterForm({ clickEvent }) {
         console.log("Utilizador criado com sucesso: ", user);
       } catch(e) {
         console.error("Erro ao criar conta:", e);
-        setToastMessage("Falha ao criar conta. Tenta novamente.");
-        setToastType(true);
-        setShowToast(true);
+        setValidationErrors([{
+          field: "Registo",
+          message: "Falha ao criar conta. Tenta novamente."
+        }]);
       }
 
     }
@@ -173,11 +174,10 @@ function RegisterForm({ clickEvent }) {
           Entra aqui
         </button>
       </div>
-      {showToast && (
-        <Toast
-          message={toastMessage}
-          onClose={() => setShowToast(false)}
-          isError={toastType}
+      {validationErrors.length > 0 && (
+        <ErrorWarning
+          validationErrors={validationErrors}
+          clearErrors={() => setValidationErrors([])}
         />
       )}
     </div>

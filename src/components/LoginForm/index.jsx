@@ -11,16 +11,14 @@ import {
 } from "firebase/auth";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import Toast from "../Toast/index";
+import ErrorWarning from "../ErrorWarning/index";
 
 function LoginForm({ clickEvent }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [ rememberMe, setRememberMe ] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastIsError, setToastIsError] = useState(false);
+  const [validationErrors, setValidationErrors] = useState([]);
 
   const loginWithGoogle = async () => {
   try {
@@ -56,9 +54,10 @@ function LoginForm({ clickEvent }) {
       setCurrentUser(data.user);
     } catch (e) {
       console.error(`Erro ao autenticar com a Google: ${e}`);
-      setToastMessage("Falha na autenticação. Tenta novamente.");
-      setToastIsError(true);
-      setShowToast(true);
+      setValidationErrors([{
+        field: "Google",
+        message: "Falha na autenticação. Tenta novamente."
+      }]);
     }
   };
 
@@ -93,9 +92,10 @@ function LoginForm({ clickEvent }) {
       setCurrentUser(data.user);
     } catch (e) {
       console.error("Erro ao entrar na conta", e);
-      setToastMessage("Falha ao entrar na conta. Verifica credenciais.");
-      setToastIsError(true);
-      setShowToast(true);
+      setValidationErrors([{
+        field: "Autenticação",
+        message: "Falha ao entrar na conta. Verifica credenciais."
+      }]);
     }
   };
 
@@ -199,11 +199,10 @@ function LoginForm({ clickEvent }) {
         </button>
       </div>
     </div>
-    {showToast && (
-      <Toast
-        message={toastMessage}
-        onClose={() => setShowToast(false)}
-        isError={toastIsError}
+    {validationErrors.length > 0 && (
+      <ErrorWarning
+        validationErrors={validationErrors}
+        clearErrors={() => setValidationErrors([])}
       />
     )}
     </>
