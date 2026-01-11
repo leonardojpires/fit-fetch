@@ -1,0 +1,33 @@
+/* Nutrition page scoped styles (safe defaults) */
+
+/* Smooth scrolling inside chat/message container */
+.section .overflow-y-auto {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for WebKit browsers */
+.section .overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.section .overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+.section .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 8px;
+}
+.section .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Ensure gradients and important overrides play nicely */
+.section .rounded-lg {
+  will-change: transform;
+}
+
+/* Buttons feel snappier */
+.section button {
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
