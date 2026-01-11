@@ -1,35 +1,88 @@
-import { Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../config/db.js';
 
-'use strict';
-
-export default (sequelize, DataTypes) => {
-  class PlanoAlimentacao extends Model {
-    static associate(models) {
-      this.belongsTo(models.PlanoAlimentacao, { foreignKey: 'plano_id' });
-      this.belongsTo(models.Alimento, { foreignKey: 'alimento_id' });
-    }
+class PlanoAlimentacao extends Model {
+  static associate(models) {
+    this.belongsTo(models.User, { foreignKey: 'user_id' });
+    this.belongsToMany(models.Alimento, {
+      through: models.AlimentosPlano,
+      foreignKey: 'plano_id',
+      otherKey: 'alimento_id',
+      as: 'alimentos'
+    });
   }
+}
 
-  PlanoAlimentacao.init({
-    plano_id: {
+PlanoAlimentacao.init(
+  {
+    id: {
       type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
       allowNull: false
     },
-    alimento_id: {
+    user_id: {
       type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Users',
+        key: 'id'
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL'
+    },
+    name: {
+      type: DataTypes.STRING,
       allowNull: false
     },
-    quantity: {
-      type: DataTypes.INTEGER
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    is_saved: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    calories: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null
+    },
+    diet_type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: null
+    },
+    total_proteins: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: null
+    },
+    total_carbs: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: null
+    },
+    total_fibers: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: null
+    },
+    total_fats: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      defaultValue: null
     }
-  }, {
+  },
+  {
     sequelize,
     modelName: 'PlanoAlimentacao',
-    tableName: 'alimentos_planos',
+    tableName: 'planos_alimentacoes',
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at'
-  });
+  }
+);
 
-  return PlanoAlimentacao;
-};
+export default PlanoAlimentacao;
