@@ -573,7 +573,7 @@ function ExercisesPage() {
       {showSuccessWarning && (
         <SuccessWarning
           message={successMessage}
-          onClose={closeSuccessWarning}
+          closeWarning={closeSuccessWarning}
         />
       )}
     </section>

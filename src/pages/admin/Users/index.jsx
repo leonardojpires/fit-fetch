@@ -472,7 +472,7 @@ function UsersPage() {
       {showSuccessWarning && (
         <SuccessWarning
           message={successMessage}
-          onClose={closeSuccessWarning}
+          closeWarning={closeSuccessWarning}
         />
       )}
     </section>

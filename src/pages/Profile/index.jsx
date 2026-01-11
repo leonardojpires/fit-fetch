@@ -279,7 +279,7 @@ function Profile() {
       </div>
 
       { showSuccessWarning && (
-        <SuccessWarning message={successMessage} onClose={closeSuccessWarning} />
+        <SuccessWarning message={successMessage} closeWarning={closeSuccessWarning} />
       ) }
 
     </motion.section>

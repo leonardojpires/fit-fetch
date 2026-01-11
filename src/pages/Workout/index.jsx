@@ -547,7 +547,7 @@ function Workout() {
         />
       )}
 
-      {workoutPlan && showSuccessWarning && (
+      {validationErrors.length === 0 && workoutPlan && showSuccessWarning && (
         <SuccessWarning
           message={successMessage}
           closeWarning={closeSuccessWarning}
