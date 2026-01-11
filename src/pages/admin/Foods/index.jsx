@@ -212,7 +212,7 @@ function FoodsPage() {
   }, [showSuccessWarning]);
 
   return (
-    <section className="section-admin admin-dashboard">
+    <section className="section-admin admin-dashboard min-h-screen">
       <AdminSidebar />
       <div className="admin-content">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">
@@ -237,14 +237,14 @@ function FoodsPage() {
 
         <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body overflow-hidden">
           <div className="table-scroll-container overflow-x-auto overflow-y-auto">
-            <table className="w-full table-fixed min-w-[1100px] sm:min-w-full">
+            <table className="w-full table-auto min-w-[1200px] sm:min-w-full">
               <thead className="text-left bg-white sticky top-0 z-10">
                 <tr>
                   {headers.map((header) => (
                     <th
                       key={header.key}
                       onClick={() => handleHeaderClick(header.key)}
-                      className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
+                      className={`!px-4 !py-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width} ${header.key === "name" ? "text-left" : "text-center"} whitespace-nowrap`}
                     >
                       <div className="flex items-center !gap-1">
                         {header.label}

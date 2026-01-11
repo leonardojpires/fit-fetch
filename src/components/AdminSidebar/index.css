@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .admin-sidebar {
-  @apply w-[240px] bg-[#f8f9fa] !p-3 sm:!p-4 !py-8 sm:!py-12 border-r border-[#e5e5e5] h-screen sticky top-0 left-0 shrink-0 box-border flex flex-col justify-between shadow-md transition-all duration-300 ease-in-out;
+  @apply w-[240px] bg-[#f8f9fa] !p-3 sm:!p-4 !py-8 sm:!py-12 border-r border-[#e5e5e5] h-screen fixed top-0 left-0 shrink-0 box-border flex flex-col justify-between shadow-md transition-all duration-300 ease-in-out;
 }
 
 .admin-sidebar .brand {
@@ -28,7 +28,7 @@
 /* Mobile - Fixed Sidebar with Animation */
 @media (max-width: 1024px) {
   .admin-sidebar {
-    @apply fixed left-0 top-0 z-40 w-[200px] sm:w-[240px] transform -translate-x-full;
+    @apply fixed left-0 top-0 z-30 w-[200px] sm:w-[240px] transform -translate-x-full;
   }
 
   .admin-sidebar.open {

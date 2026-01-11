@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import { FaArrowLeft } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -53,10 +53,10 @@ function Exercise() {
               {error || "Exercício não encontrado"}
             </p>
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => Navigate(-1)}
               className="font-body text-[var(--primary)] hover:underline"
             >
-              Voltarwindow.history.back(
+              Voltarwindow.history.back();
             </button>
           </div>
         </div>
@@ -74,7 +74,7 @@ function Exercise() {
     >
       <div className="section !mt-40 !mb-40 flex flex-col gap-10">
         <div className="containers">
-          <div className="exercise-header">
+          <div className="exercise-header overflow-x-auto">
             <div className="exercise-title-container">
               <div className="flex flex-row items-center gap-3">
                     <Link
@@ -120,13 +120,10 @@ function Exercise() {
           </div>
 
           {/* IMAGE/VIDEO AND INFOS */}
-          <div className="flex flex-row justify-center items-start gap-3">
+          <div className="flex flex-col md:flex-row md:flex-nowrap justify-center items-start gap-3 overflow-x-auto w-full !px-6 !mb-6">
             <div className="media-section">
               {exercise.video_url && getYouTubeId(exercise.video_url) ? (
-                <div
-                  className="video-container"
-                  style={{ paddingBottom: "56.25%" }}
-                >
+                <div className="video-container">
                   <iframe
                     className="video-embed"
                     src={`https://www.youtube.com/embed/${getYouTubeId(

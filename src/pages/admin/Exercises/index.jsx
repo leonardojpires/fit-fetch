@@ -218,7 +218,7 @@ function ExercisesPage() {
   }, [showSuccessWarning]);
 
   return (
-    <section className="section-admin admin-dashboard">
+    <section className="section-admin admin-dashboard min-h-screen">
       <AdminSidebar />
       <div className="admin-content">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">

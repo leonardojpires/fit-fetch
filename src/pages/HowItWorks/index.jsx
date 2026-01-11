@@ -68,9 +68,9 @@ function HowItWorks() {
             <Link to="/treinos" className="hiw-cta-primary font-headline">
               Começar agora <FiArrowRight />
             </Link>
-            <a href="#faq" className="hiw-cta-secondary font-headline">
+            <Link to="/faq" className="hiw-cta-secondary font-headline">
               Ver perguntas
-            </a>
+            </Link>
           </div>
         </motion.div>
 

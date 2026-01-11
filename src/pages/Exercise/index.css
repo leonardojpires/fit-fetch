@@ -33,11 +33,24 @@
 }
 
 .video-container {
-  @apply relative w-full;
+  @apply relative w-full overflow-hidden rounded-lg;
+  aspect-ratio: 16 / 9;
+  min-height: 220px;
+  background: #000;
 }
 
 .video-embed {
-  @apply absolute top-0 left-0 w-full h-full rounded-lg;
+  @apply absolute inset-0 w-full h-full;
+  border-radius: inherit;
+  display: block;
+}
+
+@supports not (aspect-ratio: 16 / 9) {
+  .video-container {
+    aspect-ratio: auto;
+    height: 0;
+    padding-top: 56.25%;
+  }
 }
 
 .video-button {
