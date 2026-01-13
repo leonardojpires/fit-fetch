@@ -63,7 +63,7 @@ function Hero() {
         <div className="hero-img-div">
           <img
             src="/img/imgs/hero-img.png"
-            alt="Fit Fetch"
+            alt="Fit Fetch - Plataforma de fitness e bem-estar"
             className="hero-img"
           />
         </div>

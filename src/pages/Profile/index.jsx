@@ -155,7 +155,7 @@ function Profile() {
               <div className="relative">
                 <img
                   src={user.avatarUrl ? (user.avatarUrl.startsWith('http') ? user.avatarUrl : `http://localhost:3000${user.avatarUrl}`) : defaultAvatar}
-                  alt="Profile image"
+                  alt={`Foto de perfil de ${user.name}`}
                   className="w-48 h-48 object-cover rounded-full border-6 border-white shadow-lg pointer-events-none"
                 />
               </div>
@@ -172,6 +172,7 @@ function Profile() {
               </div>
               <div>
                 <button 
+                  type="button"
                   onClick={() => setIsEditModalOpen(true)}
                   className="font-body bg-[var(--primary)] !px-8 !py-3 text-white hover:bg-[var(--accent)] transition-all ease-in-out duration-200 cursor-pointer rounded-xl"
                 >
@@ -197,7 +198,7 @@ function Profile() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <div className="stats-container font-body">
             <div className="font-bold bg-[var(--primary)]/20 text-[var(--primary)] text-2xl !p-3 rounded-lg">
-              <SlEnergy />
+              <SlEnergy aria-hidden="true" focusable="false" />
             </div>
 
             <div>
@@ -208,7 +209,7 @@ function Profile() {
 
           <div className="stats-container font-body">
             <div className="font-bold bg-[var(--secondary)]/20 text-[var(--secondary)] text-2xl !p-3 rounded-lg">
-              <IoNutritionOutline />
+              <IoNutritionOutline aria-hidden="true" focusable="false" />
             </div>
 
             <div>
@@ -232,18 +233,22 @@ function Profile() {
 
             <div className="flex flex-row gap-8 font-body text-lg border-b border-gray-200/50 !mb-6">
               <button
+                type="button"
                 onClick={() => handlePlanTypeChange("workout")}
                 className={`!pb-2 !px-4 cursor-pointer ${
                   planType === "workout" ? "selected-plan" : ""
                 }`}
+                aria-pressed={planType === "workout"}
               >
                 Planos de Treino
               </button>
               <button
+                type="button"
                 onClick={() => handlePlanTypeChange("nutrition")}
                 className={`!pb-2 !px-4 cursor-pointer ${
                   planType === "nutrition" ? "selected-plan" : ""
                 }`}
+                aria-pressed={planType === "nutrition"}
               >
                 Planos de Alimentação
               </button>

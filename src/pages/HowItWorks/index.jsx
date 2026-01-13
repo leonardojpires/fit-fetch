@@ -66,7 +66,7 @@ function HowItWorks() {
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link to="/treinos" className="hiw-cta-primary font-headline">
-              Começar agora <FiArrowRight />
+              Começar agora <FiArrowRight aria-hidden="true" focusable="false" />
             </Link>
             <Link to="/faq" className="hiw-cta-secondary font-headline">
               Ver perguntas

@@ -5,8 +5,7 @@ function Cards({ icon, title, description }) {
         <div className="relative">
           <img 
             src={icon}
-            alt={title}
-
+            alt={`Ícone de ${title}`}
             className="w-full h-40 object-cover"
           />
         </div>

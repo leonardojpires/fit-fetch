@@ -53,10 +53,11 @@ function Exercise() {
               {error || "Exercício não encontrado"}
             </p>
             <button
+              type="button"
               onClick={() => Navigate(-1)}
               className="font-body text-[var(--primary)] hover:underline"
             >
-              Voltarwindow.history.back();
+              Voltar
             </button>
           </div>
         </div>

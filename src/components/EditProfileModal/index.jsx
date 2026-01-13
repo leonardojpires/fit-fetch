@@ -55,7 +55,7 @@ function EditProfileModal({
                         : `http://localhost:3000${user.avatarUrl}`
                       : defaultAvatar
                   }
-                  alt="Avatar"
+                  alt={`Avatar de ${user?.name || 'utilizador'}`}
                   className="avatar-image"
                 />
                 <label htmlFor="avatar" className="avatar-overlay">

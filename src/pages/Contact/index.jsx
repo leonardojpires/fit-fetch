@@ -137,8 +137,10 @@ function Contact() {
                       id="yname"
                       value={formData.yname}
                       onChange={handleChange}
+                      aria-describedby="name-hint"
                       required
                     />
+                    <small id="name-hint" className="text-gray-600 text-sm">Obrigatório</small>
                   </div>
                   <div className="flex flex-col gap-2 !mb-4">
                     <label htmlFor="yemail">E-Mail</label>
@@ -149,8 +151,10 @@ function Contact() {
                       id="yemail"
                       value={formData.yemail}
                       onChange={handleChange}
+                      aria-describedby="email-hint"
                       required
                     />
+                    <small id="email-hint" className="text-gray-600 text-sm">Email válido obrigatório</small>
                   </div>
                   <div className="flex flex-col gap-2 !mb-4">
                     <label htmlFor="ysubject">Assunto</label>
@@ -159,6 +163,7 @@ function Contact() {
                       id="ysubject"
                       value={formData.ysubject}
                       onChange={handleChange}
+                      aria-describedby="subject-hint"
                       required
                     >
                       <option value="" disabled>
@@ -176,6 +181,7 @@ function Contact() {
                       </option>
                       <option value="other">Outro</option>
                     </select>
+                    <small id="subject-hint" className="text-gray-600 text-sm">Seleciona o motivo do contacto</small>
                   </div>
                   <div className="flex flex-col gap-2 !mb-4">
                     <label htmlFor="yphone">
@@ -198,8 +204,10 @@ function Contact() {
                       id="ymessage"
                       value={formData.ymessage}
                       onChange={handleChange}
+                      aria-describedby="message-hint"
                       required
                     ></textarea>
+                    <small id="message-hint" className="text-gray-600 text-sm">Mínimo 10 caracteres</small>
                   </div>
                   <div className="flex flex-row items-center gap-2 !mb-4">
                     <input
@@ -208,10 +216,12 @@ function Contact() {
                       id="yagree"
                       checked={formData.yagree}
                       onChange={handleChange}
+                      aria-describedby="agree-hint"
                     />
                     <label htmlFor="yagree">
                       Concordo em ser contactado para suporte
                     </label>
+                    <small id="agree-hint" className="text-gray-600 text-sm">(Obrigatório)</small>
                   </div>
                   {status === "error" && (
                     <p className="text-red-600 !mb-4">

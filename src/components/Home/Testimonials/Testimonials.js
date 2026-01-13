@@ -8,14 +8,14 @@ const testimonials = [
     image: testimonial1,
     name: "Maria Silva",
     stars: 5,
-    text: "Esse app mudou minha rotina de treinos! Muito prático e fácil de usar.",
+    text: "Com o Fit Fetch, consegui transformar minha rotina de exercícios e alimentação em algo sustentável!",
     up: true
   },
   {
     image: testimonial2,
     name: "João Pereira",
     stars: 4,
-    text: "As dicas de nutrição são ótimas, só falta adicionar mais receitas.",
+    text: "As dicas de nutrição são ótimas, só é necessário adicionar mais alimentos.",
     up: false
   },
   {
@@ -29,7 +29,7 @@ const testimonials = [
     image: testimonial4,
     name: "Ana Costa",
     stars: 5,
-    text: "Adorei o design limpo e moderno. Recomendo demais!",
+    text: "Adorei o design limpo e moderno. Recomendo para quem quer se tornar mais saudável!",
     up: false
   },
 /*   {

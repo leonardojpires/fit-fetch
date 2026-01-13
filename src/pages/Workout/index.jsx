@@ -318,11 +318,15 @@ function Workout() {
                         name="series_number"
                         id="series_number"
                         placeholder="(1 a 4)"
+                        aria-describedby="series-hint"
                         min="1"
                         value={formData.series_number}
                         onChange={handleChange}
                         className="workout-input"
                       />
+                      <small id="series-hint" className="text-gray-600 text-sm">
+                        Entre 1 e 4 séries
+                      </small>
                     </div>
                     <div className="flex flex-col items-start gap-2 !mb-4">
                       <label
@@ -336,11 +340,15 @@ function Workout() {
                         name="reps_number"
                         id="reps_number"
                         placeholder="(5 a 20)"
+                        aria-describedby="reps-hint"
                         min="5"
                         value={formData.reps_number}
                         onChange={handleChange}
                         className="workout-input"
                       />
+                      <small id="reps-hint" className="text-gray-600 text-sm">
+                        Entre 5 e 20 repetições
+                      </small>
                     </div>
                     <div className="flex flex-col items-start gap-2 !mb-4">
                       <label
@@ -372,11 +380,15 @@ function Workout() {
                         name="rest_time"
                         id="rest_time"
                         placeholder="ex: 60"
+                        aria-describedby="rest-hint"
                         min="0"
                         value={formData.rest_time}
                         onChange={handleChange}
                         className="workout-input"
                       />
+                      <small id="rest-hint" className="text-gray-600 text-sm">
+                        Em segundos
+                      </small>
                     </div>
                     <BodySelector onMuscleSelect={handleMuscleSelect} />
                   </>
@@ -391,11 +403,16 @@ function Workout() {
                       name="duration"
                       id="duration"
                       placeholder="ex: 30"
+                      aria-describedby="duration-hint"
                       min="1"
+                      max="180"
                       value={formData.duration}
                       onChange={handleChange}
                       className="workout-input"
                     />
+                    <small id="duration-hint" className="text-gray-600 text-sm">
+                      Entre 1 e 180 minutos
+                    </small>
                   </div>
                 )}
                 <div className="flex justify-center">
@@ -447,7 +464,7 @@ function Workout() {
                               target="_blank"
                               className="flex flex-row gap-2 items-center hover:underline"
                             >
-                              <FaExternalLinkAlt className="text-black/50 text-sm" />{" "}
+                              <FaExternalLinkAlt className="text-black/50 text-sm" aria-hidden="true" focusable="false" />{" "}
                               {ex.name}
                             </Link>
                           </td>
@@ -492,6 +509,7 @@ function Workout() {
                   )}
                   <div>
                     <button
+                      type="button"
                       onClick={() =>
                         pdfWorkoutExporter(
                           workoutPlan,
@@ -503,17 +521,18 @@ function Workout() {
                       }
                       className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                     >
-                      <IoMdDownload /> Exportar para PDF
+                      <IoMdDownload aria-hidden="true" focusable="false" /> Exportar para PDF
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => handleSavePlan(workoutPlan.id)}
                       disabled={isSaving}
                       className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSaving ? (
                         <>
-                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
@@ -521,7 +540,7 @@ function Workout() {
                         </>
                       ) : (
                         <>
-                          {isSaved ? <IoBookmarksSharp /> : <IoBookmarksOutline />}{" "}
+                          {isSaved ? <IoBookmarksSharp aria-hidden="true" focusable="false" /> : <IoBookmarksOutline aria-hidden="true" focusable="false" />}{" "}
                           {isSaved ? "Plano Guardado" : "Guardar Plano"}
                         </>
                       )}

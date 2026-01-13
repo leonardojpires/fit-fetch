@@ -215,15 +215,17 @@ function UsersPage() {
                     <th
                       key={header.key}
                       onClick={() => handleHeaderClick(header.key)}
+                      scope="col"
                       className={`!p-3 cursor-pointer hover:bg-gray-50 select-none ${header.width} ${header.key === "email" ? "min-w-[220px]" : ""}`}
+                      aria-sort={sort.field === header.key ? sort.direction : "none"}
                     >
                       <div className="flex items-center !gap-1">
                         {header.label}
                         {sort.field === header.key && (
                           sort.direction === "asc" ? (
-                            <FiChevronUp size={16} />
+                            <FiChevronUp size={16} aria-hidden="true" focusable="false" />
                           ) : (
-                            <FiChevronDown size={16}></FiChevronDown>
+                            <FiChevronDown size={16} aria-hidden="true" focusable="false"></FiChevronDown>
                           ))}
                       </div>
                     </th>
@@ -276,18 +278,20 @@ function UsersPage() {
                     <td className="!p-3">
                       <div className="flex items-center !gap-2">
                         <button
-                          title="Editar"
+                          type="button"
+                          aria-label={`Editar ${user.name}`}
                           onClick={() => openEditModal(user)}
                           className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
                         >
-                          <FiEdit2 />
+                          <FiEdit2 aria-hidden="true" focusable="false" />
                         </button>
                         <button
-                          title="Eliminar"
+                          type="button"
+                          aria-label={`Eliminar ${user.name}`}
                           onClick={() => openDeleteModal(user)}
                           className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
                         >
-                          <FiTrash2 />
+                          <FiTrash2 aria-hidden="true" focusable="false" />
                         </button>
                       </div>
                     </td>
@@ -386,7 +390,7 @@ function UsersPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -453,7 +457,7 @@ function UsersPage() {
                 >
                   {isDeleting ? (
                     <>
-                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>

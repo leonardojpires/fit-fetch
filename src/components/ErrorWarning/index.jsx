@@ -1,6 +1,11 @@
 function ErrorWarning({ validationErrors, clearErrors }) {
   return (
-    <div className="fixed bottom-3 right-3 z-50 max-w-md animate-slide-in">
+    <div 
+      className="fixed bottom-3 right-3 z-50 max-w-md animate-slide-in"
+      role="alert"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       <div className="bg-red-50 border-l-4 border-red-500 rounded-lg shadow-lg !p-4">
         <div className="flex items-start justify-between !mb-2">
           <div className="flex items-center gap-2">
@@ -8,6 +13,8 @@ function ErrorWarning({ validationErrors, clearErrors }) {
               className="w-6 h-6 text-red-500 flex-shrink-0"
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
+              focusable="false"
             >
               <path
                 fillRule="evenodd"
@@ -24,12 +31,16 @@ function ErrorWarning({ validationErrors, clearErrors }) {
               clearErrors();
             }}
             className="text-red-400 hover:text-red-600 transition-colors cursor-pointer"
+            aria-label="Fechar notificação de erro"
+            type="button"
           >
             <svg
               className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
             >
               <path
                 strokeLinecap="round"

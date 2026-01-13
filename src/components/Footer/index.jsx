@@ -13,7 +13,7 @@ const Footer = () => {
   }
 
   return !isInAdmin &&(
-    <footer className="bg-slate-900 text-slate-200 !py-12 !px-8">
+    <footer className="bg-slate-900 text-slate-200 !py-12 !px-8" id="footer">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 !pb-8">
 

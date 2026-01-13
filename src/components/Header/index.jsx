@@ -84,7 +84,7 @@ function Header() {
         <Link to="/">
           <img
             src="/img/logos/ff_logo.svg"
-            alt="Fit Fetch"
+            alt="Fit Fetch - Logotipo, ir para página inicial"
             className="logo select-none pointer-none w-[150px] lg:w-[150px]"
           />
         </Link>
@@ -115,7 +115,7 @@ function Header() {
             aria-expanded={openNav === "quest"}
             aria-haspopup="true"
           >
-            QUESTÕES <FaChevronDown />
+            QUESTÕES <FaChevronDown aria-hidden="true" focusable="false" />
           </button>
           <AnimatePresence>
             {openNav === "quest" && (
@@ -153,7 +153,7 @@ function Header() {
             aria-expanded={openNav === "plans"}
             aria-haspopup="true"
           >
-            PLANOS <FaChevronDown />
+            PLANOS <FaChevronDown aria-hidden="true" focusable="false" />
           </button>
           <AnimatePresence>
             {openNav === "plans" && (
@@ -213,7 +213,7 @@ function Header() {
                       : `http://localhost:3000${userInfo.avatarUrl}`
                     : defaultAvatar
                 }
-                alt="Avatar"
+                alt={`Avatar de ${userInfo?.name || 'utilizador'}`}
                 className="w-10 h-10 object-cover rounded-full shadow-md pointer-events-none"
               />
               {(showDropdown || dropdownClosing) && (

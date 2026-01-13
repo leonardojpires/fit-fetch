@@ -28,9 +28,11 @@ export default function AdminSidebar() {
       <button
         className="lg:hidden fixed top-4 left-4 z-50 !p-2 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--accent)] transition-colors"
         onClick={toggleMenu}
-        aria-label="Toggle menu"
+        aria-label="Abrir menu de navegação"
+        aria-expanded={isOpen}
+        type="button"
       >
-        {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        {isOpen ? <FiX size={24} aria-hidden="true" focusable="false" /> : <FiMenu size={24} aria-hidden="true" focusable="false" />}
       </button>
 
       {isOpen && (

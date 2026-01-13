@@ -7,9 +7,11 @@ import Footer from './../../components/Footer/index';
         return (
             <>
                 <Header />
-                <Container>
-                    <Outlet />
-                </Container>
+                <main id="main-content">
+                    <Container>
+                        <Outlet />
+                    </Container>
+                </main>
                 <Footer />
             </>
         )

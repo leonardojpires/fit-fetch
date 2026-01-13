@@ -11,7 +11,7 @@ function CTA() {
                         <h2 className="cta-title font-heading">Inscreve-te agora no Fit Fetch e começa uma nova vida</h2>
                         <p className="cta-paragraph font-body">Orgulha-te do teu progresso, não importa o quão pequeno seja. Faz de ti o teu melhor projeto</p>
                         <div className="flex flex-row justify-center items-center gap-5 !mt-5">
-                            <Link to="/" className="cta-button font-body">
+                            <Link to="/entrar" className="cta-button font-body">
                                 INSCREVE-TE AGORA
                                 <IoPersonAddOutline />
                             </Link>

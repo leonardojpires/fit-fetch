@@ -79,7 +79,7 @@ function FAQ() {
                   >
                     <span className="text-lg">{faq.question}</span>
                     <span className="faq-icon">
-                      {openFaq === index ? <FiMinus /> : <FiPlus />}
+                      {openFaq === index ? <FiMinus aria-hidden="true" focusable="false" /> : <FiPlus aria-hidden="true" focusable="false" />}
                     </span>
                   </button>
                   {openFaq === index && (
