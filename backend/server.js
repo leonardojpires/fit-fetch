@@ -7,6 +7,7 @@ import userRouter from "./routes/userRouter.js";
 import exerciseRouter from './routes/exerciseRouter.js';
 import foodRouter from "./routes/foodRouter.js";
 import workoutPlanRouter from "./routes/workoutPlanRouter.js";
+import nutritionPlanRouter from "./routes/nutritionPlanRouter.js";
 
 dotenv.config();
 const app = express();
@@ -18,6 +19,7 @@ app.use('/api/users', userRouter);
 app.use('/api/exercises', exerciseRouter);
 app.use('/api/foods', foodRouter);
 app.use('/api/workout-plans', workoutPlanRouter);
+app.use('/api/nutrition-plans', nutritionPlanRouter);
 
 app.get('/', async (req, res) => {
     try {
