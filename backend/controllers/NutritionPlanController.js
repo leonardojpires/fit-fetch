@@ -48,7 +48,7 @@ class NutritionPlanController {
           .json({ message: "Plano de nutrição não encontrado!" });
 
       // Calcular macros dinamicamente
-      const macros = this.calculateMacros(plan.alimentos);
+      const macros = NutritionPlanController.calculateMacros(plan.alimentos);
 
       return res.status(200).json({
         plan: {
@@ -222,6 +222,9 @@ class NutritionPlanController {
     // Initialize transaction variable (will be used for rollback if needed)
     let transaction;
     try {
+      console.log("🔵 createPlanFromAI - Request body:", JSON.stringify(req.body, null, 2));
+      console.log("🔵 User:", req.user);
+      
       // START TRANSACTION: All database operations below will be atomic
       // Atomic means: either ALL succeed and are committed, or ALL fail and are rolled back
       // This prevents partial data (e.g., plan created but no foods linked)
@@ -232,6 +235,13 @@ class NutritionPlanController {
       // Extract user ID from authenticated user (req.user is populated by middleware)
       const userId = req.user.id;
 
+      console.log("🔵 Plan structure:", {
+        hasPlan: !!plan,
+        hasMeals: !!plan?.meals,
+        mealsCount: plan?.meals?.length,
+        mealsStructure: plan?.meals?.[0]
+      });
+
       /**
        * Validate that the incoming plan data is valid
        * Checks:
@@ -239,8 +249,10 @@ class NutritionPlanController {
        * - plan.meals array exists
        * - plan.meals is not empty
        */
-      if (!plan || !plan.meals || plan.meals.length === 0)
+      if (!plan || !plan.meals || plan.meals.length === 0) {
+        console.error("❌ Plano inválido");
         return res.status(400).json({ message: "Plano inválido!" });
+      }
 
       /**
        * CREATE the main nutrition plan record in the database
@@ -260,7 +272,7 @@ class NutritionPlanController {
           user_id: userId,
           name: plan.name || "Plano de Nutrição",
           description: plan.description || message || null,
-          is_saved: false,
+          is_saved: true,
           calories: plan.total_calories || null,
           total_proteins: plan.total_proteins || null,
           total_carbs: plan.total_carbs || null,
@@ -320,7 +332,7 @@ class NutritionPlanController {
                   {
                     plano_id: newPlan.id, // Reference to the plan we just created
                     alimento_id: alimento.id, // Reference to the existing food
-                    quantity: food.quantity || 1, // Quantity in grams (default 1 if not provided)
+                    quantity: parseInt(food.quantity) || 1, // Quantity in grams (default 1 if not provided)
                   },
                   { transaction } // Part of the same transaction
                 );
@@ -363,7 +375,7 @@ class NutritionPlanController {
        * 
        * We pass completePlan.alimentos (the foods array) to the helper method
        */
-      const macros = this.calculateMacros(completePlan.alimentos);
+      const macros = NutritionPlanController.calculateMacros(completePlan.alimentos);
 
       /**
        * RETURN the complete plan to the client
@@ -401,7 +413,10 @@ class NutritionPlanController {
         }
       }
       // Log the original error for debugging
-      console.error("Erro ao criar plano de nutrição: ", err);
+      console.error("❌ ERRO em createPlanFromAI:");
+      console.error("   Message:", err.message);
+      console.error("   Stack:", err.stack);
+      console.error("   Full error:", err);
       // Return generic error to client
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }

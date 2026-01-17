@@ -1,7 +1,7 @@
 import { FaArrowUpRightFromSquare, FaTrash } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 
-function PlanPreview({ plan, onDeletePlan }) {
+function WorkoutPlanPreview({ plan, onDeletePlan }) {
   return (
     <div
       key={plan.id}
@@ -54,4 +54,4 @@ function PlanPreview({ plan, onDeletePlan }) {
   );
 }
 
-export default PlanPreview;
+export default WorkoutPlanPreview;

@@ -6,7 +6,7 @@ import useRedirectIfNotAuth from "./../../hooks/useIfNotAuth";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
-import PlanPreview from "../../components/PlanPreview/index.jsx";
+import WorkoutPlanPreview from "../../components/WorkoutPlanPreview/index.jsx";
 import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
 import EditProfileModal from "../../components/EditProfileModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
@@ -46,9 +46,21 @@ function Profile() {
           }
         );
 
-        if (workoutResponse.ok) {
+        const nutritionResponse = await fetch(
+          `http://localhost:3000/api/nutrition-plans/user/plans`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (workoutResponse.ok && nutritionResponse.ok) {
           const workoutData = await workoutResponse.json();
           setWorkoutPlans(workoutData.plans || []);
+          const nutritionData = await nutritionResponse.json();
+          setNutritionPlans(nutritionData.plans || []);
         }
       } catch (err) {
         console.error("Erro ao buscar planos do utilizador: ", err);
@@ -213,7 +225,7 @@ function Profile() {
             </div>
 
             <div>
-              <span className="font-bold text-3xl">18</span>
+              <span className="font-bold text-3xl">{nutritionPlans.length}</span>
               <p className="text-sm text-black/70">Planos de Nutrição</p>
             </div>
           </div>
@@ -259,7 +271,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
-                      <PlanPreview key={plan.id} plan={plan} onDeletePlan={() => handleDeletePlan(plan.id)} />
+                      <WorkoutPlanPreview key={plan.id} plan={plan} onDeletePlan={() => handleDeletePlan(plan.id)} />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
@@ -267,7 +279,7 @@ function Profile() {
                     </p>
                   )}
                 </div>
-              ) : (
+              ) : planType === "nutrition" ? (
                 <div>
                   {nutritionPlans.length > 0 ? (
                     <span>Lista de planos de nutrição</span>
@@ -277,7 +289,7 @@ function Profile() {
                     </p>
                   )}
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
