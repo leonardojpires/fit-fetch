@@ -1,110 +1,192 @@
 import "./index.css";
 import { useState } from "react";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
+import useChatNutrition from "../../hooks/Nutrition/useChatNutrition";
+import useCreateNutritionPlan from "../../hooks/Nutrition/useCreateNutritionPlan";
+import useGetUserNutritionPlans from "../../hooks/Nutrition/useGetUserNutritionPlans";
+import useCurrentUser from './../../hooks/useCurrentUser';
+import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import { motion } from "framer-motion";
 import { IoMdSend } from "react-icons/io";
 import { IoBookmarksOutline } from "react-icons/io5";
 
+// Simple markdown formatter - converts **text** to bold, etc
+const formatMarkdown = (text) => {
+  if (!text || typeof text !== "string") return text;
+  return text.split("\n").map((line) => {
+    if (line.startsWith("• ") || line.startsWith("- ")) {
+      return { type: "bullet", text: line.substring(2) };
+    } else if (line.startsWith("**") && line.endsWith("**")) {
+      return { type: "bold", text: line.substring(2, line.length - 2) };
+    }
+    return { type: "text", text: line };
+  });
+};
+
+// Render formatted text as JSX
+const renderFormattedText = (text) => {
+  if (!text || typeof text !== "string") return text;
+
+  const lines = text.split("\n");
+  return lines.map((line, idx) => {
+    if (!line.trim()) return <div key={idx} className="h-1" />;
+    if (line.startsWith("• ") || line.startsWith("- ")) {
+      return (
+        <li key={idx} className="!ml-4 text-gray-800">
+          {line.substring(2)}
+        </li>
+      );
+    }
+    if (line.includes("**")) {
+      const parts = line.split("**");
+      return (
+        <p key={idx} className="!m-0 !mb-1 text-gray-800">
+          {parts.map((part, i) =>
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+          )}
+        </p>
+      );
+    }
+    return (
+      <p key={idx} className="!m-0 !mb-1 text-gray-800">
+        {line}
+      </p>
+    );
+  });
+};
+
 function Nutrition() {
   useRedirectIfNotAuth();
-  
+  const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
+
+  const {
+    chatWithAI,
+    loading: chatLoading,
+    error: chatError,
+  } = useChatNutrition();
+  const { createPlan, creating, error: createError } = useCreateNutritionPlan();
+  const {
+    plans,
+    loading: plansLoading,
+    error: plansError,
+  } = useGetUserNutritionPlans();
+
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
+  const [nutritionPlan, setNutritionPlan] = useState(null);
   const [messages, setMessages] = useState([
     {
-      role: "assistant",
-      content: "Olá! Sou o teu assistente de nutrição. Descreve os teus objetivos e preferências alimentares para criar um plano personalizado.",
-      timestamp: new Date().toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" }),
+      role: "assistente",
+      content:
+        "Olá! Sou o teu assistente de nutrição. Descreve os teus objetivos e preferências alimentares para criar um plano personalizado.",
+      timestamp: new Date().toLocaleTimeString("pt-PT", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     },
   ]);
-  const [loading, setLoading] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  // Plano hardcoded para demonstração (será gerado pela IA)
-  const nutritionPlan = messages.find(msg => msg.plan)?.plan || null;
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    // Adiciona mensagem do user
     const userMessage = {
-      role: "user",
-      content: inputMessage,
-      timestamp: new Date().toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" }),
+      role: "utilizador",
+      content: inputMessage.trim(),
+      timestamp: new Date().toLocaleTimeString("pt-PT", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
-    
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
+    const currentInput = inputMessage.trim();
     setInputMessage("");
-    setLoading(true);
+    // Mostrar loading do preview apenas quando o utilizador pede um plano
+    const wantsPlan = /\b(plano|gerar|gera|criar|cria)\b/i.test(currentInput);
+    setIsGenerating(wantsPlan);
 
-    // Simula resposta da IA (será substituído pela chamada real à API)
-    setTimeout(() => {
+    try {
+      const conversationHistory = messages.map((msg) => ({
+        role:
+          msg.role === "utilizador"
+            ? "user"
+            : msg.role === "assistente"
+            ? "assistant"
+            : msg.role,
+        content: msg.content,
+      }));
+
+      const response = await chatWithAI(currentInput, conversationHistory);
+
+      let messageContent = response.message;
+      if (response.plan) {
+        messageContent = "Plano gerado! Vê os detalhes ao lado →";
+        setNutritionPlan(response.plan);
+      }
+
       const assistantMessage = {
-        role: "assistant",
-        content: "Criei um plano equilibrado baseado nos teus objetivos.",
-        timestamp: new Date().toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" }),
-        plan: {
-          id: 1,
-          plan_name: "Plano de Bulking - Ganho de Massa",
-          description: "Plano rico em proteínas e calorias controladas para promover o ganho de massa muscular.",
-          total_calories: 2800,
-          total_protein: 180,
-          total_carbs: 320,
-          total_fat: 75,
-          meals: [
-            {
-              meal_type: "Pequeno-Almoço",
-              foods: [
-                { name: "Ovos Mexidos", quantity: 150, calories: 220, protein: 18, carbs: 2, fat: 15 },
-                { name: "Aveia", quantity: 80, calories: 310, protein: 10, carbs: 54, fat: 6 },
-                { name: "Banana", quantity: 120, calories: 105, protein: 1, carbs: 27, fat: 0.4 },
-              ],
-            },
-            {
-              meal_type: "Almoço",
-              foods: [
-                { name: "Peito de Frango Grelhado", quantity: 200, calories: 330, protein: 62, carbs: 0, fat: 7 },
-                { name: "Arroz Branco", quantity: 150, calories: 195, protein: 4, carbs: 43, fat: 0.3 },
-                { name: "Brócolos Cozidos", quantity: 100, calories: 35, protein: 2.8, carbs: 7, fat: 0.4 },
-              ],
-            },
-            {
-              meal_type: "Lanche da Tarde",
-              foods: [
-                { name: "Iogurte Grego Natural", quantity: 200, calories: 130, protein: 20, carbs: 9, fat: 0.7 },
-                { name: "Amendoins", quantity: 30, calories: 170, protein: 7, carbs: 5, fat: 14 },
-              ],
-            },
-            {
-              meal_type: "Jantar",
-              foods: [
-                { name: "Salmão Grelhado", quantity: 180, calories: 370, protein: 40, carbs: 0, fat: 22 },
-                { name: "Batata Doce", quantity: 200, calories: 180, protein: 2, carbs: 41, fat: 0.3 },
-                { name: "Salada Mista", quantity: 150, calories: 50, protein: 2, carbs: 10, fat: 0.5 },
-              ],
-            },
-            {
-              meal_type: "Ceia",
-              foods: [{ name: "Queijo Cottage", quantity: 150, calories: 165, protein: 25, carbs: 6, fat: 4.5 }],
-            },
-          ],
-        },
+        role: "assistente",
+        content: messageContent,
+        timestamp: new Date().toLocaleTimeString("pt-PT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
+
+      setMessages((prev) => [...prev, assistantMessage]);
       
-      setMessages(prev => [...prev, assistantMessage]);
-      setLoading(false);
-    }, 2000);
+    } catch (err) {
+      const errorMessage = {
+        role: "assistente",
+        content:
+          "Desculpa, ocorreu um erro ao processar o teu pedido. Por favor, tenta novamente mais tarde.",
+        timestamp: new Date().toLocaleTimeString("pt-PT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleSavePlan = async () => {
+    if (!nutritionPlan) return;
     setIsSaving(true);
+
     try {
-      console.log("Guardar plano:", nutritionPlan.id);
-      // Lógica de guardar
-      setIsSaved(!isSaved);
+      const lastUserMsg =
+        messages.filter((msg) => msg.role === "utilizador").slice(-1)[0]
+          ?.content || "";
+
+      const result = await createPlan(nutritionPlan, lastUserMsg);
+
+      console.log("Plano guardado com sucesso: ", result);
+      setIsSaved(true);
+
+      const successMessage = {
+        role: "assistente",
+        content: "O teu plano alimentar foi guardado com sucesso na tua conta!",
+        timestamp: new Date().toLocaleTimeString("pt-PT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setMessages((prev) => [...prev, successMessage]);
     } catch (err) {
-      console.error("Erro ao guardar plano:", err);
+      const errorMessage = {
+        role: "assistente",
+        content:
+          "Desculpa, ocorreu um erro ao guardar o teu plano. Por favor, tenta novamente mais tarde.",
+        timestamp: new Date().toLocaleTimeString("pt-PT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsSaving(false);
     }
@@ -124,12 +206,16 @@ function Nutrition() {
             Cria o Teu Plano Alimentar Personalizado
           </h1>
           <p className="font-body font-medium text-lg md:text-xl text-black/70 !mb-8">
-            Descreve os teus objetivos e preferências para um plano nutricional ideal!
+            Descreve os teus objetivos e preferências para um plano nutricional
+            ideal!
           </p>
 
           <div className="flex flex-col items-start lg:flex-row !gap-6 !mt-4">
             {/* Chatbot Section */}
-            <div className="lg:w-1/2 w-full bg-gray-100 !p-6 rounded-lg shadow-sm flex flex-col" style={{ height: '600px' }}>
+            <div
+              className="lg:w-1/2 w-full bg-gray-100 !p-6 rounded-lg shadow-sm flex flex-col"
+              style={{ height: "600px" }}
+            >
               <h2 className="font-headline font-bold text-2xl text-[var(--primary)] !mb-2">
                 Assistente de Nutrição
               </h2>
@@ -140,40 +226,80 @@ function Nutrition() {
               {/* Chat Messages */}
               <div className="flex-1 overflow-y-auto !mb-4 bg-white rounded-lg !p-4 !space-y-3">
                 {messages.map((msg, index) => (
-                  <div key={index} className={`flex !gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    {msg.role === 'assistant' && (
+                  <div
+                    key={index}
+                    className={`flex !gap-2 ${
+                      msg.role === "utilizador"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    {msg.role === "assistente" && (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--secondary)] to-green-500 flex items-center justify-center flex-shrink-0">
                         <span className="text-white text-xs font-bold">AI</span>
                       </div>
                     )}
-                    <div className={`max-w-[75%] ${msg.role === 'user' ? 'order-1' : ''}`}>
-                      <div className={`!px-3 !py-2 rounded-lg text-sm font-body ${
-                        msg.role === 'user' 
-                          ? 'bg-[var(--primary)] text-white rounded-br-sm' 
-                          : 'bg-gray-100 text-gray-800 rounded-bl-sm'
-                      }`}>
-                        {msg.content}
+                    <div
+                      className={`max-w-[75%] ${
+                        msg.role === "utilizador" ? "order-1" : ""
+                      }`}
+                    >
+                      <div
+                        className={`!px-3 !py-2 rounded-lg text-sm font-body ${
+                          msg.role === "utilizador"
+                            ? "bg-[var(--primary)] text-white rounded-br-sm"
+                            : "bg-gray-100 text-gray-800 rounded-bl-sm"
+                        }`}
+                      >
+                        {msg.role === "utilizador" ? (
+                          msg.content
+                        ) : (
+                          <div className="space-y-0">
+                            {renderFormattedText(msg.content)}
+                          </div>
+                        )}
                       </div>
-                      <span className="text-xs text-gray-400 !mt-1 block">{msg.timestamp}</span>
+                      <span className="text-xs text-gray-400 !mt-1 block">
+                        {msg.timestamp}
+                      </span>
                     </div>
-                    {msg.role === 'user' && (
+                    {msg.role === "utilizador" && (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--primary)] to-blue-500 flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-xs">👤</span>
+                        <img
+                          src={
+                            userInfo?.avatarUrl
+                              ? userInfo.avatarUrl.startsWith("http")
+                                ? userInfo.avatarUrl
+                                : `http://localhost:3000${userInfo.avatarUrl}`
+                              : defaultAvatar
+                          }
+                          alt={`Avatar de ${userInfo?.name || "utilizador"}`}
+                          className="w-8 h-8 object-cover rounded-full shadow-md pointer-events-none"
+                        />
                       </div>
                     )}
                   </div>
                 ))}
-                
-                {loading && (
+
+                {chatLoading && (
                   <div className="flex !gap-2 justify-start">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--secondary)] to-green-500 flex items-center justify-center flex-shrink-0">
                       <span className="text-white text-xs font-bold">AI</span>
                     </div>
                     <div className="max-w-[75%]">
                       <div className="!px-3 !py-2 rounded-lg bg-gray-100 rounded-bl-sm flex !gap-1">
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                        <span
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0s" }}
+                        ></span>
+                        <span
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.2s" }}
+                        ></span>
+                        <span
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.4s" }}
+                        ></span>
                       </div>
                     </div>
                   </div>
@@ -187,13 +313,13 @@ function Nutrition() {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   placeholder="Descreve os teus objetivos..."
-                  disabled={loading}
+                  disabled={chatLoading}
                   className="flex-1 !px-3 !py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none transition-all font-body text-sm"
                 />
                 <button
                   type="submit"
-                  disabled={loading || !inputMessage.trim()}
-                  className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={chatLoading || !inputMessage.trim()}
+                  className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   title="Enviar mensagem"
                 >
                   <IoMdSend aria-hidden="true" focusable="false" />
@@ -203,7 +329,7 @@ function Nutrition() {
 
             {/* Preview Section */}
             <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
-              {loading ? (
+              {isGenerating && chatLoading ? (
                 <div className="flex flex-col items-center !gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>
                   <p className="font-body text-gray-600 text-center text-base md:text-lg">
@@ -225,37 +351,81 @@ function Nutrition() {
                   {/* Macros Grid */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 !gap-3 !mb-5">
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
-                      <div className="text-2xl font-bold text-gray-800">{nutritionPlan.total_calories}</div>
-                      <div className="text-xs text-gray-500 font-body">Calorias</div>
+                      <div className="text-2xl font-bold text-gray-800">
+                        {(
+                          nutritionPlan.total_calories || "N/A"
+                        ).toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-500 font-body">
+                        Calorias
+                      </div>
                     </div>
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
-                      <div className="text-2xl font-bold text-gray-800">{nutritionPlan.total_protein}g</div>
-                      <div className="text-xs text-gray-500 font-body">Proteína</div>
+                      <div className="text-2xl font-bold text-gray-800">
+                        {(
+                          nutritionPlan.total_protein ||
+                          nutritionPlan.total_proteins ||
+                          "N/A"
+                        ).toFixed?.(1) ||
+                          nutritionPlan.total_protein ||
+                          "N/A"}
+                        g
+                      </div>
+                      <div className="text-xs text-gray-500 font-body">
+                        Proteína
+                      </div>
                     </div>
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
-                      <div className="text-2xl font-bold text-gray-800">{nutritionPlan.total_carbs}g</div>
-                      <div className="text-xs text-gray-500 font-body">Carbs</div>
+                      <div className="text-2xl font-bold text-gray-800">
+                        {(nutritionPlan.total_carbs || "N/A").toFixed?.(1) ||
+                          nutritionPlan.total_carbs ||
+                          "N/A"}
+                        g
+                      </div>
+                      <div className="text-xs text-gray-500 font-body">
+                        Carbos
+                      </div>
                     </div>
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
-                      <div className="text-2xl font-bold text-gray-800">{nutritionPlan.total_fat}g</div>
-                      <div className="text-xs text-gray-500 font-body">Gordura</div>
+                      <div className="text-2xl font-bold text-gray-800">
+                        {(
+                          nutritionPlan.total_fat ||
+                          nutritionPlan.total_fats ||
+                          "N/A"
+                        ).toFixed?.(1) ||
+                          nutritionPlan.total_fat ||
+                          "N/A"}
+                        g
+                      </div>
+                      <div className="text-xs text-gray-500 font-body">
+                        Gordura
+                      </div>
                     </div>
                   </div>
 
                   {/* Meals */}
                   <div className="!space-y-3 !mb-5">
                     {nutritionPlan.meals.map((meal, idx) => (
-                      <div key={idx} className="bg-white !p-4 rounded-lg shadow-sm border-l-4 border-[var(--accent)]">
+                      <div
+                        key={idx}
+                        className="bg-white !p-4 rounded-lg shadow-sm border-l-4 border-[var(--accent)]"
+                      >
                         <h4 className="font-headline font-semibold text-base text-[var(--primary)] !mb-2">
                           {meal.meal_type}
                         </h4>
                         <div className="!space-y-2 font-body text-sm">
                           {meal.foods.map((food, foodIdx) => (
-                            <div key={foodIdx} className="flex justify-between items-start">
+                            <div
+                              key={foodIdx}
+                              className="flex justify-between items-start"
+                            >
                               <div className="flex-1">
-                                <div className="font-medium text-gray-800">{food.name}</div>
+                                <div className="font-medium text-gray-800">
+                                  {food.name}
+                                </div>
                                 <div className="text-xs text-gray-500">
-                                  {food.calories} kcal · P: {food.protein}g · C: {food.carbs}g · G: {food.fat}g
+                                  {food.calories} kcal · P: {food.protein}g · C:{" "}
+                                  {food.carbs}g · G: {food.fat}g
                                 </div>
                               </div>
                               <span className="text-xs bg-[var(--accent)] text-white !px-2 !py-1 rounded-full !ml-2">
@@ -273,19 +443,40 @@ function Nutrition() {
                     <button
                       onClick={handleSavePlan}
                       disabled={isSaving}
-                      className="flex flex-center items-center !gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex flex-center items-center !gap-2 font-body text-[var(--primary)] border border-[var(--primary)] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSaving ? (
                         <>
-                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          <svg
+                            className="animate-spin h-4 w-4"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              fill="none"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
                           </svg>
                           A processar...
                         </>
                       ) : (
                         <>
-                          <IoBookmarksOutline aria-hidden="true" focusable="false" /> {isSaved ? "Plano Guardado" : "Guardar Plano"}
+                          <IoBookmarksOutline
+                            aria-hidden="true"
+                            focusable="false"
+                          />{" "}
+                          {isSaved ? "Plano Guardado" : "Guardar Plano"}
                         </>
                       )}
                     </button>

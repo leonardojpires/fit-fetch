@@ -61,7 +61,9 @@ export default function useChatNutrition() {
             // Throw error if response is not successful (4xx/5xx status codes)
             if (!response.ok) throw new Error(data.message || "Erro ao comunicar com o servidor.");
 
-            // Return the AI response (contains 'reply' and optionally 'nutritionPlan')
+            console.log("Resposta da API:", data);
+            
+            // Return the AI response (contains 'message' and optionally 'plan')
             return data;
         } catch(err) {
             // Store error message to display in UI

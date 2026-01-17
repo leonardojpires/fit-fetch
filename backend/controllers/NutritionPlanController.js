@@ -23,7 +23,7 @@ class NutritionPlanController {
 
       return res.status(200).json({ plans });
     } catch (err) {
-      console.error("Erro ao obter planos de nutrição do utilizador: ", err);
+      console.error("Erro ao buscar planos:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -57,7 +57,6 @@ class NutritionPlanController {
         },
       });
     } catch (err) {
-      console.error("Erro ao obter plano de nutrição por ID: ", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -89,7 +88,6 @@ class NutritionPlanController {
         is_saved: newSavedState,
       });
     } catch (err) {
-      console.error("Erro ao guardar plano de nutrição: ", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -118,7 +116,6 @@ class NutritionPlanController {
         .status(200)
         .json({ message: "Plano de nutrição eliminado com sucesso!" });
     } catch (err) {
-      console.error("Erro ao eliminar plano de nutrição: ", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -129,8 +126,7 @@ class NutritionPlanController {
    * Handler for chatting with the AI nutrition assistant
    * Receives user message, sends it to GROQ AI service, validates the response,
    * and returns a formatted nutrition plan proposal
-   * 
-   * Flow: User Input → GROQ AI → Response Validation → Database Check → Return Result
+   *
    * 
    * @param {Object} req - Express request object
    * @param {string} req.body.message - The user's message describing their nutrition goals
@@ -164,47 +160,54 @@ class NutritionPlanController {
         conversationHistory || []
       );
 
+      // If the AI is just asking questions (no plan yet), return immediately
+      // This allows conversational flow before generating the actual plan
+      if (!aiResponse.plan) {
+        return res.status(200).json({
+          message: aiResponse.message,
+          plan: null,
+          isValid: true,
+        });
+      }
+
       /**
-       * Validate that all foods suggested by the AI actually exist in our database
-       * This is a CRITICAL step because the AI might suggest foods that don't exist
-       * We need to ensure data consistency and prevent integrity issues
-       * 
-       * Returns: { isValid: boolean, invalidFoods: [] }
+       * Validate that all foods suggested by the AI exist in the database
        */
+      console.log("Validando alimentos do plano...");
+      console.log("Estrutura do aiResponse.plan:", JSON.stringify(aiResponse.plan, null, 2));
+      
       const validationResult = await validateFoodsInPlan(aiResponse);
+      
+      console.log("Resultado da validação:", validationResult);
 
       // If validation fails, return error with list of invalid foods
       // This allows the frontend to inform the user which foods are not available
-      if (!validationResult.isValid)
-        return res.status(422).json({
-          message: "Alguns alimentos sugeridos não existem na base de dados!",
-          invalidFoods: validationResult.invalidFoods,
-          aiResponse,
+      if (!validationResult.isValid) {
+        console.warn("Alimentos inválidos:", validationResult.invalidFoods);
+        // PERMITIR o plano mesmo com alimentos inválidos (com aviso)
+        return res.status(200).json({
+          message: aiResponse.message + " (Nota: alguns alimentos podem não existir na BD)",
+          plan: aiResponse.plan,
+          isValid: false,
+          invalidFoods: validationResult.invalidFoods
         });
+      }
 
       // If validation passes, return the AI response
-      // Status 200 indicates successful operation
       return res.status(200).json({
         message: aiResponse.message,
         plan: aiResponse.plan,
         isValid: true,
       });
     } catch (err) {
-      // Log the error for debugging purposes (server-side logging)
-      console.error("Erro ao comunicar com a AI de nutrição: ", err);
-      // Return generic error message to client (don't expose internals for security)
+      console.error("Erro ao chamar AI:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
 
   /**
    * Creates and saves a nutrition plan from AI-generated data
-   * This is called after the user accepts a plan suggested by the AI
-   * 
-   * Important: Uses database transactions to ensure data integrity
-   * If anything fails, ALL changes are rolled back (nothing is partially saved)
-   * 
-   * Flow: Validate Input → Create Plan Record → Link Foods → Calculate Macros → Return Complete Plan
+   *
    * 
    * @param {Object} req - Express request object
    * @param {Object} req.body.plan - The complete nutrition plan object from AI

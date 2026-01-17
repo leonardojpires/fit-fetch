@@ -201,16 +201,16 @@ class UserController {
                     await admin.auth().updateUser(user.firebase_uid, {
                         displayName: name
                     });
-                    console.log(`✅ Utilizador ${user.firebase_uid} atualizado no Firebase com nome: ${name}`);
+                    console.log(`Utilizador ${user.firebase_uid} atualizado no Firebase com nome: ${name}`);
                 } catch(fbErr) {
-                    console.error(`⚠️ Erro ao atualizar nome no Firebase:`, fbErr);
+                    console.error(`Erro ao atualizar nome no Firebase:`, fbErr);
                     // Continua mesmo se falhar o Firebase
                 }
             }
 
             // Atualizar na base de dados
             await user.update({ name: name || user.name, avatarUrl });
-            console.log(`✅ Utilizador ${user.id} atualizado na BD`);
+            console.log(`Utilizador ${user.id} atualizado na BD`);
             
             return res.status(200).json(user);
         } catch(err) {
