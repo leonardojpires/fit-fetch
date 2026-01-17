@@ -2,6 +2,39 @@ import { FaArrowUpRightFromSquare, FaTrash } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 
 function NutritionPlanPreview({ plan, onDeletePlan }) {
+  // Calculate totals from foods
+  const calculateMacros = () => {
+    if (!plan?.alimentos || plan.alimentos.length === 0) {
+      return {
+        total_calories: plan?.calories || 0,
+        total_proteins: plan?.total_proteins || 0,
+        total_carbs: plan?.total_carbs || 0,
+        total_fats: plan?.total_fats || 0,
+      };
+    }
+
+    let totals = {
+      total_calories: 0,
+      total_proteins: 0,
+      total_carbs: 0,
+      total_fats: 0,
+    };
+
+    plan.alimentos.forEach((food) => {
+      const quantity = food.AlimentosPlano?.quantity || 100;
+      const multiplier = quantity / (food.serving_size || 100);
+
+      totals.total_calories += (food.calories || 0) * multiplier;
+      totals.total_proteins += (food.protein || 0) * multiplier;
+      totals.total_carbs += (food.carbs || 0) * multiplier;
+      totals.total_fats += (food.fat || 0) * multiplier;
+    });
+
+    return totals;
+  };
+
+  const macros = calculateMacros();
+
   return (
     <div
       key={plan.id}
@@ -17,19 +50,19 @@ function NutritionPlanPreview({ plan, onDeletePlan }) {
       <div className="grid grid-cols-4 gap-2 !mb-4">
         <div className="text-center bg-[var(--secondary)]/10 rounded !p-2">
           <p className="font-body text-xs text-black/70">Cal</p>
-          <p className="font-headline font-bold text-sm">{Math.round(plan.calories || 0)}</p>
+          <p className="font-headline font-bold text-sm">{Math.round(macros.total_calories)}</p>
         </div>
         <div className="text-center bg-[var(--secondary)]/10 rounded !p-2">
           <p className="font-body text-xs text-black/70">Pro</p>
-          <p className="font-headline font-bold text-sm">{Math.round(plan.total_proteins || 0)}g</p>
+          <p className="font-headline font-bold text-sm">{Math.round(macros.total_proteins)}g</p>
         </div>
         <div className="text-center bg-[var(--secondary)]/10 rounded !p-2">
           <p className="font-body text-xs text-black/70">Carb</p>
-          <p className="font-headline font-bold text-sm">{Math.round(plan.total_carbs || 0)}g</p>
+          <p className="font-headline font-bold text-sm">{Math.round(macros.total_carbs)}g</p>
         </div>
         <div className="text-center bg-[var(--secondary)]/10 rounded !p-2">
           <p className="font-body text-xs text-black/70">Gord</p>
-          <p className="font-headline font-bold text-sm">{Math.round(plan.total_fats || 0)}g</p>
+          <p className="font-headline font-bold text-sm">{Math.round(macros.total_fats)}g</p>
         </div>
       </div>
 

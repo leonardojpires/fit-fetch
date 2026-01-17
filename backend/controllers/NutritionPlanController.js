@@ -38,6 +38,7 @@ class NutritionPlanController {
             model: Alimento,
             as: "alimentos",
             through: { attributes: ["quantity"] },
+            attributes: ['id', 'name', 'calories', 'protein', 'carbs', 'fiber', 'fat', 'serving_size'],
           },
         ],
       });
@@ -47,16 +48,12 @@ class NutritionPlanController {
           .status(404)
           .json({ message: "Plano de nutrição não encontrado!" });
 
-      // Calcular macros dinamicamente
-      const macros = NutritionPlanController.calculateMacros(plan.alimentos);
-
+      // Retornar os valores armazenados na BD (não recalcular)
       return res.status(200).json({
-        plan: {
-          ...plan.toJSON(),
-          ...macros,
-        },
+        plan: plan.toJSON(),
       });
     } catch (err) {
+      console.error("Erro ao buscar plano:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
