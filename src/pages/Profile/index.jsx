@@ -7,7 +7,9 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
 import WorkoutPlanPreview from "../../components/WorkoutPlanPreview/index.jsx";
+import NutritionPlanPreview from "../../components/NutritionPlanPreview/index.jsx";
 import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
+import useRemoveNutritionPlan from '../../hooks/Nutrition/useRemoveNutritionPlan';
 import EditProfileModal from "../../components/EditProfileModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useUpdateCurrentUser from "../../hooks/Users/useUpdateCurrentUser.jsx";
@@ -27,6 +29,7 @@ function Profile() {
   const [isDeletingPlan, setIsDeletingPlan] = useState(null);
   const saveChanges = useUpdateCurrentUser();
   const removePlan = useRemoveWorkoutPlan();
+  const removeNutritionPlan = useRemoveNutritionPlan();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,6 +81,20 @@ function Profile() {
         setSuccessMessage("Plano removido com sucesso!");
         setShowSuccessWarning(true);
         setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
+      }
+    } finally {
+      setIsDeletingPlan(null);
+    }
+  }
+
+  async function handleDeleteNutritionPlan(planId) {
+    setIsDeletingPlan(planId);
+    try {
+      const result = await removeNutritionPlan(planId);
+      if (result) {
+        setSuccessMessage("Plano removido com sucesso!");
+        setShowSuccessWarning(true);
+        setNutritionPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
       }
     } finally {
       setIsDeletingPlan(null);
@@ -280,9 +297,11 @@ function Profile() {
                   )}
                 </div>
               ) : planType === "nutrition" ? (
-                <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {nutritionPlans.length > 0 ? (
-                    <span>Lista de planos de nutrição</span>
+                    nutritionPlans.map((plan) => (
+                      <NutritionPlanPreview key={plan.id} plan={plan} onDeletePlan={() => handleDeleteNutritionPlan(plan.id)} />
+                    ))
                   ) : (
                     <p className="font-body text-black/50">
                       Ainda não tens planos de alimentação.
