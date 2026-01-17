@@ -5,6 +5,7 @@ import useGetWorkoutPlanById from "../../hooks/WorkoutPlan/useGetWorkoutPlanById
 import pdfWorkoutExporter from "./../../utils/pdfWorkoutExporter.js";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import useRemoveWorkoutPlan from "../../hooks/WorkoutPlan/useRemoveWorkoutPlan.jsx";
+import DeleteModal from "../../components/DeleteModal/index.jsx";
 import { IoMdDownload } from "react-icons/io";
 import { FaTrash, FaArrowLeft, FaExternalLinkAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -28,13 +29,9 @@ function WorkoutPlans() {
   const { workoutPlan, loadingPlan, error } = useGetWorkoutPlanById(id);
   const removePlan = useRemoveWorkoutPlan();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const navigate = useNavigate();
-
-  /*     if (!workoutPlan) { 
-        navigate(-1);
-        return null;
-    } */
 
   function convertToMinutes(seconds) {
     const s = Number(seconds);
@@ -42,11 +39,20 @@ function WorkoutPlans() {
     return s >= 60 ? Math.floor(s / 60) : s;
   }
 
-  async function handleDeletePlan(planId) {
+  function openDeleteModal() {
+    setDeleteModalOpen(true);
+  }
+
+  function closeDeleteModal() {
+    setDeleteModalOpen(false);
+  }
+
+  async function confirmDeletePlan() {
     setIsDeleting(true);
     try {
-      const result = await removePlan(planId);
+      const result = await removePlan(workoutPlan.id);
       if (result) {
+        closeDeleteModal();
         navigate(-1);
       }
     } finally {
@@ -203,9 +209,7 @@ function WorkoutPlans() {
                 </button>
 
                 <button
-                  onClick={() =>
-                    handleDeletePlan(workoutPlan.id)
-                  }
+                  onClick={openDeleteModal}
                   disabled={isDeleting}
                   className="flex flex-center items-center gap-2 font-body text-red-600 border border-red-600 rounded-lg !px-4 !py-2 hover:text-white hover:bg-red-600 transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -236,6 +240,17 @@ function WorkoutPlans() {
           </div>
         </div>
       </div>
+
+      {deleteModalOpen && workoutPlan && (
+        <DeleteModal
+          itemToDelete={workoutPlan}
+          closeDeleteModal={closeDeleteModal}
+          handleDeleteItem={confirmDeletePlan}
+          title="Eliminar Plano de Treino"
+          message="Tem a certeza que deseja eliminar este plano de treino?"
+          isDeleting={isDeleting}
+        />
+      )}
     </motion.section>
   );
 }

@@ -11,6 +11,7 @@ import NutritionPlanPreview from "../../components/NutritionPlanPreview/index.js
 import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
 import useRemoveNutritionPlan from '../../hooks/Nutrition/useRemoveNutritionPlan';
 import EditProfileModal from "../../components/EditProfileModal/index.jsx";
+import DeleteModal from "../../components/DeleteModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useUpdateCurrentUser from "../../hooks/Users/useUpdateCurrentUser.jsx";
 import SuccessWarning from "../../components/SuccessWarning/index.jsx";
@@ -27,6 +28,8 @@ function Profile() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [isDeletingPlan, setIsDeletingPlan] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [planToDelete, setPlanToDelete] = useState(null);
   const saveChanges = useUpdateCurrentUser();
   const removePlan = useRemoveWorkoutPlan();
   const removeNutritionPlan = useRemoveNutritionPlan();
@@ -73,31 +76,39 @@ function Profile() {
     fetchUserPlans();
   }, [user]);
 
-  async function handleDeletePlan(planId) {
-    setIsDeletingPlan(planId);
-    try {
-      const result = await removePlan(planId);
-      if (result) {
-        setSuccessMessage("Plano removido com sucesso!");
-        setShowSuccessWarning(true);
-        setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
-      }
-    } finally {
-      setIsDeletingPlan(null);
-    }
+  function openDeleteModal(plan, type) {
+    setPlanToDelete({ ...plan, type });
+    setDeleteModalOpen(true);
   }
 
-  async function handleDeleteNutritionPlan(planId) {
-    setIsDeletingPlan(planId);
+  function closeDeleteModal() {
+    setDeleteModalOpen(false);
+    setPlanToDelete(null);
+  }
+
+  async function confirmDeletePlan() {
+    if (!planToDelete) return;
+    
+    setIsDeletingPlan(planToDelete.id);
     try {
-      const result = await removeNutritionPlan(planId);
-      if (result) {
-        setSuccessMessage("Plano removido com sucesso!");
-        setShowSuccessWarning(true);
-        setNutritionPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planId));
+      if (planToDelete.type === "workout") {
+        const result = await removePlan(planToDelete.id);
+        if (result) {
+          setSuccessMessage("Plano removido com sucesso!");
+          setShowSuccessWarning(true);
+          setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planToDelete.id));
+        }
+      } else if (planToDelete.type === "nutrition") {
+        const result = await removeNutritionPlan(planToDelete.id);
+        if (result) {
+          setSuccessMessage("Plano removido com sucesso!");
+          setShowSuccessWarning(true);
+          setNutritionPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planToDelete.id));
+        }
       }
     } finally {
       setIsDeletingPlan(null);
+      closeDeleteModal();
     }
   }
 
@@ -288,7 +299,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
-                      <WorkoutPlanPreview key={plan.id} plan={plan} onDeletePlan={() => handleDeletePlan(plan.id)} />
+                      <WorkoutPlanPreview key={plan.id} plan={plan} onDeletePlan={() => openDeleteModal(plan, "workout")} />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
@@ -300,7 +311,7 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {nutritionPlans.length > 0 ? (
                     nutritionPlans.map((plan) => (
-                      <NutritionPlanPreview key={plan.id} plan={plan} onDeletePlan={() => handleDeleteNutritionPlan(plan.id)} />
+                      <NutritionPlanPreview key={plan.id} plan={plan} onDeletePlan={() => openDeleteModal(plan, "nutrition")} />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
@@ -317,6 +328,17 @@ function Profile() {
       { showSuccessWarning && (
         <SuccessWarning message={successMessage} closeWarning={closeSuccessWarning} />
       ) }
+
+      {deleteModalOpen && planToDelete && (
+        <DeleteModal
+          itemToDelete={planToDelete}
+          closeDeleteModal={closeDeleteModal}
+          handleDeleteItem={confirmDeletePlan}
+          title="Eliminar Plano"
+          message={`Tem a certeza que deseja eliminar este plano de ${planToDelete.type === "workout" ? "treino" : "alimentação"}?`}
+          isDeleting={isDeletingPlan === planToDelete.id}
+        />
+      )}
 
     </motion.section>
   );

@@ -4,6 +4,7 @@ import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGetNutritionPlanById from "../../hooks/Nutrition/useGetNutritionPlanById";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import useRemoveNutritionPlan from "../../hooks/Nutrition/useRemoveNutritionPlan";
+import DeleteModal from "../../components/DeleteModal/index.jsx";
 import { IoMdDownload } from "react-icons/io";
 import { FaTrash, FaArrowLeft } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -15,8 +16,30 @@ function NutritionPlans() {
   const { nutritionPlan, loadingPlan, error } = useGetNutritionPlanById(id);
   const removePlan = useRemoveNutritionPlan();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  function openDeleteModal() {
+    setDeleteModalOpen(true);
+  }
+
+  function closeDeleteModal() {
+    setDeleteModalOpen(false);
+  }
+
+  async function confirmDeletePlan() {
+    setIsDeleting(true);
+    try {
+      const result = await removePlan(nutritionPlan.id);
+      if (result) {
+        closeDeleteModal();
+        navigate(-1);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  }
 
   // Debug: log the nutrition plan data
   console.log("Nutrition Plan Data:", nutritionPlan);
@@ -55,18 +78,6 @@ function NutritionPlans() {
   };
 
   const macros = calculateTotals();
-
-  async function handleDeletePlan(planId) {
-    setIsDeleting(true);
-    try {
-      const result = await removePlan(planId);
-      if (result) {
-        navigate(-1);
-      }
-    } finally {
-      setIsDeleting(false);
-    }
-  }
 
   if (loading || loadingPlan) {
     return (
@@ -237,7 +248,7 @@ function NutritionPlans() {
                 </button>
 
                 <button
-                  onClick={() => handleDeletePlan(nutritionPlan.id)}
+                  onClick={openDeleteModal}
                   disabled={isDeleting}
                   className="flex flex-center items-center gap-2 font-body text-red-600 border border-red-600 rounded-lg !px-4 !py-2 hover:text-white hover:bg-red-600 transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -268,6 +279,17 @@ function NutritionPlans() {
           </div>
         </div>
       </div>
+
+      {deleteModalOpen && nutritionPlan && (
+        <DeleteModal
+          itemToDelete={nutritionPlan}
+          closeDeleteModal={closeDeleteModal}
+          handleDeleteItem={confirmDeletePlan}
+          title="Eliminar Plano de Alimentação"
+          message="Tem a certeza que deseja eliminar este plano de alimentação?"
+          isDeleting={isDeleting}
+        />
+      )}
     </motion.section>
   );
 }
