@@ -146,7 +146,7 @@ function WorkoutPlans() {
                       }`}
                     >
                       <td className="!px-4 !py-3 text-gray-800 font-medium">
-                        <Link to={`/exercicio/${ex.id}`} className="flex flex-row gap-2 items-center hover:underline">
+                        <Link to={`/exercicio/${ex.id}`} className="flex flex-row  items-center gap-2 hover:underline">
                           <FaExternalLinkAlt className="text-black/50 text-sm" aria-hidden="true" focusable="false" /> {ex.name}
                         </Link>
                       </td>

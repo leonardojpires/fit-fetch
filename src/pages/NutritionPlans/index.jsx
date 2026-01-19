@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useGetNutritionPlanById from "../../hooks/Nutrition/useGetNutritionPlanById";
@@ -6,7 +6,7 @@ import useCurrentUser from "../../hooks/useCurrentUser";
 import useRemoveNutritionPlan from "../../hooks/Nutrition/useRemoveNutritionPlan";
 import DeleteModal from "../../components/DeleteModal/index.jsx";
 import { IoMdDownload } from "react-icons/io";
-import { FaTrash, FaArrowLeft } from "react-icons/fa";
+import { FaTrash, FaArrowLeft, FaExternalLinkAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 function NutritionPlans() {
@@ -199,7 +199,7 @@ function NutritionPlans() {
                       {nutritionPlan.alimentos.map((food, index) => {
                         const quantity = food.AlimentosPlano?.quantity || 100;
                         const multiplier = quantity / food.serving_size;
-                        
+
                         return (
                           <tr
                             key={food.id}
@@ -208,7 +208,17 @@ function NutritionPlans() {
                             }`}
                           >
                             <td className="!px-4 !py-3 text-gray-800 font-medium">
-                              {food.name}
+                              <Link
+                                to={`/alimento/${food.id}`}
+                                className="flex flex-row items-center gap-2 hover:underline"
+                              >
+                                <FaExternalLinkAlt
+                                  className="text-black/50 text-sm"
+                                  aria-hidden="true"
+                                  focusable="false"
+                                />
+                                {food.name}
+                              </Link>
                             </td>
                             <td className="!px-4 !py-3 text-gray-600">
                               {quantity}g
@@ -241,7 +251,9 @@ function NutritionPlans() {
             <div className="flex items-center justify-between mt-4">
               <div className="flex flex-col items-start gap-2">
                 <button
-                  onClick={() => alert("Exportação para PDF em desenvolvimento")}
+                  onClick={() =>
+                    alert("Exportação para PDF em desenvolvimento")
+                  }
                   className="flex flex-center items-center gap-2 font-body text-[var(--secondary)] border border-[var(--secondary)] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--secondary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                 >
                   <IoMdDownload /> Exportar para PDF
@@ -254,9 +266,26 @@ function NutritionPlans() {
                 >
                   {isDeleting ? (
                     <>
-                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin h-4 w-4"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       A eliminar...
                     </>
@@ -268,9 +297,9 @@ function NutritionPlans() {
                 </button>
               </div>
 
-              <button 
+              <button
                 type="button"
-                onClick={() => navigate(-1)} 
+                onClick={() => navigate(-1)}
                 className="flex items-center gap-1 font-body text-[var(--secondary)] hover:underline cursor-pointer"
               >
                 <FaArrowLeft aria-hidden="true" focusable="false" /> Voltar
