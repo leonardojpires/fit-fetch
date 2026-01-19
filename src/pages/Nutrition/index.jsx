@@ -30,31 +30,76 @@ const renderFormattedText = (text) => {
   if (!text || typeof text !== "string") return text;
 
   const lines = text.split("\n");
-  return lines.map((line, idx) => {
-    if (!line.trim()) return <div key={idx} className="h-1" />;
-    if (line.startsWith("• ") || line.startsWith("- ")) {
-      return (
-        <li key={idx} className="!ml-4 text-gray-800">
-          {line.substring(2)}
-        </li>
-      );
+  const result = [];
+  let listItems = [];
+
+  lines.forEach((line, idx) => {
+    if (!line.trim()) {
+      // If we have pending list items, flush them first
+      if (listItems.length > 0) {
+        result.push(
+          <ul key={`list-${result.length}`} className="!ml-4 !space-y-1">
+            {listItems.map((item, itemIdx) => (
+              <li key={itemIdx} className="text-gray-800">
+                {item}
+              </li>
+            ))}
+          </ul>
+        );
+        listItems = [];
+      }
+      result.push(<div key={`spacer-${result.length}`} className="h-1" />);
+    } else if (line.startsWith("• ") || line.startsWith("- ")) {
+      // Add to list items buffer
+      listItems.push(line.substring(2));
+    } else {
+      // If we have pending list items, flush them first
+      if (listItems.length > 0) {
+        result.push(
+          <ul key={`list-${result.length}`} className="!ml-4 !space-y-1">
+            {listItems.map((item, itemIdx) => (
+              <li key={itemIdx} className="text-gray-800">
+                {item}
+              </li>
+            ))}
+          </ul>
+        );
+        listItems = [];
+      }
+      // Regular paragraph with potential bold formatting
+      if (line.includes("**")) {
+        const parts = line.split("**");
+        result.push(
+          <p key={`para-${result.length}`} className="!m-0 !mb-1 text-gray-800">
+            {parts.map((part, i) =>
+              i % 2 === 1 ? <strong key={i}>{part}</strong> : part,
+            )}
+          </p>
+        );
+      } else {
+        result.push(
+          <p key={`para-${result.length}`} className="!m-0 !mb-1 text-gray-800">
+            {line}
+          </p>
+        );
+      }
     }
-    if (line.includes("**")) {
-      const parts = line.split("**");
-      return (
-        <p key={idx} className="!m-0 !mb-1 text-gray-800">
-          {parts.map((part, i) =>
-            i % 2 === 1 ? <strong key={i}>{part}</strong> : part,
-          )}
-        </p>
-      );
-    }
-    return (
-      <p key={idx} className="!m-0 !mb-1 text-gray-800">
-        {line}
-      </p>
-    );
   });
+
+  // Flush any remaining list items
+  if (listItems.length > 0) {
+    result.push(
+      <ul key={`list-${result.length}`} className="!ml-4 !space-y-1">
+        {listItems.map((item, itemIdx) => (
+          <li key={itemIdx} className="text-gray-800">
+            {item}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  return result;
 };
 
 function Nutrition() {
@@ -284,7 +329,7 @@ function Nutrition() {
                           </div>
                         )}
                       </div>
-                      <span className="text-xs text-gray-400 !mt-1 block">
+                      <span className="text-xs text-gray-600 !mt-1 block">
                         {msg.timestamp}
                       </span>
                     </div>
@@ -314,15 +359,15 @@ function Nutrition() {
                     <div className="max-w-[75%]">
                       <div className="!px-3 !py-2 rounded-lg bg-gray-100 rounded-bl-sm flex !gap-1">
                         <span
-                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
                           style={{ animationDelay: "0s" }}
                         ></span>
                         <span
-                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
                           style={{ animationDelay: "0.2s" }}
                         ></span>
                         <span
-                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"
                           style={{ animationDelay: "0.4s" }}
                         ></span>
                       </div>
@@ -508,7 +553,7 @@ function Nutrition() {
                   </div>
                 </div>
               ) : (
-                <p className="font-body text-gray-400 text-center text-base md:text-lg">
+                <p className="font-body text-gray-600 text-center text-base md:text-lg">
                   O plano alimentar vai aparecer aqui
                 </p>
               )}

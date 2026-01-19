@@ -98,7 +98,7 @@ function Header() {
       >
         <Link
           to="/"
-          className="font-headline nav-link underline-hover"
+          className="font-headline nav-link underline-hover focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
           onClick={toggleMenu}
         >
           INÍCIO
@@ -110,7 +110,7 @@ function Header() {
         >
           <button
             type="button"
-            className="font-headline flex gap-1 justify-center items-center nav-link underline-hover cursor-pointer"
+            className="font-headline flex gap-1 justify-center items-center nav-link underline-hover cursor-pointer focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
             onClick={(e) => handleDropdownClick(e, "quest")}
             aria-expanded={openNav === "quest"}
             aria-haspopup="true"
@@ -148,7 +148,7 @@ function Header() {
         >
           <button
             type="button"
-            className="font-headline flex gap-1 justify-center items-center nav-link underline-hover cursor-pointer"
+            className="font-headline flex gap-1 justify-center items-center nav-link underline-hover cursor-pointer focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
             onClick={(e) => handleDropdownClick(e, "plans")}
             aria-expanded={openNav === "plans"}
             aria-haspopup="true"
@@ -177,7 +177,7 @@ function Header() {
         </div>
         <Link
           to="/contacto"
-          className="font-headline nav-link underline-hover"
+          className="font-headline nav-link underline-hover focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
           onClick={toggleMenu}
         >
           CONTACTO
@@ -200,8 +200,18 @@ function Header() {
       {/* USER DROPDOWN */}
       <div className="flex flex-row justify-center items-center gap-4">
         <div
-          className="flex cursor-pointer font-body group"
+          className="flex cursor-pointer font-body group focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
           onClick={toggleDropdown}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              toggleDropdown();
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-expanded={showDropdown}
+          aria-haspopup="true"
         >
           {userInfo ? (
             <div className="relative flex flex-row items-center gap-3">

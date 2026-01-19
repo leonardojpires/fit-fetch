@@ -23,3 +23,7 @@
 .cta-button {
     @apply flex flex-row items-center gap-2 text-[var(--primary)] font-semibold border-2 border-[var(--background)] bg-[var(--background)] !px-12 !py-4 hover:scale-[1.04] transition-all ease-in-out duration-200;
 }
+
+.cta-button:focus-visible {
+    @apply outline-2 outline-offset-2 outline-[var(--background)];
+}

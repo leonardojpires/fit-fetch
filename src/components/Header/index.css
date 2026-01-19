@@ -82,8 +82,17 @@
   @apply content-[''] absolute top-[100%] left-0 w-full h-[2px] bg-[var(--secondary)] scale-x-0 origin-center transition-transform duration-300 ease-in-out;
 }
 
-.underline-hover:hover::before {
+.underline-hover:hover::before,
+.underline-hover:focus::before {
   @apply scale-x-100;
+}
+
+.underline-hover:focus {
+  @apply outline-2 outline-offset-2 outline-[var(--secondary)] rounded-sm;
+}
+
+.nav-link:focus-visible {
+  @apply outline-2 outline-offset-2 outline-[var(--secondary)] rounded-sm;
 }
 
 /* MEDIA QUERIES */

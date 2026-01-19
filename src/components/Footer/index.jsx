@@ -23,13 +23,13 @@ const Footer = () => {
               A tua plataforma completa para fitness e bem-estar. Transforma o teu corpo e mente.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="#" className="hover:text-primary transition-colors" aria-label="Visita a nossa página do Facebook">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="#" className="hover:text-primary transition-colors" aria-label="Visita a nossa página do Instagram">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="#" className="hover:text-primary transition-colors" aria-label="Visita a nossa página do Twitter">
                 <Twitter className="w-5 h-5" />
               </a>
             </div>
@@ -40,22 +40,22 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-4">Links Rápidos</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                <a href="#" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm" aria-label="Sobre a Fit Fetch">
                   Sobre Nós
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                <a href="#" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm" aria-label="Ir para página de Treinos">
                   Treinos
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                <a href="#" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm" aria-label="Ir para página de Nutrição">
                   Nutrição
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                <a href="#" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm" aria-label="Ver informações sobre Planos">
                   Planos
                 </a>
               </li>
@@ -67,22 +67,22 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-4">Suporte</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/faq" className="text-slate-400 hover:text-white transition-colors">
+                <Link to="/faq" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm">
                   FAQ
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                <a href="#" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm" aria-label="Ver Termos de Uso">
                   Termos de Uso
                 </a>
               </li>
               <li>
-                <a href="#" className="text-slate-400 hover:text-white transition-colors">
+                <a href="#" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm" aria-label="Ver Política de Privacidade">
                   Privacidade
                 </a>
               </li>
               <li>
-                <Link to="/contacto" className="text-slate-400 hover:text-white transition-colors">
+                <Link to="/contacto" className="text-slate-400 hover:text-white transition-colors focus:outline-2 focus:outline-offset-2 focus:outline-white rounded-sm">
                   Contacto
                 </Link>
               </li>

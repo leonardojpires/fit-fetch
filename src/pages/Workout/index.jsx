@@ -558,7 +558,7 @@ function Workout() {
                   </div>
                 </div>
               ) : (
-                <p className="font-body text-gray-400 text-center text-base md:text-lg">
+                <p className="font-body text-gray-600 text-center text-base md:text-lg">
                   O plano de treino vai aparecer aqui
                 </p>
               )}

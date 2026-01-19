@@ -229,7 +229,7 @@ function Profile() {
                 <p className="font-body font-medium text-black/70 !mb-2">
                   Membro desde {memberSince}
                 </p>
-                <span className="font-body font-medium text-black/50 text-sm">
+                <span className="font-body font-medium text-black/70 text-sm">
                   {user.email}
                 </span>
               </div>
@@ -287,7 +287,7 @@ function Profile() {
         {/* PLANS CONTAINER */}
         <div className="containers">
           <div className="flex flex-col gap-4 !p-6">
-            <div className="flex flex-col gap-2 border-b-2 border-gray-200/50 !pb-4 !mb-6">
+            <div className="flex flex-col gap-2 border-b-2 border-gray-200/70 !pb-4 !mb-6">
               <h2 className="font-headline font-bold text-2xl">
                 Os Meus Planos
               </h2>
@@ -296,7 +296,7 @@ function Profile() {
               </p>
             </div>
 
-            <div className="flex flex-row gap-8 font-body text-lg border-b border-gray-200/50 !mb-6">
+            <div className="flex flex-row gap-8 font-body text-lg border-b border-gray-200/70 !mb-6">
               <button
                 type="button"
                 onClick={() => handlePlanTypeChange("workout")}
@@ -331,7 +331,7 @@ function Profile() {
                       />
                     ))
                   ) : (
-                    <p className="font-body text-black/50">
+                    <p className="font-body text-black/70">
                       Ainda não tens planos de treino.
                     </p>
                   )}
@@ -347,7 +347,7 @@ function Profile() {
                       />
                     ))
                   ) : (
-                    <p className="font-body text-black/50">
+                    <p className="font-body text-black/70">
                       Ainda não tens planos de alimentação.
                     </p>
                   )}
