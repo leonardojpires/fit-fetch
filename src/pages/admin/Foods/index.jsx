@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FiEdit2, FiTrash2, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { IoRestaurant } from "react-icons/io5";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
+import useRedirectIfNotAuth from "../../../hooks/useIfNotAuth";
 import DeleteModal from "./../../../components/DeleteModal/index";
 import useGetAllFoods from "../../../hooks/Foods/useGetAllFoods";
 import useAddFood from "../../../hooks/Foods/useAddFood";
@@ -14,7 +15,8 @@ import SuccessWarning from "../../../components/SuccessWarning";
 import SearchBar from './../../../components/SearchBar/index';
 
 function FoodsPage() {
-  useAdminRedirect();
+  const { loading: authLoading } = useRedirectIfNotAuth();
+  const { loading: adminLoading } = useAdminRedirect();
 
   const { foods, setFoods } = useGetAllFoods();
   const addFood = useAddFood();
@@ -56,6 +58,16 @@ function FoodsPage() {
     { key: "serving_size", label: "Porção", width: "1/12" },
     { key: "category", label: "Categoria", width: "1/12" },
   ];
+
+  if (authLoading || adminLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

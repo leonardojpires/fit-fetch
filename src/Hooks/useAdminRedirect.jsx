@@ -1,9 +1,10 @@
-  import { useEffect } from "react";
+  import { useEffect, useState } from "react";
   import { useNavigate } from "react-router-dom";
   import { auth } from "../services/firebase.js";
 
   export default function useAdminRedirect() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
       let isMounted = true;
@@ -32,6 +33,8 @@
 
           if (isMounted && user.role !== "admin") {
             navigate("/");
+          } else if (isMounted) {
+            setLoading(false);
           }
         } catch (err) {
           console.error("Erro ao buscar os dados do utilizador: ", err);
@@ -43,4 +46,6 @@
         unsubscribe();
       }
     }, [navigate]);
+
+    return { loading };
   }

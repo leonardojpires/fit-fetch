@@ -56,7 +56,7 @@ const renderFormattedText = (text) => {
 };
 
 function Nutrition() {
-  useRedirectIfNotAuth();
+  const { loading: authLoading } = useRedirectIfNotAuth();
   const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
 
   const {
@@ -87,6 +87,16 @@ function Nutrition() {
     },
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  if (authLoading || userLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

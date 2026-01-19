@@ -10,6 +10,7 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 import useAdminRedirect from "./../../../hooks/useAdminRedirect";
+import useRedirectIfNotAuth from "./../../../hooks/useIfNotAuth";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers";
 import useAddUser from "../../../hooks/Users/useAddUser";
 import useUpdateUser from "./../../../hooks/Users/useUpdateUser";
@@ -18,7 +19,8 @@ import SuccessWarning from "../../../components/SuccessWarning";
 import SearchBar from './../../../components/SearchBar/index';
 
 function UsersPage() {
-  useAdminRedirect();
+  const { loading: authLoading } = useRedirectIfNotAuth();
+  const { loading: adminLoading } = useAdminRedirect();
 
   const { users, setUsers } = useGetAllUsers();
   const addUser = useAddUser();
@@ -48,6 +50,16 @@ function UsersPage() {
     { key: "role", label: "Cargo", width: "1/6" },
     { key: "created_at", label: "Criado em", width: "1/6" }
   ];
+
+  if (authLoading || adminLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
 
   function openAddModal() {
     setFormData({ name: "", email: "", role: "user" });

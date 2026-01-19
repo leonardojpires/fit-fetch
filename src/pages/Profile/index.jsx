@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
 import WorkoutPlanPreview from "../../components/WorkoutPlanPreview/index.jsx";
 import NutritionPlanPreview from "../../components/NutritionPlanPreview/index.jsx";
-import useRemoveWorkoutPlan from './../../hooks/WorkoutPlan/useRemoveWorkoutPlan';
-import useRemoveNutritionPlan from '../../hooks/Nutrition/useRemoveNutritionPlan';
+import useRemoveWorkoutPlan from "./../../hooks/WorkoutPlan/useRemoveWorkoutPlan";
+import useRemoveNutritionPlan from "../../hooks/Nutrition/useRemoveNutritionPlan";
 import EditProfileModal from "../../components/EditProfileModal/index.jsx";
 import DeleteModal from "../../components/DeleteModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
@@ -49,7 +49,7 @@ function Profile() {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         const nutritionResponse = await fetch(
@@ -59,7 +59,7 @@ function Profile() {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
 
         if (workoutResponse.ok && nutritionResponse.ok) {
@@ -76,6 +76,16 @@ function Profile() {
     fetchUserPlans();
   }, [user]);
 
+  if (authLoading || userLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
+
   function openDeleteModal(plan, type) {
     setPlanToDelete({ ...plan, type });
     setDeleteModalOpen(true);
@@ -88,7 +98,7 @@ function Profile() {
 
   async function confirmDeletePlan() {
     if (!planToDelete) return;
-    
+
     setIsDeletingPlan(planToDelete.id);
     try {
       if (planToDelete.type === "workout") {
@@ -96,14 +106,18 @@ function Profile() {
         if (result) {
           setSuccessMessage("Plano removido com sucesso!");
           setShowSuccessWarning(true);
-          setWorkoutPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planToDelete.id));
+          setWorkoutPlans((prevPlans) =>
+            prevPlans.filter((plan) => plan.id !== planToDelete.id),
+          );
         }
       } else if (planToDelete.type === "nutrition") {
         const result = await removeNutritionPlan(planToDelete.id);
         if (result) {
           setSuccessMessage("Plano removido com sucesso!");
           setShowSuccessWarning(true);
-          setNutritionPlans((prevPlans) => prevPlans.filter(plan => plan.id !== planToDelete.id));
+          setNutritionPlans((prevPlans) =>
+            prevPlans.filter((plan) => plan.id !== planToDelete.id),
+          );
         }
       }
     } finally {
@@ -140,8 +154,8 @@ function Profile() {
 
     const formData = {
       name: e.target.name.value,
-      avatar: avatarFile
-    }
+      avatar: avatarFile,
+    };
 
     if (!formData.name) throw new Error("O nome é obrigatório!");
     const prevUser = user;
@@ -152,30 +166,33 @@ function Profile() {
 
       if (!result) throw new Error("Erro ao atualizar perfil");
       if (result.avatarUrl) {
-        setUser((u) => ({ ...u, avatarUrl: `http://localhost:3000${result.avatarUrl}` }));
+        setUser((u) => ({
+          ...u,
+          avatarUrl: `http://localhost:3000${result.avatarUrl}`,
+        }));
       }
 
       setIsEditModalOpen(false);
       setSubmitText("Guardar Alterações");
       setSuccessMessage("Perfil atualizado com sucesso!");
       setShowSuccessWarning(true);
-    } catch(err) {
+    } catch (err) {
       setUser(prevUser);
       console.error("Erro ao atualizar perfil: ", err);
       return;
     }
-  }
+  };
 
   const closeSuccessWarning = () => {
     setShowSuccessWarning(false);
-  }
+  };
 
   if (showSuccessWarning) {
     setTimeout(() => {
       closeSuccessWarning();
     }, 3000);
   }
-  
+
   return (
     <motion.section
       className="w-full"
@@ -194,7 +211,13 @@ function Profile() {
             <div className="flex flex-col md:flex-row items-center md:items-end gap-6 !-mt-20">
               <div className="relative">
                 <img
-                  src={user.avatarUrl ? (user.avatarUrl.startsWith('http') ? user.avatarUrl : `http://localhost:3000${user.avatarUrl}`) : defaultAvatar}
+                  src={
+                    user.avatarUrl
+                      ? user.avatarUrl.startsWith("http")
+                        ? user.avatarUrl
+                        : `http://localhost:3000${user.avatarUrl}`
+                      : defaultAvatar
+                  }
                   alt={`Foto de perfil de ${user.name}`}
                   className="w-48 h-48 object-cover rounded-full border-6 border-white shadow-lg pointer-events-none"
                 />
@@ -211,7 +234,7 @@ function Profile() {
                 </span>
               </div>
               <div>
-                <button 
+                <button
                   type="button"
                   onClick={() => setIsEditModalOpen(true)}
                   className="font-body bg-[var(--primary)] !px-8 !py-3 text-white hover:bg-[var(--accent)] transition-all ease-in-out duration-200 cursor-pointer rounded-xl"
@@ -224,12 +247,12 @@ function Profile() {
         </div>
 
         {/* EDIT PROFILE MODAL */}
-        <EditProfileModal 
+        <EditProfileModal
           isOpen={isEditModalOpen}
           onClose={() => setIsEditModalOpen(false)}
           user={user}
           defaultAvatar={defaultAvatar}
-          newAvatar = {user.avatarUrl || null}
+          newAvatar={user.avatarUrl || null}
           submitText={submitText}
           saveChanges={updateProfile}
         />
@@ -253,7 +276,9 @@ function Profile() {
             </div>
 
             <div>
-              <span className="font-bold text-3xl">{nutritionPlans.length}</span>
+              <span className="font-bold text-3xl">
+                {nutritionPlans.length}
+              </span>
               <p className="text-sm text-black/70">Planos de Nutrição</p>
             </div>
           </div>
@@ -299,7 +324,11 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
-                      <WorkoutPlanPreview key={plan.id} plan={plan} onDeletePlan={() => openDeleteModal(plan, "workout")} />
+                      <WorkoutPlanPreview
+                        key={plan.id}
+                        plan={plan}
+                        onDeletePlan={() => openDeleteModal(plan, "workout")}
+                      />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
@@ -311,7 +340,11 @@ function Profile() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {nutritionPlans.length > 0 ? (
                     nutritionPlans.map((plan) => (
-                      <NutritionPlanPreview key={plan.id} plan={plan} onDeletePlan={() => openDeleteModal(plan, "nutrition")} />
+                      <NutritionPlanPreview
+                        key={plan.id}
+                        plan={plan}
+                        onDeletePlan={() => openDeleteModal(plan, "nutrition")}
+                      />
                     ))
                   ) : (
                     <p className="font-body text-black/50">
@@ -325,9 +358,12 @@ function Profile() {
         </div>
       </div>
 
-      { showSuccessWarning && (
-        <SuccessWarning message={successMessage} closeWarning={closeSuccessWarning} />
-      ) }
+      {showSuccessWarning && (
+        <SuccessWarning
+          message={successMessage}
+          closeWarning={closeSuccessWarning}
+        />
+      )}
 
       {deleteModalOpen && planToDelete && (
         <DeleteModal
@@ -339,7 +375,6 @@ function Profile() {
           isDeleting={isDeletingPlan === planToDelete.id}
         />
       )}
-
     </motion.section>
   );
 }

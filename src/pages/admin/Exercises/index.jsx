@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { FiEdit2, FiTrash2, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
+import useRedirectIfNotAuth from "../../../hooks/useIfNotAuth";
 import DeleteModal from "./../../../components/DeleteModal/index";
 import SuccessWarning from "../../../components/SuccessWarning";
 import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
@@ -14,7 +15,8 @@ import useDeleteExercise from "../../../hooks/Exercises/useDeleteExercise";
 import SearchBar from "./../../../components/SearchBar/index";
 
 function ExercisesPage() {
-  useAdminRedirect();
+  const { loading: authLoading } = useRedirectIfNotAuth();
+  const { loading: adminLoading } = useAdminRedirect();
 
   const { exercises, setExercises } = useGetAllExercises();
   const addExercise = useAddExercise();
@@ -49,6 +51,16 @@ function ExercisesPage() {
     { key: "type", label: "Tipo", width: "1/6" },
     { key: "difficulty", label: "Dificuldade", width: "1/6" },
   ];
+
+  if (authLoading || adminLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

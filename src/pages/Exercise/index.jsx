@@ -19,7 +19,7 @@ const tDifficulty = {
 
 function Exercise() {
   const { id } = useParams();
-  const { loading } = useRedirectIfNotAuth();
+  const { loading: authLoading } = useRedirectIfNotAuth();
   const { exercise, loadingExercise, error } = useGetExerciseById(id);
 
   // Extrair ID do YouTube de diferentes formatos de URL
@@ -31,7 +31,7 @@ function Exercise() {
     return match && match[2].length === 11 ? match[2] : null;
   };
 
-  if (loading || loadingExercise) {
+  if (authLoading || loadingExercise) {
     return (
       <section className="w-full">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">

@@ -7,13 +7,21 @@ import useGetAllExercises from './../../../hooks/Exercises/useGetAllExercises';
 import useGetAllFoods from './../../../hooks/Foods/useGetAllFoods';
 
 function Dashboard() {
-  useAdminRedirect();
+  const { loading: authLoading } = useRedirectIfNotAuth();
+  const { loading: adminLoading } = useAdminRedirect();
   const { users } = useGetAllUsers();
   const { exercises } = useGetAllExercises();
   const { foods } = useGetAllFoods();
 
-  const { loading } = useRedirectIfNotAuth();
-  if (loading) return null;
+  if (authLoading || adminLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
 
   const dashboardData = [
     {

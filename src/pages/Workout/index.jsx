@@ -27,7 +27,7 @@ const tLevel = {
 };
 
 function Workout() {
-  useRedirectIfNotAuth();
+  const { loading: authLoading } = useRedirectIfNotAuth();
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -54,6 +54,16 @@ function Workout() {
 
   const [successMessage, setSuccessMessage] = useState("");
   const [showSuccessWarning, setShowSuccessWarning] = useState(false);
+
+  if (authLoading || userLoading) {
+    return (
+      <section className="w-full">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+          <p className="font-body text-lg">A carregar...</p>
+        </div>
+      </section>
+    );
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;

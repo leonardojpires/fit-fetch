@@ -24,7 +24,7 @@ const tLevel = {
 
 function WorkoutPlans() {
   const { id } = useParams();
-  const { loading } = useRedirectIfNotAuth();
+  const { loading: authLoading } = useRedirectIfNotAuth();
   const { user, loading: loadingUser } = useCurrentUser();
   const { workoutPlan, loadingPlan, error } = useGetWorkoutPlanById(id);
   const removePlan = useRemoveWorkoutPlan();
@@ -60,7 +60,7 @@ function WorkoutPlans() {
     }
   }
 
-  if (loading || loadingPlan) {
+  if (authLoading || loadingUser || loadingPlan) {
     return (
       <section className="w-full">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">
