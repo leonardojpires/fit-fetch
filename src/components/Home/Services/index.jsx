@@ -4,7 +4,7 @@ import services from './servicesData.js';
 
 function Services() {
     return (
-        <section className="section !mt-20 !mb-10">
+        <section className="section !mt-20 !mb-10" id="servicos">
             <h3 className="title font-headline !mb-5">O que o Fit Fetch oferece</h3>
             <p className="description font-body !mb-10">As ferramentas disponíveis no Fit Fetch que te permitem desbloquear o teu potencial, foco e força</p>
 

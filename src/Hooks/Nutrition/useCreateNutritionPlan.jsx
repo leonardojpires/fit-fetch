@@ -29,6 +29,7 @@ export default function useCreateNutritionPlan() {
     const [creating, setCreating] = useState(false);
     // Error state to display save operation failures
     const [error, setError] = useState(null);
+    const [validationErrors, setValidationErrors] = useState([]);
 
     /**
      * Creates and saves a complete nutrition plan to the database.
@@ -60,7 +61,11 @@ export default function useCreateNutritionPlan() {
             const data = await response.json();
 
             // Throw error if save failed (validation errors, DB constraints, etc.)
-            if (!response.ok) throw new Error (data.message || "Erro ao criar plano de nutrição.");
+            if (!response.ok) {
+               setValidationErrors(data.errors || []);
+               throw new Error (data.message || "Erro ao criar plano de nutrição.");
+            }    
+                
 
             // Return the created plan with database ID and all relationships
             return data;
@@ -73,6 +78,10 @@ export default function useCreateNutritionPlan() {
             setCreating(false);
         }
     }
-    
-    return { createPlan, creating, error };
+
+  const clearErrors = () => {
+    setValidationErrors([]);
+  }
+
+    return { createPlan, creating, error, validationErrors, clearErrors };
 }

@@ -55,7 +55,7 @@ function Hero() {
           <div className="flex flex-col gap-7">
             <div className="flex flex-row gap-5">
               <Button text="SOBRE NÓS" to="#sobre" />
-              <Button text="VER PLANOS" to="#" isSecondary />
+              <Button text="SERVIÇOS" to="#servicos" isSecondary />
             </div>
           </div>
         </div>

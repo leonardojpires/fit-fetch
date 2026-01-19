@@ -59,7 +59,7 @@ export default function useChatNutrition() {
             const data = await response.json();
 
             // Throw error if response is not successful (4xx/5xx status codes)
-            if (!response.ok) throw new Error(data.message || "Erro ao comunicar com o servidor.");
+            if (!response.ok) throw new Error(data.message || "Desculpa, algo correu mal. Tenta novamente!");
 
             console.log("Resposta da API:", data);
             
@@ -67,7 +67,7 @@ export default function useChatNutrition() {
             return data;
         } catch(err) {
             // Store error message to display in UI
-            setError(err.message || "Erro ao comunicar com o servidor.");
+            setError(err.message || "Desculpa, algo correu mal. Tenta novamente!");
             throw err; // Re-throw so calling component can also handle it
         } finally {
             // Always hide loading indicator when done

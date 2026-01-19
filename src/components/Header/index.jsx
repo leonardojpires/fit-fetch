@@ -243,7 +243,7 @@ function Header() {
                   {userInfo?.name}
                   <IoIosArrowDown
                     className={`${
-                      showDropdown ? "rotate-180" : "group-hover:animate-bounce"
+                      showDropdown ? "rotate-180" : ""
                     }`}
                   />
                 </span>

@@ -5,7 +5,7 @@
 }
 
 .faq-button {
-  @apply w-full flex items-center justify-between text-left text-base text-black !px-4 !py-3 md:!px-6 md:!py-4;
+  @apply w-full flex items-center justify-between text-left text-base text-black !px-4 !py-3 md:!px-6 md:!py-4 cursor-pointer ;
 }
 
 .faq-answer {

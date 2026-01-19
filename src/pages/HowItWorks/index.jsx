@@ -11,6 +11,8 @@ import {
   FiShield,
   FiArrowRight,
   FiDatabase,
+  FiMessageSquare,
+  FiSend,
 } from "react-icons/fi";
 
 const trainingSteps = [
@@ -42,6 +44,33 @@ const trainingSteps = [
     title: "Guardar e partilhar",
     description:
       "Guarda o plano para recuperar sempre que quiseres. Exporta em PDF para levar para a ginásio ou partilhar com amigos.",
+    icon: FiBookmark,
+  },
+];
+
+const nutritionSteps = [
+  {
+    title: "Abre a Nutrição",
+    description:
+      "Acede à página de Nutrição (precisas de estar autenticado).",
+    icon: FiMessageSquare,
+  },
+  {
+    title: "Conversa com o assistente",
+    description:
+      "Escreve objetivos, preferências e restrições. O chatbot responde e pode gerar um plano baseado no que pedes.",
+    icon: FiSend,
+  },
+  {
+    title: "Vê o plano",
+    description:
+      "Quando o plano é gerado, aparece um preview com lista de alimentos e totais de macronutrientes e calorias.",
+    icon: FiTrendingUp,
+  },
+  {
+    title: "Guarda o plano",
+    description:
+      "Clica em Guardar para adicionar à tua conta. Depois podes consultar em Perfil > Planos de Nutrição.",
     icon: FiBookmark,
   },
 ];
@@ -91,6 +120,50 @@ function HowItWorks() {
 
               <div className="flex flex-col gap-2 !mt-6">
                 {trainingSteps.map((step, index) => {
+                  const Icon = step.icon;
+                  return (
+                    <div key={step.title} className="step-card">
+                      <div className="flex items-start gap-3">
+                        <div className="step-icon flex-shrink-0">
+                          <Icon />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-headline text-base font-semibold text-black">
+                            {index + 1}. {step.title}
+                          </h3>
+                          <p className="font-body text-gray-700 text-sm !mt-1">
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.article>
+
+          {/* Nutrition Chatbot */}
+          <motion.article
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="glass-card"
+          >
+            <div className="glass-card-content">
+              <h2 className="font-headline text-2xl font-bold text-black">
+                Chatbot de Nutrição: como funciona
+              </h2>
+              <p className="font-body text-gray-700 text-sm !mt-2">
+                Na página de <Link to="/nutricao" className="underline text-[var(--primary)]">Nutrição</Link>,
+                conversas com um assistente que entende os teus objetivos e preferências.
+                Quando pedes um plano (ex.: "criar plano"), é mostrado um preview com alimentos e totais.
+                Podes guardar o plano na tua conta e consultá-lo mais tarde em Perfil.
+              </p>
+
+              <div className="flex flex-col gap-2 !mt-6">
+                {nutritionSteps.map((step, index) => {
                   const Icon = step.icon;
                   return (
                     <div key={step.title} className="step-card">
@@ -176,7 +249,7 @@ function HowItWorks() {
                   </div>
                   <div>
                     <h3 className="font-headline font-semibold text-black text-base">
-                      Recupera anytime
+                      Recupera a qualquer momento
                     </h3>
                     <p className="font-body text-gray-700 text-sm">
                       Todos os planos guardados na tua conta.

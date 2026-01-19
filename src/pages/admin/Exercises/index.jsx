@@ -52,6 +52,16 @@ function ExercisesPage() {
     { key: "difficulty", label: "Dificuldade", width: "1/6" },
   ];
 
+  useEffect(() => {
+    if (showSuccessWarning) {
+      const timer = setTimeout(() => {
+        setShowSuccessWarning(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessWarning]);
+
   if (authLoading || adminLoading) {
     return (
       <section className="w-full">
@@ -131,7 +141,7 @@ function ExercisesPage() {
             headers: {
               Authorization: `Bearer ${await auth.currentUser.getIdToken()}`,
             },
-          }
+          },
         ).then((res) => res.json());
         setExercises(updatedExercises);
         setSuccessMessage("Exercício adicionado com sucesso!");
@@ -153,24 +163,23 @@ function ExercisesPage() {
 
       const updatedExercise = await updateExercise(
         exerciseToEdit.id,
-        dataToSend
+        dataToSend,
       );
       if (updatedExercise) {
         setExercises((prev) =>
           prev.map((ex) =>
-            ex.id === updatedExercise.id ? updatedExercise : ex
-          )
+            ex.id === updatedExercise.id ? updatedExercise : ex,
+          ),
         );
         setSuccessMessage("Exercício atualizado com sucesso!");
         setShowSuccessWarning(true);
       }
     } catch (error) {
-        console.error("Erro ao atualizar o exercício:", error);
+      console.error("Erro ao atualizar o exercício:", error);
     } finally {
       setIsSubmitting(false);
       closeModal();
     }
-
   }
 
   async function handleDeleteExercise() {
@@ -181,7 +190,7 @@ function ExercisesPage() {
       const result = await deleteExercise(exerciseToDelete.id);
       if (result) {
         setExercises((prev) =>
-          prev.filter((ex) => ex.id !== exerciseToDelete.id)
+          prev.filter((ex) => ex.id !== exerciseToDelete.id),
         );
         setSuccessMessage("Exercício removido com sucesso!");
         setShowSuccessWarning(true);
@@ -211,23 +220,13 @@ function ExercisesPage() {
   function getSortedExercises(exercises) {
     if (sort.direction === "asc") {
       return [...exercises].sort((a, b) =>
-        a[sort.field] > b[sort.field] ? 1 : -1
+        a[sort.field] > b[sort.field] ? 1 : -1,
       );
     }
     return [...exercises].sort((a, b) =>
-      a[sort.field] > b[sort.field] ? -1 : 1
+      a[sort.field] > b[sort.field] ? -1 : 1,
     );
   }
-
-  useEffect(() => {
-    if (showSuccessWarning) {
-      const timer = setTimeout(() => {
-        setShowSuccessWarning(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [showSuccessWarning]);
 
   return (
     <section className="section-admin admin-dashboard min-h-screen">
@@ -240,9 +239,14 @@ function ExercisesPage() {
               Gestão de exercícios da plataforma
             </p>
           </div>
-          <div className="admin-button font-body w-full sm:w-auto" onClick={openAddModal}>
+          <div
+            className="admin-button font-body w-full sm:w-auto"
+            onClick={openAddModal}
+          >
             <button></button>
-            <CgGym /> <span className="hidden sm:inline">Adicionar Exercício</span><span className="inline sm:hidden">Adicionar</span>
+            <CgGym />{" "}
+            <span className="hidden sm:inline">Adicionar Exercício</span>
+            <span className="inline sm:hidden">Adicionar</span>
           </div>
         </div>
 
@@ -264,103 +268,115 @@ function ExercisesPage() {
                       onClick={() => handleHeaderClick(header.key)}
                       scope="col"
                       className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
-                      aria-sort={sort.field === header.key ? sort.direction : "none"}
+                      aria-sort={
+                        sort.field === header.key ? sort.direction : "none"
+                      }
                     >
                       <div className="flex items-center !gap-1">
                         {header.label}
                         {sort.field === header.key &&
                           (sort.direction === "asc" ? (
-                            <FiChevronUp size={16} aria-hidden="true" focusable="false" />
+                            <FiChevronUp
+                              size={16}
+                              aria-hidden="true"
+                              focusable="false"
+                            />
                           ) : (
-                            <FiChevronDown size={16} aria-hidden="true" focusable="false" />
+                            <FiChevronDown
+                              size={16}
+                              aria-hidden="true"
+                              focusable="false"
+                            />
                           ))}
                       </div>
                     </th>
                   ))}
-                  <th className="!p-3" scope="col">Ações</th>
+                  <th className="!p-3" scope="col">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
-              {exercises.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="!p-6 text-center text-sm text-gray-500"
-                  >
-                    Sem exercícios.
-                  </td>
-                </tr>
-              ) : (
-                getSortedExercises(currentExercises)
-                  .filter((exercise) => {
-                    return searchItem === ""
-                      ? true
-                      : exercise.name
-                          .toLowerCase()
-                          .includes(searchItem.toLowerCase());
-                  })
-                  .map((exercise) => (
-                    <tr
-                      key={exercise.id}
-                      className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                {exercises.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="!p-6 text-center text-sm text-gray-500"
                     >
-                      <td className="!p-3">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <div className="font-medium">
-                              {exercise.name.charAt(0).toUpperCase() +
-                                exercise.name.slice(1)}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              ID: {exercise.id}
+                      Sem exercícios.
+                    </td>
+                  </tr>
+                ) : (
+                  getSortedExercises(currentExercises)
+                    .filter((exercise) => {
+                      return searchItem === ""
+                        ? true
+                        : exercise.name
+                            .toLowerCase()
+                            .includes(searchItem.toLowerCase());
+                    })
+                    .map((exercise) => (
+                      <tr
+                        key={exercise.id}
+                        className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                      >
+                        <td className="!p-3">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <div className="font-medium">
+                                {exercise.name.charAt(0).toUpperCase() +
+                                  exercise.name.slice(1)}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                ID: {exercise.id}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {exercise.muscle_group}
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        <span className="inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {exercise.type || "weightlifting"}
-                        </span>
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        <span
-                          className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
-                            exercise.difficulty === "beginner"
-                              ? "bg-green-100 text-green-800"
-                              : exercise.difficulty === "intermediate"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {exercise.difficulty || "beginner"}
-                        </span>
-                      </td>
-                      <td className="!p-3">
-                        <div className="flex items-center !gap-2">
-                          <button
-                            type="button"
-                            aria-label={`Editar ${exercise.name}`}
-                            onClick={() => openEditModal(exercise)}
-                            className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {exercise.muscle_group}
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          <span className="inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {exercise.type || "weightlifting"}
+                          </span>
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          <span
+                            className={`inline-flex items-center !px-2 !py-1 rounded-full text-xs font-medium ${
+                              exercise.difficulty === "beginner"
+                                ? "bg-green-100 text-green-800"
+                                : exercise.difficulty === "intermediate"
+                                  ? "bg-yellow-100 text-yellow-800"
+                                  : "bg-red-100 text-red-800"
+                            }`}
                           >
-                            <FiEdit2 aria-hidden="true" focusable="false" />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label={`Eliminar ${exercise.name}`}
-                            onClick={() => openDeleteModal(exercise)}
-                            className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
-                          >
-                            <FiTrash2 aria-hidden="true" focusable="false" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-              )}
+                            {exercise.difficulty || "beginner"}
+                          </span>
+                        </td>
+                        <td className="!p-3">
+                          <div className="flex items-center !gap-2">
+                            <button
+                              type="button"
+                              aria-label={`Editar ${exercise.name}`}
+                              onClick={() => openEditModal(exercise)}
+                              className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <FiEdit2 aria-hidden="true" focusable="false" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Eliminar ${exercise.name}`}
+                              onClick={() => openDeleteModal(exercise)}
+                              className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <FiTrash2 aria-hidden="true" focusable="false" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           </div>
@@ -557,14 +573,33 @@ function ExercisesPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         A processar...
                       </>
+                    ) : isEditModalOpen ? (
+                      "Guardar"
                     ) : (
-                      isEditModalOpen ? "Guardar" : "Adicionar"
+                      "Adicionar"
                     )}
                   </button>
                 </div>

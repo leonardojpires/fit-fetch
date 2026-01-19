@@ -4,11 +4,13 @@ import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useChatNutrition from "../../hooks/Nutrition/useChatNutrition";
 import useCreateNutritionPlan from "../../hooks/Nutrition/useCreateNutritionPlan";
 import useGetUserNutritionPlans from "../../hooks/Nutrition/useGetUserNutritionPlans";
-import useCurrentUser from './../../hooks/useCurrentUser';
+import useCurrentUser from "./../../hooks/useCurrentUser";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import { motion } from "framer-motion";
 import { IoMdSend } from "react-icons/io";
 import { IoBookmarksOutline } from "react-icons/io5";
+import ErrorWarning from "../../components/ErrorWarning";
+import SuccessWarning from "../../components/SuccessWarning";
 
 // Simple markdown formatter - converts **text** to bold, etc
 const formatMarkdown = (text) => {
@@ -42,7 +44,7 @@ const renderFormattedText = (text) => {
       return (
         <p key={idx} className="!m-0 !mb-1 text-gray-800">
           {parts.map((part, i) =>
-            i % 2 === 1 ? <strong key={i}>{part}</strong> : part
+            i % 2 === 1 ? <strong key={i}>{part}</strong> : part,
           )}
         </p>
       );
@@ -64,7 +66,13 @@ function Nutrition() {
     loading: chatLoading,
     error: chatError,
   } = useChatNutrition();
-  const { createPlan, creating, error: createError } = useCreateNutritionPlan();
+  const {
+    createPlan,
+    creating,
+    error: createError,
+    validationErrors,
+    clearErrors,
+  } = useCreateNutritionPlan();
   const {
     plans,
     loading: plansLoading,
@@ -75,11 +83,13 @@ function Nutrition() {
   const [isSaving, setIsSaving] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const [nutritionPlan, setNutritionPlan] = useState(null);
+  const [successModalMessage, setSuccessModalMessage] = useState("");
+  const [showSuccessWarning, setShowSuccessWarning] = useState(false);
   const [messages, setMessages] = useState([
     {
       role: "assistente",
       content:
-        "Olá! Sou o teu assistente de nutrição. Descreve os teus objetivos e preferências alimentares para criar um plano personalizado.",
+        "Olá! Bem-vindo(a) ao teu assistente de nutrição do Fit Fetch! Estou aqui para ajudar-te a criar um plano alimentar personalizado.\n\nComo posso começar?\n• Qual é o teu objetivo? (perder peso, ganhar massa, manter-me saudável...)\n• Tens alguma restrição dietética?\n• Que tipo de comida gostas?",
       timestamp: new Date().toLocaleTimeString("pt-PT", {
         hour: "2-digit",
         minute: "2-digit",
@@ -97,6 +107,10 @@ function Nutrition() {
       </section>
     );
   }
+
+  const closeSuccessWarning = () => {
+    setShowSuccessWarning(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,8 +137,8 @@ function Nutrition() {
           msg.role === "utilizador"
             ? "user"
             : msg.role === "assistente"
-            ? "assistant"
-            : msg.role,
+              ? "assistant"
+              : msg.role,
         content: msg.content,
       }));
 
@@ -146,12 +160,11 @@ function Nutrition() {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
-      
     } catch (err) {
       const errorMessage = {
         role: "assistente",
         content:
-          "Desculpa, ocorreu um erro ao processar o teu pedido. Por favor, tenta novamente mais tarde.",
+          "Ops! 😅 Algo correu mal no meu lado. Podes tentar de novo? Se o problema persistir, avisa-nos!",
         timestamp: new Date().toLocaleTimeString("pt-PT", {
           hour: "2-digit",
           minute: "2-digit",
@@ -186,6 +199,8 @@ function Nutrition() {
         }),
       };
       setMessages((prev) => [...prev, successMessage]);
+      setSuccessModalMessage("O teu plano alimentar foi guardado com sucesso na tua conta!");
+      setShowSuccessWarning(true);
     } catch (err) {
       const errorMessage = {
         role: "assistente",
@@ -502,6 +517,21 @@ function Nutrition() {
           <div className="!mt-12" />
         </div>
       </motion.section>
+
+      {/* Warnings */}
+      {validationErrors.length > 0 && (
+        <ErrorWarning
+          validationErrors={validationErrors}
+          clearErrors={clearErrors}
+        />
+      )}
+
+      {validationErrors.length === 0 && showSuccessWarning && (
+        <SuccessWarning
+          message={successModalMessage}
+          closeWarning={closeSuccessWarning}
+        />
+      )}
     </>
   );
 }

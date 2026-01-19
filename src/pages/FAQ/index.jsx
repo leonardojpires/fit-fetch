@@ -6,30 +6,34 @@ import { Link } from "react-router-dom";
 
 const faqItems = [
   {
-    question: "Preciso de conta para gerar um plano?",
+    question: "Preciso de conta para gerar planos?",
     answer:
-      "Sim, precisas estar autenticado (registado e com login feito). Isto garante que o teu plano fica guardado e seguro na tua conta.",
+      "Sim. Tens de estar autenticado para gerar e guardar planos de treino e de nutrição. Isto garante que ficam associados e seguros na tua conta.",
   },
   {
-    question:
-      "O que acontece se gerar um novo plano antes de guardar o anterior?",
+    question: "Como funciona o chatbot de nutrição?",
     answer:
-      "Se tinhas um plano não guardado, ele é automaticamente removido. Isto evita confusão. Se quiseres guardar, clica em 'Guardar Plano' antes de gerar um novo.",
+      "Na página de Nutrição, escreves os teus objetivos e preferências (ex.: perder peso, evitar lactose, refeições rápidas). O assistente responde e, quando pedes um plano (ex.: 'criar plano'), mostra um preview com alimentos e totais de macronutrientes e calorias.",
+  },
+  {
+    question: "Como guardo um plano de nutrição?",
+    answer:
+      "Depois de gerado, usa a opção de guardar para adicionar o plano à tua conta. Mais tarde podes consultar em Perfil > Planos de Nutrição.",
   },
   {
     question: "Posso gerar vários planos até ficar perfeito?",
     answer:
-      "Sim! Podes gerar quantas vezes quiseres. Como o sistema mistura os exercícios, cada vez pode resultar em planos diferentes.",
+      "Sim! Podes gerar quantas vezes quiseres. Cada geração pode sugerir combinações diferentes, mantendo coerência com os teus critérios.",
   },
   {
-    question: "Como guardo um plano?",
+    question: "O que acontece se gerar um novo plano antes de guardar o anterior?",
     answer:
-      "Quando vires o plano gerado, clica em 'Guardar Plano'. Fica guardado na tua conta e podes acedê-lo sempre que precisares.",
+      "Se tiveres um plano não guardado, ao gerar outro o anterior pode ser substituído. Se queres mantê-lo, guarda-o antes de gerar novamente.",
   },
   {
-    question: "E os planos de nutrição?",
+    question: "Os valores nutricionais ajustam à porção?",
     answer:
-      "Estão em desenvolvimento! Em breve vais poder gerar recomendações alimentares personalizadas ligadas aos teus treinos.",
+      "Sim. Os totais de proteínas, hidratos, gorduras e calorias são calculados a partir da porção e unidade do alimento no plano, garantindo valores realistas.",
   },
 ];
 

@@ -59,6 +59,17 @@ function FoodsPage() {
     { key: "category", label: "Categoria", width: "1/12" },
   ];
 
+  useEffect(() => {
+    if (showSuccessWarning) {
+      const timer = setTimeout(() => {
+        setShowSuccessWarning(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessWarning]);
+  
+
   if (authLoading || adminLoading) {
     return (
       <section className="w-full">
@@ -212,16 +223,6 @@ function FoodsPage() {
     }
     return [...foods].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
   }
-
-  useEffect(() => {
-    if (showSuccessWarning) {
-      const timer = setTimeout(() => {
-        setShowSuccessWarning(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [showSuccessWarning]);
 
   return (
     <section className="section-admin admin-dashboard min-h-screen">

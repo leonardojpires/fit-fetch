@@ -16,7 +16,7 @@ import useAddUser from "../../../hooks/Users/useAddUser";
 import useUpdateUser from "./../../../hooks/Users/useUpdateUser";
 import useDeleteUser from "./../../../hooks/Users/useDeleteUser";
 import SuccessWarning from "../../../components/SuccessWarning";
-import SearchBar from './../../../components/SearchBar/index';
+import SearchBar from "./../../../components/SearchBar/index";
 
 function UsersPage() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -48,8 +48,18 @@ function UsersPage() {
     { key: "name", label: "Utilizador", width: "1/4" },
     { key: "email", label: "E-Mail", width: "1/4" },
     { key: "role", label: "Cargo", width: "1/6" },
-    { key: "created_at", label: "Criado em", width: "1/6" }
+    { key: "created_at", label: "Criado em", width: "1/6" },
   ];
+
+  useEffect(() => {
+    if (showSuccessWarning) {
+      const timer = setTimeout(() => {
+        setShowSuccessWarning(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessWarning]);
 
   if (authLoading || adminLoading) {
     return (
@@ -106,11 +116,14 @@ function UsersPage() {
       const newUser = await addUser(formData);
 
       if (newUser) {
-        const updatedUsers = await fetch("http://localhost:3000/api/users/all", {
-          headers: {
-            Authorization: `Bearer ${await await auth.currentUser.getIdToken()}`,
+        const updatedUsers = await fetch(
+          "http://localhost:3000/api/users/all",
+          {
+            headers: {
+              Authorization: `Bearer ${await await auth.currentUser.getIdToken()}`,
+            },
           },
-        }).then((res) => res.json());
+        ).then((res) => res.json());
         setUsers(updatedUsers);
         setSuccessMessage("Utilizador adicionado com sucesso!");
         setShowSuccessWarning(true);
@@ -130,7 +143,7 @@ function UsersPage() {
       const updatedUser = await updateUser(userToEdit.id, formData);
       if (updatedUser) {
         setUsers((prev) =>
-          prev.map((u) => (u.id === updatedUser.id ? updatedUser : u))
+          prev.map((u) => (u.id === updatedUser.id ? updatedUser : u)),
         );
         setSuccessMessage("Utilizador editado com sucesso!");
         setShowSuccessWarning(true);
@@ -162,16 +175,6 @@ function UsersPage() {
     setShowSuccessWarning(false);
   };
 
-  useEffect(() => {
-    if (showSuccessWarning) {
-      const timer = setTimeout(() => {
-        setShowSuccessWarning(false);
-      }, 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [showSuccessWarning]);
-
   // Sorting users functionallity
   function handleHeaderClick(field) {
     setSort({
@@ -188,7 +191,7 @@ function UsersPage() {
   function getSortedUsers(users) {
     if (sort.direction === "asc") {
       return [...users].sort((a, b) =>
-        a[sort.field] > b[sort.field] ? 1 : -1
+        a[sort.field] > b[sort.field] ? 1 : -1,
       );
     }
     return [...users].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
@@ -205,13 +208,18 @@ function UsersPage() {
               Gestão de utilizadores da plataforma
             </p>
           </div>
-          <div className="admin-button font-body w-full sm:w-auto" onClick={openAddModal}>
+          <div
+            className="admin-button font-body w-full sm:w-auto"
+            onClick={openAddModal}
+          >
             <button></button>
-            <FiUserPlus /> <span className="hidden sm:inline">Adicionar Utilizador</span><span className="inline sm:hidden">Adicionar</span>
+            <FiUserPlus />{" "}
+            <span className="hidden sm:inline">Adicionar Utilizador</span>
+            <span className="inline sm:hidden">Adicionar</span>
           </div>
         </div>
 
-        <SearchBar 
+        <SearchBar
           placeholder="Digita o nome do utilizador..."
           label="Buscar Utilizador"
           searchItem={searchItem}
@@ -229,15 +237,25 @@ function UsersPage() {
                       onClick={() => handleHeaderClick(header.key)}
                       scope="col"
                       className={`!p-3 cursor-pointer hover:bg-gray-50 select-none ${header.width} ${header.key === "email" ? "min-w-[220px]" : ""}`}
-                      aria-sort={sort.field === header.key ? sort.direction : "none"}
+                      aria-sort={
+                        sort.field === header.key ? sort.direction : "none"
+                      }
                     >
                       <div className="flex items-center !gap-1">
                         {header.label}
-                        {sort.field === header.key && (
-                          sort.direction === "asc" ? (
-                            <FiChevronUp size={16} aria-hidden="true" focusable="false" />
+                        {sort.field === header.key &&
+                          (sort.direction === "asc" ? (
+                            <FiChevronUp
+                              size={16}
+                              aria-hidden="true"
+                              focusable="false"
+                            />
                           ) : (
-                            <FiChevronDown size={16} aria-hidden="true" focusable="false"></FiChevronDown>
+                            <FiChevronDown
+                              size={16}
+                              aria-hidden="true"
+                              focusable="false"
+                            ></FiChevronDown>
                           ))}
                       </div>
                     </th>
@@ -246,70 +264,76 @@ function UsersPage() {
                 </tr>
               </thead>
               <tbody>
-              {users.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="!p-6 text-center text-sm text-gray-500"
-                  >
-                    Sem utilizadores
-                  </td>
-                </tr>
-              ) : (
-                getSortedUsers(users)
-                  .filter((user) => {
-                    return searchItem === ""
-                      ? true
-                      : user.name.toLowerCase().includes(searchItem.toLowerCase()) ||
-                        user.email.toLowerCase().includes(searchItem.toLowerCase());
-                  })
-                  .map((user) => (
-                  <tr
-                    key={user.id}
-                    className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
-                  >
-                    <td className="!p-3">
-                      <div className="flex items-center !gap-3">
-                        <div>
-                          <div className="font-medium">{user.name}</div>
-                          <div className="text-xs text-gray-500">
-                            ID: {user.id}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="!p-3 text-sm text-gray-700 break-words">{user.email}</td>
-                    <td className="!p-3 whitespace-nowrap">
-                      <span className="inline-block !px-3 !py-1 rounded-full bg-[var(--primary)]/70 text-sm text-white">
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="!p-3 text-sm text-gray-600">
-                      {user.createdAt.split("T")[0]}
-                    </td>
-                    <td className="!p-3">
-                      <div className="flex items-center !gap-2">
-                        <button
-                          type="button"
-                          aria-label={`Editar ${user.name}`}
-                          onClick={() => openEditModal(user)}
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
-                        >
-                          <FiEdit2 aria-hidden="true" focusable="false" />
-                        </button>
-                        <button
-                          type="button"
-                          aria-label={`Eliminar ${user.name}`}
-                          onClick={() => openDeleteModal(user)}
-                          className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
-                        >
-                          <FiTrash2 aria-hidden="true" focusable="false" />
-                        </button>
-                      </div>
+                {users.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="!p-6 text-center text-sm text-gray-500"
+                    >
+                      Sem utilizadores
                     </td>
                   </tr>
-                ))
-              )}
+                ) : (
+                  getSortedUsers(users)
+                    .filter((user) => {
+                      return searchItem === ""
+                        ? true
+                        : user.name
+                            .toLowerCase()
+                            .includes(searchItem.toLowerCase()) ||
+                            user.email
+                              .toLowerCase()
+                              .includes(searchItem.toLowerCase());
+                    })
+                    .map((user) => (
+                      <tr
+                        key={user.id}
+                        className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                      >
+                        <td className="!p-3">
+                          <div className="flex items-center !gap-3">
+                            <div>
+                              <div className="font-medium">{user.name}</div>
+                              <div className="text-xs text-gray-500">
+                                ID: {user.id}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700 break-words">
+                          {user.email}
+                        </td>
+                        <td className="!p-3 whitespace-nowrap">
+                          <span className="inline-block !px-3 !py-1 rounded-full bg-[var(--primary)]/70 text-sm text-white">
+                            {user.role}
+                          </span>
+                        </td>
+                        <td className="!p-3 text-sm text-gray-600">
+                          {user.createdAt.split("T")[0]}
+                        </td>
+                        <td className="!p-3">
+                          <div className="flex items-center !gap-2">
+                            <button
+                              type="button"
+                              aria-label={`Editar ${user.name}`}
+                              onClick={() => openEditModal(user)}
+                              className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <FiEdit2 aria-hidden="true" focusable="false" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Eliminar ${user.name}`}
+                              onClick={() => openDeleteModal(user)}
+                              className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <FiTrash2 aria-hidden="true" focusable="false" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           </div>
@@ -402,14 +426,33 @@ function UsersPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         A processar...
                       </>
+                    ) : isEditModalOpen ? (
+                      "Guardar"
                     ) : (
-                      isEditModalOpen ? "Guardar" : "Adicionar"
+                      "Adicionar"
                     )}
                   </button>
                 </div>
@@ -469,9 +512,26 @@ function UsersPage() {
                 >
                   {isDeleting ? (
                     <>
-                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin h-4 w-4"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       A eliminar...
                     </>
