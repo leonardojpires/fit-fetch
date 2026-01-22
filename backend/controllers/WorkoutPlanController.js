@@ -3,6 +3,18 @@ import validateWorkoutPlanParams from "../validators/workoutPlanValidator.js";
 
 const { PlanoTreino, Exercicio, ExerciciosPlano } = db;
 
+const tWorkoutType = {
+  calisthenics: "Calistenia",
+  weightlifting: "Musculação",
+  cardio: "Cardio",
+};
+
+const tLevel = {
+  beginner: "Iniciante",
+  intermediate: "Intermédio",
+  advanced: "Avançado",
+};
+
 class WorkoutPlanController {
   static async getAllWorkoutPlans(req, res) {
     try {
@@ -147,7 +159,7 @@ class WorkoutPlanController {
       const newPlan = await PlanoTreino.create(
         {
           user_id: req.user?.id || null,
-          name: `Plano ${normalized.workoutType} - ${new Date()}`,
+          name: `Plano ${tWorkoutType[normalized.workoutType]} - ${new Date().toLocaleDateString('pt-PT')}`,
           description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
           workout_type: normalized.workoutType,
           level: normalized.level,

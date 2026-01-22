@@ -7,11 +7,11 @@ html, body {
 }
 
 .admin-dashboard {
-  @apply flex items-start w-full;
+  @apply flex items-center w-full;
 }
 
 .admin-content {
-  @apply flex-1 !p-3 sm:!p-4 md:!p-6 lg:!p-8 min-h-screen box-border !pt-20 sm:!pt-16 md:!pt-8 lg:!pt-12 !pb-8 sm:!pb-10 lg:!pb-12;
+  @apply !pt-40 flex-1 !p-3 sm:!p-4 md:!p-6 lg:!p-8 min-h-screen box-border sm:!pt-16 md:!pt-8 lg:!pt-12 !pb-8 sm:!pb-10 lg:!pb-12;
 }
 
 .section-admin.admin-dashboard {
@@ -79,7 +79,7 @@ td {
 /* Mobile - Extra small screens */
 @media (max-width: 375px) {
   .admin-content {
-    @apply !p-2 !pt-20;
+    @apply !p-2 !pt-16;
   }
 
   .admin-title {
@@ -110,7 +110,7 @@ td {
   }
 
   .admin-content {
-    @apply min-h-auto overflow-x-auto !pb-6;
+    @apply min-h-auto overflow-x-auto !pb-6 !pt-16 flex flex-col items-center;
   }
 
   table {

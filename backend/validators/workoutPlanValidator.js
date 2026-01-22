@@ -25,7 +25,7 @@ export default function validateWorkoutPlanParams(body) {
   } = body;
   const errors = [];
 
-  // Aceita tanto camelCase (workoutType) como snake_case (workout_type)
+  // Accepts both camelCase and snake_case
   const normalizedWorkoutType = workoutType || workout_type;
 
   /* ERROR HANDLING */
