@@ -47,37 +47,39 @@ function NutritionPlans() {
   console.log("Alimentos:", nutritionPlan?.alimentos);
 
   // Calculate totals from foods if they're missing
-  const calculateTotals = () => {
-    if (!nutritionPlan?.alimentos || nutritionPlan.alimentos.length === 0) {
-      return {
-        total_calories: nutritionPlan?.total_calories || 0,
-        total_proteins: nutritionPlan?.total_proteins || 0,
-        total_carbs: nutritionPlan?.total_carbs || 0,
-        total_fats: nutritionPlan?.total_fats || 0,
-      };
-    }
+const calculateTotals = (plan) => {
+  let foods = [];
 
-    let totals = {
-      total_calories: 0,
-      total_proteins: 0,
-      total_carbs: 0,
-      total_fats: 0,
-    };
-
-    nutritionPlan.alimentos.forEach((food) => {
-      const quantity = food.AlimentosPlano?.quantity || 100;
-      const multiplier = quantity / (food.serving_size || 100);
-
-      totals.total_calories += (food.calories || 0) * multiplier;
-      totals.total_proteins += (food.protein || 0) * multiplier;
-      totals.total_carbs += (food.carbs || 0) * multiplier;
-      totals.total_fats += (food.fat || 0) * multiplier;
+  if (plan?.meals?.length) {
+    plan.meals.forEach(meal => {
+      if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
     });
+  }
 
-    return totals;
-  };
+  if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
 
-  const macros = calculateTotals();
+  return foods.reduce(
+    (totals, food) => {
+      const calories = Number(food.calories) || 0;
+      const protein = Number(food.protein) || 0;
+      const carbs = Number(food.carbs) || 0;
+      const fat = Number(food.fat) || 0;
+      const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+      const serving_size = Number(food.serving_size) || 100;
+      const multiplier = quantity / serving_size;
+
+      totals.total_calories += calories * multiplier;
+      totals.total_protein += protein * multiplier;
+      totals.total_carbs += carbs * multiplier;
+      totals.total_fat += fat * multiplier;
+
+      return totals;
+    },
+    { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 }
+  )
+};
+
+  const macros = calculateTotals(nutritionPlan);
 
   if (authLoading || loadingUser || loadingPlan) {
     return (
@@ -142,7 +144,7 @@ function NutritionPlans() {
           <div className="containers !p-6 text-center">
             <p className="font-body text-sm text-black/70 mb-2">Proteína</p>
             <p className="font-headline font-bold text-3xl text-[var(--secondary)]">
-              {Math.round(macros.total_proteins)}g
+              {Math.round(macros.total_protein)}g
             </p>
           </div>
           <div className="containers !p-6 text-center">
@@ -154,7 +156,7 @@ function NutritionPlans() {
           <div className="containers !p-6 text-center">
             <p className="font-body text-sm text-black/70 mb-2">Gordura</p>
             <p className="font-headline font-bold text-3xl text-[var(--secondary)]">
-              {Math.round(macros.total_fats)}g
+              {Math.round(macros.total_fat)}g
             </p>
           </div>
         </div>

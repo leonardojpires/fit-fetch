@@ -1,10 +1,13 @@
+import ErrorBoundary from './components/ErrorBoundary';
 import AppRoutes from './routes/routes';
 
 function App() {
 
   return (
     <>
-      <AppRoutes />
+      <ErrorBoundary>
+        <AppRoutes />
+      </ErrorBoundary>
     </>
   )
 }

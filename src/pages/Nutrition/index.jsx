@@ -44,7 +44,7 @@ const renderFormattedText = (text) => {
                 {item}
               </li>
             ))}
-          </ul>
+          </ul>,
         );
         listItems = [];
       }
@@ -62,7 +62,7 @@ const renderFormattedText = (text) => {
                 {item}
               </li>
             ))}
-          </ul>
+          </ul>,
         );
         listItems = [];
       }
@@ -74,13 +74,13 @@ const renderFormattedText = (text) => {
             {parts.map((part, i) =>
               i % 2 === 1 ? <strong key={i}>{part}</strong> : part,
             )}
-          </p>
+          </p>,
         );
       } else {
         result.push(
           <p key={`para-${result.length}`} className="!m-0 !mb-1 text-gray-800">
             {line}
-          </p>
+          </p>,
         );
       }
     }
@@ -95,11 +95,43 @@ const renderFormattedText = (text) => {
             {item}
           </li>
         ))}
-      </ul>
+      </ul>,
     );
   }
 
   return result;
+};
+
+const calculateTotals = (plan) => {
+  let foods = [];
+
+  if (plan?.meals?.length) {
+    plan.meals.forEach(meal => {
+      if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
+    });
+  }
+
+  if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
+
+  return foods.reduce(
+    (totals, food) => {
+      const calories = Number(food.calories) || 0;
+      const protein = Number(food.protein) || 0;
+      const carbs = Number(food.carbs) || 0;
+      const fat = Number(food.fat) || 0;
+      const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+      const serving_size = Number(food.serving_size) || 100;
+      const multiplier = quantity / serving_size;
+
+      totals.total_calories += calories * multiplier;
+      totals.total_protein += protein * multiplier;
+      totals.total_carbs += carbs * multiplier;
+      totals.total_fat += fat * multiplier;
+
+      return totals;
+    },
+    { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 }
+  )
 };
 
 function Nutrition() {
@@ -143,6 +175,8 @@ function Nutrition() {
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  const macros = nutritionPlan ? calculateTotals(nutritionPlan) : null;
+  
   if (authLoading || userLoading) {
     return (
       <section className="w-full">
@@ -244,7 +278,9 @@ function Nutrition() {
         }),
       };
       setMessages((prev) => [...prev, successMessage]);
-      setSuccessModalMessage("O teu plano alimentar foi guardado com sucesso na tua conta!");
+      setSuccessModalMessage(
+        "O teu plano alimentar foi guardado com sucesso na tua conta!",
+      );
       setShowSuccessWarning(true);
     } catch (err) {
       const errorMessage = {
@@ -422,9 +458,7 @@ function Nutrition() {
                   <div className="grid grid-cols-2 lg:grid-cols-4 !gap-3 !mb-5">
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
-                        {(
-                          nutritionPlan.total_calories || "N/A"
-                        ).toLocaleString()}
+                        {macros ? macros.total_calories.toLocaleString() : "N/A"}
                       </div>
                       <div className="text-xs text-gray-500 font-body">
                         Calorias
@@ -433,11 +467,11 @@ function Nutrition() {
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
                         {(
-                          nutritionPlan.total_protein ||
-                          nutritionPlan.total_proteins ||
+                          macros ? macros.total_protein :
+                          macros.total_proteins ||
                           "N/A"
                         ).toFixed?.(1) ||
-                          nutritionPlan.total_protein ||
+                          macros.total_protein ||
                           "N/A"}
                         g
                       </div>
@@ -447,8 +481,8 @@ function Nutrition() {
                     </div>
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
-                        {(nutritionPlan.total_carbs || "N/A").toFixed?.(1) ||
-                          nutritionPlan.total_carbs ||
+                        {(macros ? macros.total_carbs : "N/A").toFixed?.(1) ||
+                          macros.total_carbs ||
                           "N/A"}
                         g
                       </div>
@@ -459,11 +493,11 @@ function Nutrition() {
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
                         {(
-                          nutritionPlan.total_fat ||
-                          nutritionPlan.total_fats ||
+                          macros ? macros.total_fat :
+                          macros.total_fats ||
                           "N/A"
                         ).toFixed?.(1) ||
-                          nutritionPlan.total_fat ||
+                          macros.total_fat ||
                           "N/A"}
                         g
                       </div>
@@ -484,7 +518,12 @@ function Nutrition() {
                           {meal.meal_type}
                         </h4>
                         <div className="!space-y-2 font-body text-sm">
-                          {meal.foods.map((food, foodIdx) => (
+                          {meal.foods.map((food, foodIdx) => {
+                          const quantity = Number(food.quantity ?? food.AlimentosPlano?.quantity ?? 100);
+                          const serving_size = Number(food.serving_size) || 100;
+                          const multiplier = quantity / serving_size;
+
+                          return (
                             <div
                               key={foodIdx}
                               className="flex justify-between items-start"
@@ -494,15 +533,14 @@ function Nutrition() {
                                   {food.name}
                                 </div>
                                 <div className="text-xs text-gray-500">
-                                  {food.calories} kcal · P: {food.protein}g · C:{" "}
-                                  {food.carbs}g · G: {food.fat}g
+                                  {(Number(food.calories) * multiplier).toFixed(0)} kcal · P: {(Number(food.protein) * multiplier).toFixed(1)}g · C: {(Number(food.carbs) * multiplier).toFixed(1)}g · G: {(Number(food.fat) * multiplier).toFixed(1)}g
                                 </div>
                               </div>
                               <span className="text-xs bg-[var(--accent)] text-white !px-2 !py-1 rounded-full !ml-2">
                                 {food.quantity}g
                               </span>
                             </div>
-                          ))}
+                          )})}
                         </div>
                       </div>
                     ))}
