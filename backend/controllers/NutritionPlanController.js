@@ -21,7 +21,14 @@ class NutritionPlanController {
         order: [["created_at", "DESC"]],
       });
 
-      return res.status(200).json({ plans });
+      // For each plan, calculate macros and merge into the plan object
+      const plansWithMacros = plans.map((plan) => {
+        const planObj = plan.toJSON();
+        const macros = NutritionPlanController.calculateMacros(planObj.alimentos);
+        return { ...planObj, ...macros };
+      });
+
+      return res.status(200).json({ plans: plansWithMacros });
     } catch (err) {
       console.error("Erro ao buscar planos:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
@@ -48,9 +55,11 @@ class NutritionPlanController {
           .status(404)
           .json({ message: "Plano de nutrição não encontrado!" });
 
-      // Retornar os valores armazenados na BD (não recalcular)
+      // Calculate macros and return with plan
+      const planObj = plan.toJSON();
+      const macros = NutritionPlanController.calculateMacros(planObj.alimentos);
       return res.status(200).json({
-        plan: plan.toJSON(),
+        plan: { ...planObj, ...macros },
       });
     } catch (err) {
       console.error("Erro ao buscar plano:", err);
@@ -79,9 +88,24 @@ class NutritionPlanController {
         ? "Plano de nutrição guardado com sucesso!"
         : "Plano de nutrição removido dos guardados com sucesso!";
 
+      // Fetch the updated plan with alimentos included
+      const updatedPlan = await PlanoAlimentacao.findByPk(plan.id, {
+        include: [
+          {
+            model: Alimento,
+            as: "alimentos",
+            through: { attributes: ["quantity"] },
+            attributes: ['id', 'name', 'calories', 'protein', 'carbs', 'fiber', 'fat', 'serving_size'],
+          },
+        ],
+      });
+
+      const planObj = updatedPlan.toJSON();
+      const macros = NutritionPlanController.calculateMacros(planObj.alimentos);
+
       return res.status(200).json({
         message,
-        plan,
+        plan: { ...planObj, ...macros },
         is_saved: newSavedState,
       });
     } catch (err) {

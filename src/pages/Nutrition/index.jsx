@@ -1,5 +1,6 @@
 import "./index.css";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import useGetAllFoods from "../../hooks/Foods/useGetAllFoods";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import useChatNutrition from "../../hooks/Nutrition/useChatNutrition";
 import useCreateNutritionPlan from "../../hooks/Nutrition/useCreateNutritionPlan";
@@ -102,39 +103,62 @@ const renderFormattedText = (text) => {
   return result;
 };
 
-const calculateTotals = (plan) => {
-  let foods = [];
 
+// Mapeia alimentos do plano para os alimentos reais do backend (por nome, ignorando acentos e case)
+function mapFoodsToDbFoods(planFoods, dbFoods) {
+  function normalize(str) {
+    return str
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .toLowerCase()
+      .trim();
+  }
+  return planFoods.map(food => {
+    const dbFood = dbFoods.find(f => normalize(f.name) === normalize(food.name));
+    if (!dbFood) return food; // fallback: devolve o original
+    // Calcula a quantidade correta
+    const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+    return {
+      ...dbFood,
+      quantity,
+      // Mantém o nome do plano (caso seja diferente)
+      displayName: food.name,
+    };
+  });
+}
+
+// Sempre calcula a soma real dos alimentos do plano, usando os valores do backend
+const calculateTotals = (plan, dbFoods) => {
+  let foods = [];
   if (plan?.meals?.length) {
     plan.meals.forEach(meal => {
       if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
     });
   }
-
   if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
-
-  return foods.reduce(
+  // Mapeia para os alimentos reais do backend
+  const mappedFoods = mapFoodsToDbFoods(foods, dbFoods);
+  return mappedFoods.reduce(
     (totals, food) => {
       const calories = Number(food.calories) || 0;
       const protein = Number(food.protein) || 0;
       const carbs = Number(food.carbs) || 0;
       const fat = Number(food.fat) || 0;
-      const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+      const quantity = Number(food.quantity) || 100;
       const serving_size = Number(food.serving_size) || 100;
       const multiplier = quantity / serving_size;
-
       totals.total_calories += calories * multiplier;
       totals.total_protein += protein * multiplier;
       totals.total_carbs += carbs * multiplier;
       totals.total_fat += fat * multiplier;
-
       return totals;
     },
     { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 }
-  )
+  );
 };
 
 function Nutrition() {
+  const { foods: dbFoods } = useGetAllFoods();
   const { loading: authLoading } = useRedirectIfNotAuth();
   const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
 
@@ -175,7 +199,13 @@ function Nutrition() {
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const macros = nutritionPlan ? calculateTotals(nutritionPlan) : null;
+  // Sempre calcula a soma real dos alimentos do plano usando os valores do backend
+  const macros = useMemo(() =>
+    nutritionPlan && dbFoods.length > 0
+      ? calculateTotals(nutritionPlan, dbFoods)
+      : null,
+    [nutritionPlan, dbFoods]
+  );
   
   if (authLoading || userLoading) {
     return (
