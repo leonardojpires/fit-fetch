@@ -2,7 +2,7 @@ import { FaArrowUpRightFromSquare, FaTrash } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 
 function NutritionPlanPreview({ plan, onDeletePlan }) {
-  // Calculate totals from alimentos
+  // Prefer backend macros if present, fallback to calculation only if missing
   const calculateTotals = (plan) => {
     let foods = [];
     if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
@@ -15,7 +15,6 @@ function NutritionPlanPreview({ plan, onDeletePlan }) {
         const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
         const serving_size = Number(food.serving_size) || 100;
         const multiplier = quantity / serving_size;
-
         totals.total_calories += calories * multiplier;
         totals.total_protein += protein * multiplier;
         totals.total_carbs += carbs * multiplier;
@@ -26,7 +25,13 @@ function NutritionPlanPreview({ plan, onDeletePlan }) {
     );
   };
 
-  const macros = calculateTotals(plan);
+  // Only use backend-calculated macros for display
+  const macros = {
+    total_calories: plan?.total_calories ?? 0,
+    total_protein: plan?.total_proteins ?? 0,
+    total_carbs: plan?.total_carbs ?? 0,
+    total_fat: plan?.total_fats ?? 0,
+  };
 
   return (
     <div

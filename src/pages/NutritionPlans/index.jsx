@@ -46,56 +46,59 @@ function NutritionPlans() {
   console.log("Total Calories:", nutritionPlan?.total_calories);
   console.log("Alimentos:", nutritionPlan?.alimentos);
 
-  // Calculate totals from foods if they're missing
-const calculateTotals = (plan) => {
-  let foods = [];
+  // Prefer backend macros if present, fallback to calculation only if missing
+  const calculateTotals = (plan) => {
+    let foods = [];
+    if (plan?.meals?.length) {
+      plan.meals.forEach(meal => {
+        if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
+      });
+    }
+    if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
+    return foods.reduce(
+      (totals, food) => {
+        const calories = Number(food.calories) || 0;
+        const protein = Number(food.protein) || 0;
+        const carbs = Number(food.carbs) || 0;
+        const fat = Number(food.fat) || 0;
+        const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+        const serving_size = Number(food.serving_size) || 100;
+        const multiplier = quantity / serving_size;
+        totals.total_calories += calories * multiplier;
+        totals.total_protein += protein * multiplier;
+        totals.total_carbs += carbs * multiplier;
+        totals.total_fat += fat * multiplier;
+        return totals;
+      },
+      { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 }
+    );
+  };
 
-  if (plan?.meals?.length) {
-    plan.meals.forEach(meal => {
-      if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
-    });
-  }
+  // Usa sempre a soma real dos alimentos para garantir coerência
+  const macros = nutritionPlan ? calculateTotals(nutritionPlan) : { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 };
 
-  if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
 
-  return foods.reduce(
-    (totals, food) => {
-      const calories = Number(food.calories) || 0;
-      const protein = Number(food.protein) || 0;
-      const carbs = Number(food.carbs) || 0;
-      const fat = Number(food.fat) || 0;
-      const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
-      const serving_size = Number(food.serving_size) || 100;
-      const multiplier = quantity / serving_size;
-
-      totals.total_calories += calories * multiplier;
-      totals.total_protein += protein * multiplier;
-      totals.total_carbs += carbs * multiplier;
-      totals.total_fat += fat * multiplier;
-
-      return totals;
-    },
-    { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 }
-  )
-};
-
-  const macros = calculateTotals(nutritionPlan);
-
-  if (authLoading || loadingUser || loadingPlan) {
+  if (authLoading || loadingUser || loadingPlan || !nutritionPlan) {
     return (
-      <section className="w-full">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
-          <p className="font-body text-lg">A carregar plano...</p>
-        </div>
-      </section>
+      <div className="flex flex-col items-center justify-center min-h-[40vh]">
+        <div className="loader mb-4" />
+        <p className="font-body text-lg text-black/60">A carregar plano de nutrição...</p>
+      </div>
     );
   }
 
-  if (error || !nutritionPlan) {
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[40vh]">
+        <p className="font-body text-lg text-red-600">Erro ao carregar plano de nutrição.</p>
+      </div>
+    );
+  }
+  if (!nutritionPlan || nutritionPlan.userId !== user.id) {
     return (
       <section className="w-full">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-4">
+        <div className="section !mt-40 !mb-40 flex flex-col items-center gap-6">
+          <div className="containers text-center !p-6">
             <p className="font-body text-lg text-red-600">
               Erro ao carregar plano
             </p>

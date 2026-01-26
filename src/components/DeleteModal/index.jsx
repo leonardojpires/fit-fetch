@@ -23,9 +23,6 @@ function DeleteModal({ itemToDelete, closeDeleteModal, handleDeleteItem, title, 
             <div className="font-body text-sm text-gray-600">
               {itemToDelete.email}
             </div>
-            <div className="font-body text-xs text-gray-500 !mt-1">
-              ID: {itemToDelete.id}
-            </div>
           </div>
           <p className="font-body text-sm text-red-600 !mt-4">
             Esta ação não pode ser desfeita.
