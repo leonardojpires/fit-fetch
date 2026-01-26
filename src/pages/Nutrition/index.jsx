@@ -103,7 +103,6 @@ const renderFormattedText = (text) => {
   return result;
 };
 
-
 /**
  * Maps foods from the plan (which may come from AI or user input) to the real foods from the backend database.
  * This ensures that all macro and calorie calculations use the authoritative values from the backend, not from the prompt.
@@ -128,12 +127,15 @@ function mapFoodsToDbFoods(planFoods, dbFoods) {
       .trim();
   }
   // Map each food from the plan to the corresponding backend food
-  return planFoods.map(food => {
+  return planFoods.map((food) => {
     // Find the food in the backend database by normalized name
-    const dbFood = dbFoods.find(f => normalize(f.name) === normalize(food.name));
+    const dbFood = dbFoods.find(
+      (f) => normalize(f.name) === normalize(food.name),
+    );
     if (!dbFood) return food; // fallback: return original if not found in DB
     // Always use the correct quantity from the plan (or AlimentosPlano for saved plans)
-    const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+    const quantity =
+      Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
     // Return a new object: backend macros, correct quantity, and displayName for UI
     return {
       ...dbFood, // Use backend macros/calories (authoritative)
@@ -160,7 +162,7 @@ const calculateTotals = (plan, dbFoods) => {
   let foods = [];
   // If the plan has meals, gather all foods from each meal
   if (plan?.meals?.length) {
-    plan.meals.forEach(meal => {
+    plan.meals.forEach((meal) => {
       if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
     });
   }
@@ -189,7 +191,7 @@ const calculateTotals = (plan, dbFoods) => {
       totals.total_fat += fat * multiplier;
       return totals;
     },
-    { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 }
+    { total_calories: 0, total_protein: 0, total_carbs: 0, total_fat: 0 },
   );
 };
 
@@ -252,13 +254,14 @@ function Nutrition() {
    * - dbFoods: all foods from backend (authoritative macros/calories)
    * - useMemo: only recalculates when nutritionPlan or dbFoods change
    */
-  const macros = useMemo(() =>
-    nutritionPlan && dbFoods.length > 0
-      ? calculateTotals(nutritionPlan, dbFoods)
-      : null,
-    [nutritionPlan, dbFoods]
+  const macros = useMemo(
+    () =>
+      nutritionPlan && dbFoods.length > 0
+        ? calculateTotals(nutritionPlan, dbFoods)
+        : null,
+    [nutritionPlan, dbFoods],
   );
-  
+
   if (authLoading || userLoading) {
     return (
       <section className="w-full">
@@ -308,6 +311,7 @@ function Nutrition() {
       let messageContent = response.message;
       if (response.plan) {
         messageContent = "Plano gerado! Vê os detalhes ao lado →";
+        setIsSaved(false);
         setNutritionPlan(response.plan);
       }
 
@@ -338,45 +342,49 @@ function Nutrition() {
   };
 
   const handleSavePlan = async () => {
+    if (isSaving) return;
     if (!nutritionPlan) return;
     setIsSaving(true);
 
-    try {
-      const lastUserMsg =
-        messages.filter((msg) => msg.role === "utilizador").slice(-1)[0]
-          ?.content || "";
+    if (!isSaved) {
+      try {
+        const lastUserMsg =
+          messages.filter((msg) => msg.role === "utilizador").slice(-1)[0]
+            ?.content || "";
 
-      const result = await createPlan(nutritionPlan, lastUserMsg);
+        const result = await createPlan(nutritionPlan, lastUserMsg);
 
-      console.log("Plano guardado com sucesso: ", result);
-      setIsSaved(true);
+        console.log("Plano guardado com sucesso: ", result);
+        setIsSaved(true);
 
-      const successMessage = {
-        role: "assistente",
-        content: "O teu plano alimentar foi guardado com sucesso na tua conta!",
-        timestamp: new Date().toLocaleTimeString("pt-PT", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      setMessages((prev) => [...prev, successMessage]);
-      setSuccessModalMessage(
-        "O teu plano alimentar foi guardado com sucesso na tua conta!",
-      );
-      setShowSuccessWarning(true);
-    } catch (err) {
-      const errorMessage = {
-        role: "assistente",
-        content:
-          "Desculpa, ocorreu um erro ao guardar o teu plano. Por favor, tenta novamente mais tarde.",
-        timestamp: new Date().toLocaleTimeString("pt-PT", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsSaving(false);
+        const successMessage = {
+          role: "assistente",
+          content:
+            "O teu plano alimentar foi guardado com sucesso na tua conta!",
+          timestamp: new Date().toLocaleTimeString("pt-PT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        setMessages((prev) => [...prev, successMessage]);
+        setSuccessModalMessage(
+          "O teu plano alimentar foi guardado com sucesso na tua conta!",
+        );
+        setShowSuccessWarning(true);
+      } catch (err) {
+        const errorMessage = {
+          role: "assistente",
+          content:
+            "Desculpa, ocorreu um erro ao guardar o teu plano. Por favor, tenta novamente mais tarde.",
+          timestamp: new Date().toLocaleTimeString("pt-PT", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -540,7 +548,9 @@ function Nutrition() {
                   <div className="grid grid-cols-2 lg:grid-cols-4 !gap-3 !mb-5">
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
-                        {macros ? macros.total_calories.toLocaleString() : "N/A"}
+                        {macros
+                          ? macros.total_calories.toLocaleString()
+                          : "N/A"}
                       </div>
                       <div className="text-xs text-gray-500 font-body">
                         Calorias
@@ -548,10 +558,9 @@ function Nutrition() {
                     </div>
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
-                        {(
-                          macros ? macros.total_protein :
-                          macros.total_proteins ||
-                          "N/A"
+                        {(macros
+                          ? macros.total_protein
+                          : macros.total_proteins || "N/A"
                         ).toFixed?.(1) ||
                           macros.total_protein ||
                           "N/A"}
@@ -574,10 +583,9 @@ function Nutrition() {
                     </div>
                     <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
                       <div className="text-2xl font-bold text-gray-800">
-                        {(
-                          macros ? macros.total_fat :
-                          macros.total_fats ||
-                          "N/A"
+                        {(macros
+                          ? macros.total_fat
+                          : macros.total_fats || "N/A"
                         ).toFixed?.(1) ||
                           macros.total_fat ||
                           "N/A"}
@@ -601,28 +609,47 @@ function Nutrition() {
                         </h4>
                         <div className="!space-y-2 font-body text-sm">
                           {meal.foods.map((food, foodIdx) => {
-                          const quantity = Number(food.quantity ?? food.AlimentosPlano?.quantity ?? 100);
-                          const serving_size = Number(food.serving_size) || 100;
-                          const multiplier = quantity / serving_size;
+                            const quantity = Number(
+                              food.quantity ??
+                                food.AlimentosPlano?.quantity ??
+                                100,
+                            );
+                            const serving_size =
+                              Number(food.serving_size) || 100;
+                            const multiplier = quantity / serving_size;
 
-                          return (
-                            <div
-                              key={foodIdx}
-                              className="flex justify-between items-start"
-                            >
-                              <div className="flex-1">
-                                <div className="font-medium text-gray-800">
-                                  {food.name}
+                            return (
+                              <div
+                                key={foodIdx}
+                                className="flex justify-between items-start"
+                              >
+                                <div className="flex-1">
+                                  <div className="font-medium text-gray-800">
+                                    {food.name}
+                                  </div>
+                                  <div className="text-xs text-gray-500">
+                                    {(
+                                      Number(food.calories) * multiplier
+                                    ).toFixed(0)}{" "}
+                                    kcal · P:{" "}
+                                    {(
+                                      Number(food.protein) * multiplier
+                                    ).toFixed(1)}
+                                    g · C:{" "}
+                                    {(Number(food.carbs) * multiplier).toFixed(
+                                      1,
+                                    )}
+                                    g · G:{" "}
+                                    {(Number(food.fat) * multiplier).toFixed(1)}
+                                    g
+                                  </div>
                                 </div>
-                                <div className="text-xs text-gray-500">
-                                  {(Number(food.calories) * multiplier).toFixed(0)} kcal · P: {(Number(food.protein) * multiplier).toFixed(1)}g · C: {(Number(food.carbs) * multiplier).toFixed(1)}g · G: {(Number(food.fat) * multiplier).toFixed(1)}g
-                                </div>
+                                <span className="text-xs bg-[var(--accent)] text-white !px-2 !py-1 rounded-full !ml-2">
+                                  {food.quantity}g
+                                </span>
                               </div>
-                              <span className="text-xs bg-[var(--accent)] text-white !px-2 !py-1 rounded-full !ml-2">
-                                {food.quantity}g
-                              </span>
-                            </div>
-                          )})}
+                            );
+                          })}
                         </div>
                       </div>
                     ))}
@@ -632,7 +659,7 @@ function Nutrition() {
                   <div>
                     <button
                       onClick={handleSavePlan}
-                      disabled={isSaving}
+                      disabled={isSaving || isSaved}
                       className="flex flex-center items-center !gap-2 font-body text-[var(--primary)] border border-[var(--primary)] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSaving ? (
