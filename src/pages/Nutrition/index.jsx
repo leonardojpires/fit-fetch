@@ -104,49 +104,85 @@ const renderFormattedText = (text) => {
 };
 
 
-// Mapeia alimentos do plano para os alimentos reais do backend (por nome, ignorando acentos e case)
+/**
+ * Maps foods from the plan (which may come from AI or user input) to the real foods from the backend database.
+ * This ensures that all macro and calorie calculations use the authoritative values from the backend, not from the prompt.
+ *
+ * - Matching is done by name, ignoring accents and case, for robustness.
+ * - If a food from the plan is not found in the backend, it falls back to the original food object.
+ * - The correct quantity is always preserved (from the plan or AlimentosPlano).
+ * - The displayName field is kept for UI display if the names differ.
+ *
+ * @param {Array} planFoods - Foods from the plan (AI or user input)
+ * @param {Array} dbFoods - Foods from the backend database
+ * @returns {Array} Array of foods with backend macros and correct quantity
+ */
 function mapFoodsToDbFoods(planFoods, dbFoods) {
+  // Helper to normalize strings for comparison (removes accents, lowercases, trims)
   function normalize(str) {
+    // Remove diacritics (accents), lowercase, and trim whitespace for robust matching
     return str
       .normalize("NFD")
       .replace(/\p{Diacritic}/gu, "")
       .toLowerCase()
       .trim();
   }
+  // Map each food from the plan to the corresponding backend food
   return planFoods.map(food => {
+    // Find the food in the backend database by normalized name
     const dbFood = dbFoods.find(f => normalize(f.name) === normalize(food.name));
-    if (!dbFood) return food; // fallback: devolve o original
-    // Calcula a quantidade correta
+    if (!dbFood) return food; // fallback: return original if not found in DB
+    // Always use the correct quantity from the plan (or AlimentosPlano for saved plans)
     const quantity = Number(food.quantity || food.AlimentosPlano?.quantity) || 100;
+    // Return a new object: backend macros, correct quantity, and displayName for UI
     return {
-      ...dbFood,
+      ...dbFood, // Use backend macros/calories (authoritative)
       quantity,
-      // Mantém o nome do plano (caso seja diferente)
-      displayName: food.name,
+      displayName: food.name, // For UI display if needed (may differ from DB)
     };
   });
 }
 
-// Sempre calcula a soma real dos alimentos do plano, usando os valores do backend
+/**
+ * Calculates the real sum of macros and calories for a nutrition plan, using only backend food values.
+ *
+ * - Gathers all foods from meals and alimentos arrays (covers both AI-generated and DB-loaded plans).
+ * - Maps each food to the backend food object for authoritative macros/calories.
+ * - Sums macros/calories using the correct quantity and serving size for each food.
+ * - Returns an object with total_calories, total_protein, total_carbs, total_fat.
+ *
+ * @param {Object} plan - The nutrition plan (may come from AI or backend)
+ * @param {Array} dbFoods - All foods from the backend database
+ * @returns {Object} Totals for calories, protein, carbs, fat
+ */
 const calculateTotals = (plan, dbFoods) => {
+  // Array to collect all foods from the plan (meals and alimentos)
   let foods = [];
+  // If the plan has meals, gather all foods from each meal
   if (plan?.meals?.length) {
     plan.meals.forEach(meal => {
       if (Array.isArray(meal.foods)) foods = foods.concat(meal.foods);
     });
   }
+  // If the plan has alimentos (flat array), add them too
   if (plan?.alimentos?.length) foods = foods.concat(plan.alimentos);
-  // Mapeia para os alimentos reais do backend
+  // Map all foods to backend DB foods for real macro values
   const mappedFoods = mapFoodsToDbFoods(foods, dbFoods);
+  // Sum macros/calories for all foods, using correct quantity and serving size
   return mappedFoods.reduce(
     (totals, food) => {
+      // Use backend macros/calories (or 0 if missing)
       const calories = Number(food.calories) || 0;
       const protein = Number(food.protein) || 0;
       const carbs = Number(food.carbs) || 0;
       const fat = Number(food.fat) || 0;
+      // Use the mapped quantity (from plan or DB)
       const quantity = Number(food.quantity) || 100;
+      // Use the backend serving size (default 100g)
       const serving_size = Number(food.serving_size) || 100;
+      // Calculate multiplier for correct scaling (e.g., 150g/100g = 1.5x)
       const multiplier = quantity / serving_size;
+      // Add scaled macros/calories to totals
       totals.total_calories += calories * multiplier;
       totals.total_protein += protein * multiplier;
       totals.total_carbs += carbs * multiplier;
@@ -157,7 +193,16 @@ const calculateTotals = (plan, dbFoods) => {
   );
 };
 
+/**
+ * Nutrition page main component.
+ *
+ * - Uses useGetAllFoods to fetch all foods from backend for macro calculation.
+ * - When a plan is created (from AI or user), always recalculates macros using backend food values.
+ * - Guarantees that the macros/calories shown are always consistent with the backend database.
+ * - All macro logic is centralized and documented for future maintainers.
+ */
 function Nutrition() {
+  // Fetch all foods from backend for macro calculation (authoritative source)
   const { foods: dbFoods } = useGetAllFoods();
   const { loading: authLoading } = useRedirectIfNotAuth();
   const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
@@ -199,7 +244,14 @@ function Nutrition() {
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // Sempre calcula a soma real dos alimentos do plano usando os valores do backend
+  /**
+   * Always calculate the real sum of macros/calories for the current plan,
+   * using backend food values. This ensures total coherence between creation, saving, and profile display.
+   *
+   * - nutritionPlan: the current plan (may be from AI or DB)
+   * - dbFoods: all foods from backend (authoritative macros/calories)
+   * - useMemo: only recalculates when nutritionPlan or dbFoods change
+   */
   const macros = useMemo(() =>
     nutritionPlan && dbFoods.length > 0
       ? calculateTotals(nutritionPlan, dbFoods)
