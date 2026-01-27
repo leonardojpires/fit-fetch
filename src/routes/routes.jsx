@@ -14,9 +14,10 @@ import Profile from './../pages/Profile/index';
 import WorkoutPlans from './../pages/WorkoutPlans/index';
 import HowItWorks from "../pages/HowItWorks";
 import FAQ from "../pages/FAQ";
-import Exercise from "../pages/Exercise";
 import NutritionPlans from './../pages/NutritionPlans/index';
+import Exercise from "../../Exercise";
 import Food from "../pages/Food";
+import PasswordReset from "../pages/PasswordReset";
 
 function AppRoutes() {
     return (
@@ -35,6 +36,7 @@ function AppRoutes() {
                     <Route path="/plano-nutricao/:id" element={<NutritionPlans />}></Route>
                     <Route path="/exercicio/:id" element={<Exercise />}></Route>
                     <Route path="/alimento/:id" element={<Food />}></Route>
+                    <Route path="/recuperar-palavra-passe" element={<PasswordReset />}></Route>
 
                     {/* ADMIN ROUTES */}
                     <Route path="/admin" element={<Dashboard />}></Route>

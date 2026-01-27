@@ -1,9 +1,9 @@
 import { Link, Navigate, useParams } from "react-router-dom";
-import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import { FaArrowLeft } from "react-icons/fa";
 import { motion } from "framer-motion";
-import useGetExerciseById from "../../hooks/Exercises/useGetExercisesById.jsx";
+import useRedirectIfNotAuth from './../src/hooks/useIfNotAuth';
 import "./index.css";
+import useGetExerciseById from './../src/hooks/Exercises/useGetExercisesById';
 
 const tType = {
   calisthenics: "Calistenia",
