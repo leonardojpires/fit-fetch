@@ -78,7 +78,7 @@ function Profile() {
 
   if (authLoading || userLoading) {
     return (
-      <section className="w-full">
+      <section className="loading-section">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>

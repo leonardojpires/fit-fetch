@@ -57,7 +57,7 @@ function Workout() {
 
   if (authLoading || userLoading) {
     return (
-      <section className="w-full">
+      <section className="loading-section">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
@@ -200,13 +200,13 @@ function Workout() {
   return (
     <>
       <motion.section
-        className="w-full"
+        className="w-full !py-40 pb-48"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
       >
-        <div className="section !mt-40 !py-10">
+        <div className="section !py-10">
           <h1 className="font-headline font-bold text-4xl md:text-5xl text-black !mb-3">
             Cria o Teu Plano Personalizado
           </h1>

@@ -81,7 +81,7 @@ function NutritionPlans() {
 
   if (authLoading || loadingUser || loadingPlan) {
     return (
-      <section className="w-full">
+      <section className="loading-section">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">
           <p className="font-body text-lg">A carregar plano...</p>
         </div>
@@ -91,7 +91,7 @@ function NutritionPlans() {
 
   if (error || !nutritionPlan) {
     return (
-      <section className="w-full">
+      <section className="loading-section">
         <div className="section !mt-40 !mb-40 flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <p className="font-body text-lg text-red-600">

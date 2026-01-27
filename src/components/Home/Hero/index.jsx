@@ -65,6 +65,9 @@ function Hero() {
             src="/img/imgs/hero-img.png"
             alt="Fit Fetch - Plataforma de fitness e bem-estar"
             className="hero-img"
+            loading="eager"
+            width="380"
+            height="380"
           />
         </div>
       </div>

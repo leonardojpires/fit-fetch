@@ -154,7 +154,7 @@ function Contact() {
                       aria-describedby="email-hint"
                       required
                     />
-                    <small id="email-hint" className="text-gray-600 text-sm">Email válido obrigatório</small>
+                    <small id="email-hint" className="text-gray-600 text-sm">E-mail válido obrigatório</small>
                   </div>
                   <div className="flex flex-col gap-2 !mb-4">
                     <label htmlFor="ysubject">Assunto</label>
