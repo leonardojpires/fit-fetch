@@ -7,7 +7,7 @@ html, body {
 }
 
 .admin-dashboard {
-  @apply flex items-center w-full;
+  @apply flex items-start w-full;
 }
 
 .admin-content {

@@ -19,9 +19,9 @@ function ExercisesPage() {
   const { loading: adminLoading } = useAdminRedirect();
 
   const { exercises, setExercises } = useGetAllExercises();
-  const addExercise = useAddExercise();
-  const updateExercise = useUpdateExercise();
-  const deleteExercise = useDeleteExercise();
+    const addExercise = useAddExercise();
+    const updateExercise = useUpdateExercise();
+    const deleteExercise = useDeleteExercise();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

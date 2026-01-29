@@ -26,7 +26,7 @@ export default function AdminSidebar() {
     <>
       {/* Mobile Only */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 !p-2 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--accent)] transition-colors"
+        className="lg:hidden fixed top-4 right-4 z-50 !p-2 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--accent)] transition-colors"
         onClick={toggleMenu}
         aria-label="Abrir menu de navegação"
         aria-expanded={isOpen}

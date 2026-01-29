@@ -183,7 +183,7 @@ function LoginForm({ clickEvent }) {
       </div>
 
       <Link
-        to="#"
+        to="/recuperar-palavra-passe"
         className="text-center !mt-5 text-black/70 hover:text-[var(--accent)]/70 hover:underline"
       >
         Esqueci-me da minha senha
