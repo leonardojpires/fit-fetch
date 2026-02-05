@@ -48,7 +48,7 @@ export default function useGetExerciseById(exerciseId) {
                 setExercise(data);
                 setError(null);
             } catch(err) {
-                console.error("Erro ao buscar exercício: ", err);
+                // console.error("Erro ao buscar exercício: ", err);
                 setError(err.message || "Erro desconhecido");
             } finally {
                 setLoadingExercise(false);

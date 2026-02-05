@@ -33,7 +33,7 @@ export default function useUpdateFood() {
             if (!response.ok) throw new Error(data.message || "Erro ao atualizar alimento!");
             return data;
         } catch(err) {
-            console.error("Erro ao atualizar alimento: ", err);
+            // console.error("Erro ao atualizar alimento: ", err);
             throw err;
         }
     }

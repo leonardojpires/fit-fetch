@@ -40,9 +40,9 @@ export default function useGetWorkoutPlanById(planId) {
                 if (!response.ok) throw new Error("Erro ao buscar plano de treino");
                 
                 const data = await response.json();
-                console.log("Plano de treino buscado: ", data.plan);
-                console.log("User ID atual: ", user.id);
-                console.log("Plan user_id: ", data.plan.user_id);
+                // console.log("Plano de treino buscado: ", data.plan);
+                // console.log("User ID atual: ", user.id);
+                // console.log("Plan user_id: ", data.plan.user_id);
 
                 if (user.id !== data.plan.user_id) {
                     throw new Error("Acesso negado ao plano de treino");
@@ -51,7 +51,7 @@ export default function useGetWorkoutPlanById(planId) {
                 setWorkoutPlan(data.plan);
                 setError(null);
             } catch(err) {
-                console.error("Erro ao buscar plano de treino: ", err);
+                // console.error("Erro ao buscar plano de treino: ", err);
                 setError(err.message || "Erro desconhecido");
             } finally {
                 setLoadingPlan(false);

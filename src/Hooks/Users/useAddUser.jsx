@@ -24,7 +24,7 @@ export default function useAddUser() {
         throw new Error(data.message || "Erro ao adicionar utilizador!");
       return data;
     } catch (err) {
-      console.error("Erro ao adicionar utilizador: ", err);
+      // console.error("Erro ao adicionar utilizador: ", err);
     }
   };
 

@@ -30,7 +30,7 @@ export default function useUpdateExercise() {
             if (!response.ok) throw new Error(data.message || "Erro ao atualizar exercício!");
             return data;
         } catch(err) {
-            console.error("Erro ao atualizar exercício: ", err);
+            // console.error("Erro ao atualizar exercício: ", err);
             throw err;
         }
     }

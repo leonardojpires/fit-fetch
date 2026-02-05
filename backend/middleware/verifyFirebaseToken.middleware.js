@@ -23,7 +23,7 @@ const verifyFirebaseToken = async (req, res, next) => {
     };
     next();
   } catch (err) {
-    console.error("Erro ao verificar o token Firebase: ", err);
+    // console.error("Erro ao verificar o token Firebase: ", err);
     return res.status(401).json({ message: "Token inválido ou expirado" });
   }
 };

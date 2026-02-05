@@ -61,13 +61,13 @@ function RegisterForm({ clickEvent }) {
         });
 
         const data = await res.json();
-        console.log('Utilizador sincronizado no MySQL', data);
+        // console.log('Utilizador sincronizado no MySQL', data);
 
         setCurrentUser(data.user);
 
-        console.log("Utilizador criado com sucesso: ", user);
+        // console.log("Utilizador criado com sucesso: ", user);
       } catch(e) {
-        console.error("Erro ao criar conta:", e);
+        // console.error("Erro ao criar conta:", e);
         setValidationErrors([{
           field: "Registo",
           message: "Falha ao criar conta. Tenta novamente."

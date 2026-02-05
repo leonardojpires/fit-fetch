@@ -24,7 +24,7 @@ export default function useRemoveWorkoutPlan() {
 
       return await response.json();
     } catch (err) {
-      console.error("Erro ao remover plano de treino: ", err);
+      // console.error("Erro ao remover plano de treino: ", err);
       throw err;
     }
   };

@@ -19,7 +19,7 @@ export default function useGetAllFoods() {
         const data = await response.json();
         setFoods(data);
       } catch (err) {
-        console.error("Erro ao buscar todos os alimentos: ", err);
+        // console.error("Erro ao buscar todos os alimentos: ", err);
       }
     });
     return () => unsubscribe();

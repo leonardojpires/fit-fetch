@@ -30,7 +30,7 @@ export default function useGetFoodById(foodId) {
         setFood(data);
         setError(null);
       } catch (err) {
-        console.error("Erro ao buscar alimento por ID: ", err);
+        // console.error("Erro ao buscar alimento por ID: ", err);
         setError(err.message);
       } finally {
         setLoading(false);

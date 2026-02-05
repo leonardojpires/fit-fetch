@@ -11,7 +11,7 @@ class ExerciseController {
             const exercises = await Exercicio.findAll();
             return res.status(200).json((exercises));
         } catch(err) {
-            console.error("Erro ao obter exercícios: ", err);
+            // console.error("Erro ao obter exercícios: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });
         }
     }
@@ -24,7 +24,7 @@ class ExerciseController {
             if (!exercise) return res.status(404).json({ message: "Exercício não encontrado!" });
             return res.status(200).json(exercise)
         } catch(err) {
-            console.error("Erro ao obter exercício por ID: ", err);
+            // console.error("Erro ao obter exercício por ID: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });
         }
     } 
@@ -57,7 +57,7 @@ class ExerciseController {
 
             return res.status(201).json({ exercise });
         } catch(err) {
-            console.error("Erro ao adicionar exercício: ", err);
+            // console.error("Erro ao adicionar exercício: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });
         }
     }
@@ -93,7 +93,7 @@ class ExerciseController {
             });
             return res.status(200).json(exercise);
         } catch(err) {
-            console.error("Erro ao atualizar exercício: ", err);
+            // console.error("Erro ao atualizar exercício: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });
         }
     }
@@ -107,7 +107,7 @@ class ExerciseController {
             await exercise.destroy();
             return res.status(200).json({ message: "Exercício apagado com sucesso!" });
         } catch(err) {
-            console.error("Erro ao apagar exercício: ", err);
+            // console.error("Erro ao apagar exercício: ", err);
             return res.status(500).json({ message: ExerciseController.errorMessage });
         }
     }

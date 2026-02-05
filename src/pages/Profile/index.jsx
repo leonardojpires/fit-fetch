@@ -69,7 +69,7 @@ function Profile() {
           setNutritionPlans(nutritionData.plans || []);
         }
       } catch (err) {
-        console.error("Erro ao buscar planos do utilizador: ", err);
+        // console.error("Erro ao buscar planos do utilizador: ", err);
       }
     };
 
@@ -79,7 +79,7 @@ function Profile() {
   if (authLoading || userLoading) {
     return (
       <section className="loading-section">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+        <div className="section !mt-28 !mb-28 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
       </section>
@@ -178,7 +178,7 @@ function Profile() {
       setShowSuccessWarning(true);
     } catch (err) {
       setUser(prevUser);
-      console.error("Erro ao atualizar perfil: ", err);
+      // console.error("Erro ao atualizar perfil: ", err);
       return;
     }
   };

@@ -265,7 +265,7 @@ function Nutrition() {
   if (authLoading || userLoading) {
     return (
       <section className="loading-section">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+        <div className="section !mt-28 !mb-28 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
       </section>
@@ -354,7 +354,7 @@ function Nutrition() {
 
         const result = await createPlan(nutritionPlan, lastUserMsg);
 
-        console.log("Plano guardado com sucesso: ", result);
+        // console.log("Plano guardado com sucesso: ", result);
         setIsSaved(true);
 
         const successMessage = {
@@ -391,7 +391,7 @@ function Nutrition() {
   return (
     <>
       <motion.section
-        className="w-full !py-40 pb-48"
+        className="w-full !py-28 pb-48"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

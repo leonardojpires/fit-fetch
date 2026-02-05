@@ -28,7 +28,7 @@ export default function useUpdateUser() {
             if (!response.ok) throw new Error(responseData.message || "Erro ao atualizar utilizador!");
             return responseData;
         } catch(err) {
-            console.error("Erro ao atualizar utilizador: ", err);
+            // console.error("Erro ao atualizar utilizador: ", err);
         }
     }
     return updateUser;

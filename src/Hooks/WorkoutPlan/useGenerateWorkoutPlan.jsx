@@ -48,7 +48,7 @@ export default function useGenerateWorkoutPlan() {
       setWorkoutPlan(normalizedPlan);
     } catch (err) {
       setError(err.message);
-      console.error("Erro ao gerar plano de treino: ", err);
+      // console.error("Erro ao gerar plano de treino: ", err);
       throw err;
     } finally {
       setLoading(false);

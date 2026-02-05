@@ -7,7 +7,7 @@ const verifyAdmin = async (req, res, next) => {
         }
         next();
     } catch(err) {
-        console.error("Erro ao verificar as permissões de administrador: ", err);
+        // console.error("Erro ao verificar as permissões de administrador: ", err);
         return res.status(500).json({ message: "Erro interno do servidor." });
     }
 }

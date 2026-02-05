@@ -21,7 +21,7 @@ class WorkoutPlanController {
       const plans = await PlanoTreino.findAll();
       return res.status(200).json(plans);
     } catch (err) {
-      console.error("Erro ao obter planos de treino: ", err);
+      // console.error("Erro ao obter planos de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
@@ -50,7 +50,7 @@ class WorkoutPlanController {
 
       return res.status(200).json({ plan });
     } catch (err) {
-      console.error("Erro ao obter plano de treino: ", err);
+      // console.error("Erro ao obter plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
@@ -72,7 +72,7 @@ class WorkoutPlanController {
 
       return res.status(200).json({ plans });
     } catch (err) {
-      console.error("Erro ao obter planos de treino do utilizador: ", err);
+      // console.error("Erro ao obter planos de treino do utilizador: ", err);
       return res.status(500).json({ message: "Erro interno do servidor" });
     }
   }
@@ -216,12 +216,12 @@ class WorkoutPlanController {
         },
       });
     } catch (err) {
-      console.error("Erro ao gerar plano de treino: ", err);
+      // console.error("Erro ao gerar plano de treino: ", err);
       if (transaction) {
         try {
           await transaction.rollback();
         } catch (rollbackErr) {
-          console.error("Falha ao fazer rollback: ", rollbackErr);
+          // console.error("Falha ao fazer rollback: ", rollbackErr);
         }
       }
       return res.status(500).json({ message: "Erro interno do servidor." });
@@ -251,7 +251,7 @@ class WorkoutPlanController {
       });
       
     } catch (err) {
-      console.error("Erro ao guardar plano de treino: ", err);
+      // console.error("Erro ao guardar plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   }
@@ -276,7 +276,7 @@ class WorkoutPlanController {
       return res.status(200).json({ message: "Plano de treino eliminado com sucesso!" });
 
     } catch(err) {
-      console.error("Erro ao eliminar plano de treino: ", err);
+      // console.error("Erro ao eliminar plano de treino: ", err);
       return res.status(500).json({ message: "Erro interno do servidor." });
     }
   }

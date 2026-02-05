@@ -19,7 +19,7 @@ export default function useGetAllExercises() {
         const data = await response.json();
         setExercises(data);
       } catch (err) {
-        console.error("Erro ao buscar todos os exercícios: ", err);
+        // console.error("Erro ao buscar todos os exercícios: ", err);
       }
     });
     return () => unsubscribe();

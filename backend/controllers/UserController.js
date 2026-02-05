@@ -15,14 +15,14 @@ class UserController {
             }
 
             const decodedToken = await admin.auth().verifyIdToken(token);
-            console.log('Decoded Firebase Token:', decodedToken);
+            // console.log('Decoded Firebase Token:', decodedToken);
 
             // Prefer fresh data from Firebase Admin to avoid stale token claims
             let fbUserRecord = null;
             try {
                 fbUserRecord = await admin.auth().getUser(decodedToken.uid);
             } catch(fetchErr) {
-                console.error('Erro ao obter utilizador do Firebase:', fetchErr);
+                // console.error('Erro ao obter utilizador do Firebase:', fetchErr);
             }
 
             const displayName = fbUserRecord?.displayName ?? decodedToken.name ?? null;
@@ -57,7 +57,7 @@ class UserController {
 
             res.json({ user: newUser, created: true });
         } catch(err) {
-            console.error(err);
+            // console.error(err);
             res.status(401).json({ error: 'Token inválido ou expirado' });
         }
     }
@@ -73,7 +73,7 @@ class UserController {
                 avatarUrl: user.avatarUrl
             });
         } catch(err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ error: 'Erro ao buscar o utilizador atual' });
         }
     }
@@ -83,7 +83,7 @@ class UserController {
             const users = await User.findAll();
             return res.status(200).json(users);
         } catch(err) {
-            console.error("Erro ao buscar o número total de utilizadores:", err);
+            // console.error("Erro ao buscar o número total de utilizadores:", err);
             return res.status(500).json({ message: UserController.errorMessage });
         }
     }
@@ -97,7 +97,7 @@ class UserController {
 
              return res.status(200).json({ user });
         } catch(err) {
-            console.error("Erro ao buscar utilizador por ID: ", err);
+            // console.error("Erro ao buscar utilizador por ID: ", err);
             return res.status(500).json({ message: UserController.errorMessage });
         }
     }
@@ -143,7 +143,7 @@ class UserController {
             });
 
         } catch(err) {
-            console.error("Erro ao adicionar utilizador: ", err);
+            // console.error("Erro ao adicionar utilizador: ", err);
             return res.status(500).json({ message: UserController.errorMessage })
         }
     }
@@ -181,7 +181,7 @@ class UserController {
 
             return res.status(200).json(user);
         } catch(err) {
-            console.error("Erro ao atualizar utilizador: ", err);
+            // console.error("Erro ao atualizar utilizador: ", err);
             return res.status(500).json({ message: UserController.errorMessage });
         }
     }
@@ -201,19 +201,19 @@ class UserController {
                     await admin.auth().updateUser(user.firebase_uid, {
                         displayName: name
                     });
-                    console.log(`Utilizador ${user.firebase_uid} atualizado no Firebase com nome: ${name}`);
+                    // console.log(`Utilizador ${user.firebase_uid} atualizado no Firebase com nome: ${name}`);
                 } catch(fbErr) {
-                    console.error(`Erro ao atualizar nome no Firebase:`, fbErr);
+                    // console.error(`Erro ao atualizar nome no Firebase:`, fbErr);
                 }
             }
 
             // Updates the local database
             await user.update({ name: name || user.name, avatarUrl });
-            console.log(`Utilizador ${user.id} atualizado na BD`);
+            // console.log(`Utilizador ${user.id} atualizado na BD`);
             
             return res.status(200).json(user);
         } catch(err) {
-            console.error("Erro ao atualizar o utilizador atual: ", err);
+            // console.error("Erro ao atualizar o utilizador atual: ", err);
             return res.status(500).json({ message: UserController.errorMessage });
         }
     }
@@ -230,7 +230,7 @@ class UserController {
 
             return res.status(200).json({ message: "Utilizador eliminado com sucesso!" });
         } catch(err) {
-            console.error("Erro ao eliminar utilizador: ", err);
+            // console.error("Erro ao eliminar utilizador: ", err);
             return res.status(500).json({ message: UserController.errorMessage });
         }
     }

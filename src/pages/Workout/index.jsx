@@ -58,7 +58,7 @@ function Workout() {
   if (authLoading || userLoading) {
     return (
       <section className="loading-section">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+        <div className="section !mt-28 !mb-28 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
       </section>
@@ -71,7 +71,7 @@ function Workout() {
   };
 
   const handleMuscleSelect = (muscles) => {
-    console.log("Músculos selecionados:", muscles);
+    // console.log("Músculos selecionados:", muscles);
     setFormData((prev) => ({ ...prev, muscles: muscles }));
   };
 
@@ -81,7 +81,7 @@ function Workout() {
       ...formData,
       muscles: formData.workoutType === "cardio" ? [] : formData.muscles,
     };
-    console.log("Payload treino: ", payload);
+    // console.log("Payload treino: ", payload);
   }; */
 
   function convertToMinutes(seconds) {
@@ -96,7 +96,7 @@ function Workout() {
 
     if (loading) return;
     if (!user) {
-      console.error("Nenhum utilizador autenticado!");
+      // console.error("Nenhum utilizador autenticado!");
       return;
     }
 
@@ -137,12 +137,12 @@ function Workout() {
         };
       }
 
-      console.log("Payload enviado:", payload);
+      // console.log("Payload enviado:", payload);
       await generatePlan(payload);
       setSuccessMessage("Plano de treino criado com sucesso!");
       setShowSuccessWarning(true);
     } catch (err) {
-      console.error("Erro ao gerar plano de treino: ", err);
+      // console.error("Erro ao gerar plano de treino: ", err);
     }
   }
 
@@ -169,7 +169,7 @@ function Workout() {
       if (!response.ok) throw new Error("Erro ao guardar o plano de treino!");
 
       const data = await response.json();
-      console.log("Plano de treino guardado com sucesso: ", data);
+      // console.log("Plano de treino guardado com sucesso: ", data);
       setIsSaved(!isSaved);
       setSuccessMessage(
         isSaved
@@ -178,7 +178,7 @@ function Workout() {
       );
       setShowSuccessWarning(true);
     } catch (err) {
-      console.error("Erro ao guardar o plano de treino: ", err);
+      // console.error("Erro ao guardar o plano de treino: ", err);
       setError("Erro ao guardar o plano de treino!");
     } finally {
       setIsSaving(false);
@@ -200,7 +200,7 @@ function Workout() {
   return (
     <>
       <motion.section
-        className="w-full !py-40 pb-48"
+        className="w-full !py-28 pb-48"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

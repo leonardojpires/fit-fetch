@@ -23,7 +23,7 @@ const attachUserFromDB = async (req, res, next) => {
     };
     next();
   } catch (err) {
-    console.error("Erro ao buscar o utilizador na base de dados: ", err);
+    // console.error("Erro ao buscar o utilizador na base de dados: ", err);
     return res.status(500).json({ message: "Erro interno do servidor" });
   }
 };

@@ -42,9 +42,9 @@ function NutritionPlans() {
   }
 
   // Debug: log the nutrition plan data
-  console.log("Nutrition Plan Data:", nutritionPlan);
-  console.log("Total Calories:", nutritionPlan?.total_calories);
-  console.log("Alimentos:", nutritionPlan?.alimentos);
+  // console.log("Nutrition Plan Data:", nutritionPlan);
+  // console.log("Total Calories:", nutritionPlan?.total_calories);
+  // console.log("Alimentos:", nutritionPlan?.alimentos);
 
   // Calculate totals from foods if they're missing
   const calculateTotals = () => {
@@ -82,7 +82,7 @@ function NutritionPlans() {
   if (authLoading || loadingUser || loadingPlan) {
     return (
       <section className="loading-section">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+        <div className="section !mt-28 !mb-28 flex items-center justify-center">
           <p className="font-body text-lg">A carregar plano...</p>
         </div>
       </section>

@@ -34,7 +34,7 @@ function PasswordReset() {
         "E-mail de recuperação enviado com sucesso! Verifica a tua caixa de entrada ou spam.",
       );
     } catch (err) {
-      console.error("Firebase error:", err.code, err.message);
+      // console.error("Firebase error:", err.code, err.message);
       setError("Erro ao enviar o e-mail de recuperação! Tenta novamente!");
     } finally {
       setLoading(false);
@@ -44,7 +44,7 @@ function PasswordReset() {
   if (authLoading) {
     return (
       <section className="loading-section">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+        <div className="section !mt-28 !mb-28 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
       </section>
@@ -54,7 +54,7 @@ function PasswordReset() {
   return (
     <>
       <motion.section
-        className="w-full !py-40 pb-48"
+        className="w-full !py-28 pb-48"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

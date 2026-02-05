@@ -34,7 +34,7 @@ export default function useAddFood() {
         throw new Error(data.message || "Erro ao adicionar alimento!");
       return data;
     } catch (err) {
-      console.error("Erro ao adicionar alimento: ", err);
+      // console.error("Erro ao adicionar alimento: ", err);
       throw err;
     }
   };
