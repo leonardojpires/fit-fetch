@@ -92,13 +92,19 @@ function Workout() {
 
   async function submitAndGenerate(e) {
     e.preventDefault();
-    window.scrollTo(0, 0);
+    
+    const planSection = document.getElementById("plan-section");
+    if (planSection) {
+      const yOffset = -100;
+      const y = planSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
 
     if (loading) return;
     if (!user) {
       // console.error("Nenhum utilizador autenticado!");
       return;
-    }
+  }
 
     try {
       // Build payload based on workout type to avoid sending irrelevant fields
@@ -436,7 +442,8 @@ function Workout() {
               </form>
             </div>
 
-            <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
+
+            <div id="plan-section" className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
               {loading ? (
                 <div className="flex flex-col items-center gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>

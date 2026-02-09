@@ -278,6 +278,9 @@ function Nutrition() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const planSection = document.getElementById("plan-section");
+
     if (!inputMessage.trim()) return;
 
     const userMessage = {
@@ -338,6 +341,14 @@ function Nutrition() {
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsGenerating(false);
+      if (planSection) {
+        const yOffset = -100;
+        const y =
+          planSection.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
     }
   };
 
@@ -524,7 +535,10 @@ function Nutrition() {
             </div>
 
             {/* Preview Section */}
-            <div className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
+            <div
+              id="plan-section"
+              className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center"
+            >
               {isGenerating && chatLoading ? (
                 <div className="flex flex-col items-center !gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>
