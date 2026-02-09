@@ -37,7 +37,7 @@
             setLoading(false);
           }
         } catch (err) {
-          console.error("Erro ao buscar os dados do utilizador: ", err);
+          // console.error("Erro ao buscar os dados do utilizador: ", err);
           if (isMounted) navigate("/", { replace: true });
         }
       });

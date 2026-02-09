@@ -31,7 +31,7 @@ export default function useAddExercise() {
         throw new Error(data.message || "Erro ao adicionar exercício!");
       return data;
     } catch (err) {
-      console.error("Erro ao adicionar exercício: ", err);
+      // console.error("Erro ao adicionar exercício: ", err);
       throw err;
     }
   };

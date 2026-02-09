@@ -148,7 +148,7 @@ REGRAS IMPORTANTES:
                 const missingProps = requiredPlanProps.filter(prop => !(prop in parsedResponse.plan));
                 
                 if (missingProps.length > 0) {
-                    console.warn(`Plano com propriedades em falta: ${missingProps.join(', ')}`);
+                    // console.warn(`Plano com propriedades em falta: ${missingProps.join(', ')}`);
                     return {
                         message: parsedResponse.message || "Plano criado com sucesso!",
                         plan: null
@@ -156,7 +156,7 @@ REGRAS IMPORTANTES:
                 }
                 
                 if (!Array.isArray(parsedResponse.plan.meals) || parsedResponse.plan.meals.length === 0) {
-                    console.warn("Plano sem refeições");
+                    // console.warn("Plano sem refeições");
                     return {
                         message: parsedResponse.message || "Plano criado com sucesso!",
                         plan: null
@@ -169,7 +169,7 @@ REGRAS IMPORTANTES:
                 plan: parsedResponse.plan || null
             };
         } catch (parseErr) {
-            console.warn("Erro ao fazer parse JSON:", parseErr.message);
+            // console.warn("Erro ao fazer parse JSON:", parseErr.message);
             // Se JSON é malformado, retorna tudo como mensagem
             return {
                 message: responseContent,
@@ -178,7 +178,7 @@ REGRAS IMPORTANTES:
         }
 
     } catch (err) {
-        console.error("Erro ao gerar plano com GROQ:", err);
+        // console.error("Erro ao gerar plano com GROQ:", err);
         throw new Error(`Erro ao gerar plano: ${err.message}`);
     }
 }
@@ -196,7 +196,7 @@ export async function validateFoodsInPlan(aiResponse) {
 
         // Check if the response has the expected structure
         if (!aiResponse.plan || !aiResponse.plan.meals) {
-            console.error("Estrutura inválida do plano:", aiResponse);
+            // console.error("Estrutura inválida do plano:", aiResponse);
             return { isValid: false, invalidFoods: ["Estrutura do plano inválida"] };
         }
 
@@ -274,7 +274,7 @@ export async function validateFoodsInPlan(aiResponse) {
             invalidFoods
         };
     } catch (err) {
-        console.error("ERRO na validação de alimentos:", err);
+        // console.error("ERRO na validação de alimentos:", err);
         return { isValid: false, invalidFoods: ["Erro ao validar alimentos: " + err.message] };
     }
 }

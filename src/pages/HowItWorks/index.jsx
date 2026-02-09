@@ -77,7 +77,7 @@ const nutritionSteps = [
 
 function HowItWorks() {
   return (
-    <section className="!py-40 how-page">
+    <section className="!py-28 how-page">
       <div className="section !pt-16 !pb-16">
         {/* Hero */}
         <motion.div

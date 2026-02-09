@@ -23,7 +23,7 @@ export default function useDeleteFood() {
 
             return data;
         } catch(err) {
-            console.error("Erro ao eliminar alimento: ", err);
+            // console.error("Erro ao eliminar alimento: ", err);
             throw err;
         }
     }

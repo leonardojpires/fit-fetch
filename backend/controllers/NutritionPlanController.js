@@ -30,7 +30,7 @@ class NutritionPlanController {
 
       return res.status(200).json({ plans: plansWithMacros });
     } catch (err) {
-      console.error("Erro ao buscar planos:", err);
+      // console.error("Erro ao buscar planos:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -62,7 +62,7 @@ class NutritionPlanController {
         plan: { ...planObj, ...macros },
       });
     } catch (err) {
-      console.error("Erro ao buscar plano:", err);
+      // console.error("Erro ao buscar plano:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -194,17 +194,17 @@ class NutritionPlanController {
       /**
        * Validate that all foods suggested by the AI exist in the database
        */
-      console.log("Validando alimentos do plano...");
-      console.log("Estrutura do aiResponse.plan:", JSON.stringify(aiResponse.plan, null, 2));
+      // console.log("Validando alimentos do plano...");
+      // console.log("Estrutura do aiResponse.plan:", JSON.stringify(aiResponse.plan, null, 2));
       
       const validationResult = await validateFoodsInPlan(aiResponse);
       
-      console.log("Resultado da validação:", validationResult);
+      // console.log("Resultado da validação:", validationResult);
 
       // If validation fails, return error with list of invalid foods
       // This allows the frontend to inform the user which foods are not available
       if (!validationResult.isValid) {
-        console.warn("Alimentos inválidos:", validationResult.invalidFoods);
+        // console.warn("Alimentos inválidos:", validationResult.invalidFoods);
         // PERMITIR o plano mesmo com alimentos inválidos (com aviso)
         return res.status(200).json({
           message: aiResponse.message + " (Nota: alguns alimentos podem não existir na BD)",
@@ -221,7 +221,7 @@ class NutritionPlanController {
         isValid: true,
       });
     } catch (err) {
-      console.error("Erro ao chamar AI:", err);
+      // console.error("Erro ao chamar AI:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }
@@ -243,8 +243,8 @@ class NutritionPlanController {
     // Initialize transaction variable (will be used for rollback if needed)
     let transaction;
     try {
-      console.log("🔵 createPlanFromAI - Request body:", JSON.stringify(req.body, null, 2));
-      console.log("🔵 User:", req.user);
+      // console.log("🔵 createPlanFromAI - Request body:", JSON.stringify(req.body, null, 2));
+      // console.log("🔵 User:", req.user);
       
       // START TRANSACTION: All database operations below will be atomic
       // Atomic means: either ALL succeed and are committed, or ALL fail and are rolled back
@@ -256,12 +256,12 @@ class NutritionPlanController {
       // Extract user ID from authenticated user (req.user is populated by middleware)
       const userId = req.user.id;
 
-      console.log("🔵 Plan structure:", {
-        hasPlan: !!plan,
-        hasMeals: !!plan?.meals,
-        mealsCount: plan?.meals?.length,
-        mealsStructure: plan?.meals?.[0]
-      });
+      // console.log("🔵 Plan structure:", {
+      //   hasPlan: !!plan,
+      //   hasMeals: !!plan?.meals,
+      //   mealsCount: plan?.meals?.length,
+      //   mealsStructure: plan?.meals?.[0]
+      // });
 
       /**
        * Validate that the incoming plan data is valid
@@ -271,7 +271,7 @@ class NutritionPlanController {
        * - plan.meals is not empty
        */
       if (!plan || !plan.meals || plan.meals.length === 0) {
-        console.error("❌ Plano inválido");
+        // console.error("❌ Plano inválido");
         return res.status(400).json({ message: "Plano inválido!" });
       }
 
@@ -430,14 +430,14 @@ class NutritionPlanController {
           await transaction.rollback();
         } catch (rollbackErr) {
           // If rollback itself fails, log it (rare but possible)
-          console.error("Erro ao reverter a transação: ", rollbackErr);
+          // console.error("Erro ao reverter a transação: ", rollbackErr);
         }
       }
       // Log the original error for debugging
-      console.error("❌ ERRO em createPlanFromAI:");
-      console.error("   Message:", err.message);
-      console.error("   Stack:", err.stack);
-      console.error("   Full error:", err);
+      // console.error("❌ ERRO em createPlanFromAI:");
+      // console.error("   Message:", err.message);
+      // console.error("   Stack:", err.stack);
+      // console.error("   Full error:", err);
       // Return generic error to client
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }

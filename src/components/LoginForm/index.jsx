@@ -30,15 +30,15 @@ function LoginForm({ clickEvent }) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      console.log("Utilizador logado ao Firebase:", {
-        name: user.displayName,
-        email: user.email,
-        uid: user.uid,
-        photoURL: user.photoURL,
-      });
+      // console.log("Utilizador logado ao Firebase:", {
+      //   name: user.displayName,
+      //   email: user.email,
+      //   uid: user.uid,
+      //   photoURL: user.photoURL,
+      // });
 
       const idToken = user ? await user.getIdToken(true) : null;
-      console.log("ID Token:", idToken);
+      // console.log("ID Token:", idToken);
 
       const res = await fetch("http://localhost:3000/api/users/sync", {
         method: "POST",
@@ -49,11 +49,11 @@ function LoginForm({ clickEvent }) {
       });
 
       const data = await res.json();
-      console.log("Utilizador sincronizado no MySQL", data);
+      // console.log("Utilizador sincronizado no MySQL", data);
 
       setCurrentUser(data.user);
     } catch (e) {
-      console.error(`Erro ao autenticar com a Google: ${e}`);
+      // console.error(`Erro ao autenticar com a Google: ${e}`);
       setValidationErrors([{
         field: "Google",
         message: "Falha na autenticação. Tenta novamente."
@@ -87,11 +87,11 @@ function LoginForm({ clickEvent }) {
       });
 
       const data = await res.json();
-      console.log("Utilizador sincronizado no MySQL", data);
+      // console.log("Utilizador sincronizado no MySQL", data);
 
       setCurrentUser(data.user);
     } catch (e) {
-      console.error("Erro ao entrar na conta", e);
+      // console.error("Erro ao entrar na conta", e);
       setValidationErrors([{
         field: "Autenticação",
         message: "Falha ao entrar na conta. Verifica credenciais."

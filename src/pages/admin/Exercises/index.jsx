@@ -65,7 +65,7 @@ function ExercisesPage() {
   if (authLoading || adminLoading) {
     return (
       <section className="loading-section">
-        <div className="section !mt-40 !mb-40 flex items-center justify-center">
+        <div className="section !mt-28 !mb-28 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
       </section>
@@ -175,7 +175,7 @@ function ExercisesPage() {
         setShowSuccessWarning(true);
       }
     } catch (error) {
-      console.error("Erro ao atualizar o exercício:", error);
+      // console.error("Erro ao atualizar o exercício:", error);
     } finally {
       setIsSubmitting(false);
       closeModal();

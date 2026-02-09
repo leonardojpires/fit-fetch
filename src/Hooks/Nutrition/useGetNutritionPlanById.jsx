@@ -36,7 +36,7 @@ export default function useGetNutritionPlanById(planId) {
         setNutritionPlan(data.plan);
         setError(null);
       } catch (err) {
-        console.error("Erro ao buscar plano:", err);
+        // console.error("Erro ao buscar plano:", err);
         setError(err.message || "Erro ao buscar plano");
         setNutritionPlan(null);
       } finally {

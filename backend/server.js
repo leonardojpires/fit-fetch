@@ -26,12 +26,12 @@ app.get('/', async (req, res) => {
         await sequelize.authenticate();
         res.send("Servidor a correr e base de dados conectada!");
     } catch(err) {
-        console.error('DB connection error:', err);
+        // console.error('DB connection error:', err);
         res.status(500).send("Erro ao conectar à base de dados.");
     }
     
 })
 
 app.listen(3000, () => {
-    console.log(`Servidor em http://localhost:${process.env.PORT || 3000}/`);
+    // console.log(`Servidor em http://localhost:${process.env.PORT || 3000}/`);
 });

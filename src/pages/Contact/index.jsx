@@ -71,7 +71,7 @@ function Contact() {
         yagree: false,
       });
     } catch (error) {
-      console.error("Erro ao enviar e-mail: ", error);
+      // console.error("Erro ao enviar e-mail: ", error);
       setStatus("error");
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ function Contact() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
-        className="!mt-40 contact-page"
+        className="!py-28 contact-page"
       >
         <div className="section !py-16">
           {/* HEADING DIV */}

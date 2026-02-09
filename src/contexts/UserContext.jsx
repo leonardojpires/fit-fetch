@@ -15,7 +15,7 @@ export function UserProvider({ children }) {
         // Force refresh to avoid stale token after sign-in
         // Using 'true' will fetch a new token from the server, even if the current token hasn't expired yet
         const token = await firebaseUser.getIdToken(true);
-        console.log("Firebase Token:", token);
+        // console.log("Firebase Token:", token);
 
         // Ensure user exists/updated in DB before fetching
 /*         await fetch("http://localhost:3000/api/users/sync", {
@@ -35,9 +35,9 @@ export function UserProvider({ children }) {
 
         if (!syncResponse.ok) {
           const syncError = await syncResponse.text();
-          console.error(`Erro em /api/users/sync: (${syncResponse.status}): `, syncError)
+          // console.error(`Erro em /api/users/sync: (${syncResponse.status}): `, syncError)
         } else {
-          console.log("/api/users/shync sucesso!");
+          // console.log("/api/users/shync sucesso!");
         }
 
         const response = await fetch("http://localhost:3000/api/users/me", {
@@ -52,7 +52,7 @@ export function UserProvider({ children }) {
         const userData = await response.json();
         setUser(userData);
       } catch (err) {
-        console.error("Erro ao sincronizar/buscar dados do utilizador: ", err);
+        // console.error("Erro ao sincronizar/buscar dados do utilizador: ", err);
         setError(err);
       } finally {
         setLoading(false);

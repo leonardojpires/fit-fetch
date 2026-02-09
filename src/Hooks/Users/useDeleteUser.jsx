@@ -25,7 +25,7 @@ export default function useDeleteUser() {
 
             return data;
         } catch(err) {
-            console.error("Erro ao eliminar utilizador: ", err);
+            // console.error("Erro ao eliminar utilizador: ", err);
         }
     }
     return deleteUser;

@@ -10,7 +10,7 @@ class FoodController {
             });
             return res.status(200).json(foods);
         } catch(err) {
-            console.error("Erro ao obter alimentos: ", err);
+            // console.error("Erro ao obter alimentos: ", err);
             return res.status(500).json({ message: FoodController.errorMessage });
         }
     }
@@ -24,7 +24,7 @@ class FoodController {
             
             return res.status(200).json(food);
         } catch(err) {
-            console.error("Erro ao obter alimento por ID: ", err);
+            // console.error("Erro ao obter alimento por ID: ", err);
             return res.status(500).json({ message: FoodController.errorMessage });
         }
     }
@@ -64,7 +64,7 @@ class FoodController {
 
             return res.status(201).json({ food: newFood });
         } catch(err) {
-            console.error("Erro ao adicionar alimento: ", err);
+            // console.error("Erro ao adicionar alimento: ", err);
             return res.status(500).json({ message: FoodController.errorMessage });
         }
     }
@@ -108,7 +108,7 @@ class FoodController {
 
             return res.status(200).json({ message: "Alimento atualizado com sucesso!", food });
         } catch(err) {
-            console.error("Erro ao atualizar alimento: ", err);
+            // console.error("Erro ao atualizar alimento: ", err);
             return res.status(500).json({ message: FoodController.errorMessage });
         }
     }
@@ -124,7 +124,7 @@ class FoodController {
             
             return res.status(200).json({ message: "Alimento apagado com sucesso!" });
         } catch(err) {
-            console.error("Erro ao apagar alimento: ", err);
+            // console.error("Erro ao apagar alimento: ", err);
             return res.status(500).json({ message: FoodController.errorMessage });
         }
     }

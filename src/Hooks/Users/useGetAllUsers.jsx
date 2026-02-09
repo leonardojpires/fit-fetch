@@ -17,10 +17,10 @@ export default function useGetAllUsers() {
         if (!response.ok) throw new Error("Erro ao buscar utilizadores");
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setUsers(data);
       } catch (err) {
-        console.error("Erro ao buscar todos os utilizadores:", err);
+        // console.error("Erro ao buscar todos os utilizadores:", err);
       }
     });
     return () => unsubscribe();
