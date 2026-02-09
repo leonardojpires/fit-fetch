@@ -15,7 +15,7 @@ import WorkoutPlans from './../pages/WorkoutPlans/index';
 import HowItWorks from "../pages/HowItWorks";
 import FAQ from "../pages/FAQ";
 import NutritionPlans from './../pages/NutritionPlans/index';
-import Exercise from "../../Exercise";
+import Exercise from './../pages/Exercise/index';
 import Food from "../pages/Food";
 import PasswordReset from "../pages/PasswordReset";
 

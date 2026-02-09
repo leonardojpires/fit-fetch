@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GiShoulderArmor, GiBiceps, GiMuscleUp, GiLeg } from 'react-icons/gi';
-import { FaDumbbell } from 'react-icons/fa';
+import { FaDumbbell, FaLayerGroup } from 'react-icons/fa';
 import { IoBodySharp } from 'react-icons/io5';
 import './style.css';
 
@@ -106,7 +106,7 @@ function BodySelector({ onMuscleSelect }) {
             {selected.length > 0 && (
                 <div className="selection-summary">
                     <div className="summary-header">
-                        <span className="summary-icon">🎯</span>
+                        <span className="summary-icon"><FaLayerGroup aria-hidden="true" focusable="false" className='text-[var(--primary)]' /></span>
                         <span className="summary-text">
                             {selected.length} {selected.length === 1 ? 'grupo muscular selecionado' : 'grupos musculares selecionados'}
                         </span>

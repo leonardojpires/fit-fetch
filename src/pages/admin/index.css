@@ -7,7 +7,7 @@ html, body {
 }
 
 .admin-dashboard {
-  @apply flex items-start w-full;
+  @apply flex items-center md:items-start w-full;
 }
 
 .admin-content {
@@ -19,11 +19,11 @@ html, body {
 }
 
 .admin-title {
-  @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold !mb-2 sm:!mb-3;
+  @apply text-3xl text-center md:text-start sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold !mb-2 sm:!mb-3;
 }
 
 .admin-description {
-  @apply text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-black/70 !mb-4 sm:!mb-6 md:!mb-8 lg:!mb-10;
+  @apply text-lg text-center md:text-start sm:text-base md:text-lg lg:text-xl xl:text-2xl text-black/70 !mb-4 sm:!mb-6 md:!mb-8 lg:!mb-10;
 }
 
 .admin-button {
