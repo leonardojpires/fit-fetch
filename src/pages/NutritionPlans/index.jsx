@@ -5,6 +5,7 @@ import useGetNutritionPlanById from "../../hooks/Nutrition/useGetNutritionPlanBy
 import useCurrentUser from "../../hooks/useCurrentUser";
 import useRemoveNutritionPlan from "../../hooks/Nutrition/useRemoveNutritionPlan";
 import DeleteModal from "../../components/DeleteModal/index.jsx";
+import pdfNutritionExporter from "../../utils/pdfNutritionExporter";
 import { IoMdDownload } from "react-icons/io";
 import { FaTrash, FaArrowLeft, FaExternalLinkAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -251,9 +252,7 @@ function NutritionPlans() {
             <div className="flex items-center justify-between mt-4">
               <div className="flex flex-col items-start gap-2">
                 <button
-                  onClick={() =>
-                    alert("Exportação para PDF em desenvolvimento")
-                  }
+                  onClick={() => pdfNutritionExporter(nutritionPlan, user)}
                   className="flex flex-center items-center gap-2 font-body text-[var(--secondary)] border border-[var(--secondary)] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--secondary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
                 >
                   <IoMdDownload /> Exportar para PDF
