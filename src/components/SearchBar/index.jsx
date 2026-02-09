@@ -2,7 +2,7 @@ import { ImCross } from "react-icons/im";
 
 function SearchBar({ placeholder, label, searchItem, setSearchItem }) {
   return (
-    <div className="!mb-6 bg-white/40 backdrop-blur-sm rounded-xl shadow-md !p-4">
+    <div className="w-full !mt-6 !mb-6 bg-white/40 backdrop-blur-sm rounded-xl shadow-md !p-4">
       <form className="flex flex-col gap-3">
         <label
           htmlFor="searchFilter"
