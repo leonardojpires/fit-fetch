@@ -73,7 +73,7 @@ function FoodsPage() {
   if (authLoading || adminLoading) {
     return (
       <section className="loading-section">
-        <div className="section !mt-28 !mb-28 flex items-center justify-center">
+        <div className="section !mt-40 !mb-40 flex items-center justify-center">
           <p className="font-body text-lg">A carregar...</p>
         </div>
       </section>
@@ -82,7 +82,8 @@ function FoodsPage() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFoods = foods.slice(indexOfFirstItem, indexOfLastItem);
+  const sortedFoods = getSortedFoods(foods);
+  const currentFoods = sortedFoods.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(foods.length / itemsPerPage);
 
@@ -216,12 +217,15 @@ function FoodsPage() {
   }
 
   function getSortedFoods(foods) {
-    if (sort.direction === "asc") {
-      return [...foods].sort((a, b) =>
-        a[sort.field] > b[sort.field] ? 1 : -1
-      );
-    }
-    return [...foods].sort((a, b) => (a[sort.field] > b[sort.field] ? -1 : 1));
+    return [...foods].sort((a, b) => {
+      if (a[sort.field] === b[sort.field]) return 0;
+
+      if (sort.direction === "asc") {
+        return a[sort.field] > b[sort.field] ? 1 : -1;
+      }
+
+      return a[sort.field] > b[sort.field] ? -1 : 1;
+    });
   }
 
   return (
@@ -286,7 +290,7 @@ function FoodsPage() {
                   </td>
                 </tr>
               ) : (
-                getSortedFoods(currentFoods)
+                currentFoods
                   .filter((food) => {
                     return searchItem === ""
                       ? true
