@@ -28,7 +28,7 @@ export default function pdfWorkoutExporter(workoutPlan, user, convertToMinutes, 
     doc.setTextColor(40, 40, 40);
     let yPosition = 48;
 
-    const workoutTypeKey = tWorkoutType[workoutPlan.workoutType] || workoutPlan.workout_type;
+    const workoutTypeKey = workoutPlan.workoutType || workoutPlan.workout_type;
     const workoutTypeLabel = tWorkoutType[workoutTypeKey] || workoutTypeKey;
 
     const levelLabel = tLevel[workoutPlan.level] || workoutPlan.level;
@@ -38,7 +38,7 @@ export default function pdfWorkoutExporter(workoutPlan, user, convertToMinutes, 
     doc.text(`Nível: ${levelLabel}`, 20, yPosition);
     yPosition += 7;
 
-    if (workoutPlan.workoutType !== "cardio") {
+    if (workoutTypeKey !== "cardio") {
         doc.text(
         `Descanso entre séries: ${convertToMinutes(workoutPlan.rest_time)} ${
             workoutPlan.rest_time < 60 ? "segundos" : "minuto(s)"
