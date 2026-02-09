@@ -19,9 +19,9 @@ function ExercisesPage() {
   const { loading: adminLoading } = useAdminRedirect();
 
   const { exercises, setExercises } = useGetAllExercises();
-    const addExercise = useAddExercise();
-    const updateExercise = useUpdateExercise();
-    const deleteExercise = useDeleteExercise();
+  const addExercise = useAddExercise();
+  const updateExercise = useUpdateExercise();
+  const deleteExercise = useDeleteExercise();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -74,7 +74,8 @@ function ExercisesPage() {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentExercises = exercises.slice(indexOfFirstItem, indexOfLastItem);
+  const sortedExercises = getSortedExercises(exercises);
+  const currentExercises = sortedExercises.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(exercises.length / itemsPerPage);
 
@@ -218,14 +219,15 @@ function ExercisesPage() {
   }
 
   function getSortedExercises(exercises) {
-    if (sort.direction === "asc") {
-      return [...exercises].sort((a, b) =>
-        a[sort.field] > b[sort.field] ? 1 : -1,
-      );
-    }
-    return [...exercises].sort((a, b) =>
-      a[sort.field] > b[sort.field] ? -1 : 1,
-    );
+    return [...exercises].sort((a, b) => {
+      if (a[sort.field] === b[sort.field]) return 0;
+
+      if (sort.direction === "asc") {
+        return a[sort.field] > b[sort.field] ? 1 : -1;
+      }
+
+      return a[sort.field] > b[sort.field] ? -1 : 1;
+    });
   }
 
   return (
@@ -307,7 +309,7 @@ function ExercisesPage() {
                     </td>
                   </tr>
                 ) : (
-                  getSortedExercises(currentExercises)
+                  currentExercises
                     .filter((exercise) => {
                       return searchItem === ""
                         ? true
