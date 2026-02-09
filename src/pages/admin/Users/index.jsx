@@ -208,7 +208,7 @@ function UsersPage() {
               Gestão de utilizadores da plataforma
             </p>
           </div>
-          <div
+{/*           <div
             className="admin-button font-body w-full sm:w-auto"
             onClick={openAddModal}
           >
@@ -216,7 +216,7 @@ function UsersPage() {
             <FiUserPlus />{" "}
             <span className="hidden sm:inline">Adicionar Utilizador</span>
             <span className="inline sm:hidden">Adicionar</span>
-          </div>
+          </div> */}
         </div>
 
         <SearchBar

@@ -166,7 +166,7 @@ function RegisterForm({ clickEvent }) {
       </form>
 
       <div className="flex flex-row justify-center items-center gap-1.5 font-body !mt-5">
-        <p>Já és membro do FitFetch?</p>
+        <p>Já és membro do Fit Fetch?</p>
         <button
           onClick={clickEvent}
           className="font-semibold cursor-pointer hover:text-[var(--accent)]"
