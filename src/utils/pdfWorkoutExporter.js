@@ -28,8 +28,8 @@ export default function pdfWorkoutExporter(workoutPlan, user, convertToMinutes, 
     doc.setTextColor(40, 40, 40);
     let yPosition = 48;
 
-    const workoutTypeLabel =
-        tWorkoutType[workoutPlan.workoutType] || workoutPlan.workoutType;
+    const workoutTypeKey = tWorkoutType[workoutPlan.workoutType] || workoutPlan.workout_type;
+    const workoutTypeLabel = tWorkoutType[workoutTypeKey] || workoutTypeKey;
 
     const levelLabel = tLevel[workoutPlan.level] || workoutPlan.level;
 
