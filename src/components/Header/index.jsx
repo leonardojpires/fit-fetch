@@ -5,6 +5,7 @@ import { CgProfile } from "react-icons/cg";
 import { GoGear } from "react-icons/go";
 import { IoMdExit, IoIosArrowDown } from "react-icons/io";
 import { FaChevronDown } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -266,8 +267,31 @@ function Header() {
             </Link>
           )}
         </div>
-        <div className="menu-button lg:hidden" onClick={toggleMenu}>
-          <GiHamburgerMenu />
+        <div className="menu-button lg:hidden" onClick=
+        {toggleMenu}>
+          <AnimatePresence mode="wait">
+            {showMenu ? (
+              <motion.div
+                key="close-icon"
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MdClose />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="hamburger-icon"
+                initial={{ opacity: 0, rotate: 90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: -90 }}
+                transition={{ duration: 0.2 }}
+              >
+                <GiHamburgerMenu />
+              </motion.div>
+            )}
+            </AnimatePresence>
         </div>
       </div>
     </header>

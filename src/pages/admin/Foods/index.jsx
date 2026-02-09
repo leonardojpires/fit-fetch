@@ -333,7 +333,7 @@ function FoodsPage() {
                       </td>
                       <td className="!p-3 text-sm text-gray-700">
                         {food.category ? (
-                          <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                          <span className="inline-block !px-2 !py-1 bg-blue-100 text-blue-700 rounded text-xs">
                             {food.category}
                           </span>
                         ) : (
