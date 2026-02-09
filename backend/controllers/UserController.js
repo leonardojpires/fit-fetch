@@ -173,8 +173,13 @@ class UserController {
 
             if (Object.keys(updates).length > 0) await admin.auth().updateUser(user.firebase_uid, updates);
 
+            /* Prevent user from changing their own role */
+            if (user.firebase_uid === req.user.firebase_uid && role) {
+                return res.status(401).json({ message: "Não é possível alterar o próprio cargo!" })
+            }
+
             if (role) {
-                await admin.auth().setCustomUserClaims(user.firebase_uid, { role });
+                await admin.auth().setCustomUserClaims(user.firebase_uid, { role })
             }
 
             await user.update({ name: name || user.name, email: email || user.email, role: role || user.role, avatarUrl });
