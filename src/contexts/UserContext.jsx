@@ -6,10 +6,11 @@ const UserContext = createContext(undefined);
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Changed to false to not block initial render
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true); // Set loading after mount
     const fetchAndSyncUser = async (firebaseUser) => {
       try {
         // Force refresh to avoid stale token after sign-in
