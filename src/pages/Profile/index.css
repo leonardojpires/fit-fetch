@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@reference "tailwindcss";
 
 .containers {
     @apply bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-200/50;

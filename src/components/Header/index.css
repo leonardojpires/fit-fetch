@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 .group:focus {
   outline: none;
 }
@@ -13,7 +15,6 @@
 .underline-hover:focus {
   outline: none;
 }
-@import "tailwindcss";
 
 .select-none {
   -webkit-user-drag: none;

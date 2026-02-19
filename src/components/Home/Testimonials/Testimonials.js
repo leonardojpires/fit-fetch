@@ -1,7 +1,7 @@
-import testimonial1 from '/img/imgs/testimonials/testimonial1.jpg';
-import testimonial2 from '/img/imgs/testimonials/testimonial2.jpg';
-import testimonial3 from '/img/imgs/testimonials/testimonial3.jpg';
-import testimonial4 from '/img/imgs/testimonials/testimonial4.jpg';
+import testimonial1 from '/img/imgs/testimonials/testimonial1.webp';
+import testimonial2 from '/img/imgs/testimonials/testimonial2.webp';
+import testimonial3 from '/img/imgs/testimonials/testimonial3.webp';
+import testimonial4 from '/img/imgs/testimonials/testimonial4.webp';
 
 const testimonials = [
   {

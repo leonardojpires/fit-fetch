@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@reference "tailwindcss";
 
 /* Clamp page width on admin views */
 html, body {

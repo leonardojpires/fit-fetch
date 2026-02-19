@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { auth } from "../../services/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useCurrentUser from "../../hooks/useCurrentUser";
 

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@reference "tailwindcss";
 
 .section-lg {
   @apply w-full h-[500px] max-w-[900px] px-5 !mt-40 mb-30 mx-auto md:mb-0 md:max-w-[1200px] md:px-20;

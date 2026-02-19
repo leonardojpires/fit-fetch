@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@reference "tailwindcss";
 
 .faq-item {
   @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)];

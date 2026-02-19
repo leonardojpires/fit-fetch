@@ -1,9 +1,9 @@
-import service1 from '../../../../public/img/imgs/services/service1.jpeg';
-import service2 from '../../../../public/img/imgs/services/service2.jpeg';
-import service3 from '../../../../public/img/imgs/services/service3.jpeg';
-import service4 from '../../../../public/img/imgs/services/service4.jpeg';
-import service5 from '../../../../public/img/imgs/services/service5.jpeg';
-import service6 from '../../../../public/img/imgs/services/service6.jpeg';
+import service1 from '../../../../public/img/imgs/services/service1.webp';
+import service2 from '../../../../public/img/imgs/services/service2.webp';
+import service3 from '../../../../public/img/imgs/services/service3.webp';
+import service4 from '../../../../public/img/imgs/services/service4.webp';
+import service5 from '../../../../public/img/imgs/services/service5.webp';
+import service6 from '../../../../public/img/imgs/services/service6.webp';
 
 const services = [
     {

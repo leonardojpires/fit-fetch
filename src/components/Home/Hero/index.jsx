@@ -62,10 +62,10 @@ function Hero() {
 
         <div className="hero-img-div">
           <img
-            src="/img/imgs/hero-img.png"
+            src="/img/imgs/hero-img.webp"
             alt="Fit Fetch - Plataforma de fitness e bem-estar"
             className="hero-img"
-            loading="eager"
+            loading="lazy"
             width="380"
             height="380"
           />

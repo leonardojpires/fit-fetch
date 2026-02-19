@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@reference "tailwindcss";
 
 .contact-page {
     @apply relative min-h-screen overflow-hidden;

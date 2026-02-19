@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { FaFacebookF, FaInstagram, FaXTwitter, FaEnvelope, FaPhone } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
@@ -24,13 +24,13 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               <a href="#" className="hover:text-primary transition-colors" aria-label="Visita a nossa página do Facebook">
-                <Facebook className="w-5 h-5" />
+                <FaFacebookF className="w-5 h-5" aria-hidden="true" focusable="false" />
               </a>
               <a href="#" className="hover:text-primary transition-colors" aria-label="Visita a nossa página do Instagram">
-                <Instagram className="w-5 h-5" />
+                <FaInstagram className="w-5 h-5" aria-hidden="true" focusable="false" />
               </a>
               <a href="#" className="hover:text-primary transition-colors" aria-label="Visita a nossa página do Twitter">
-                <Twitter className="w-5 h-5" />
+                <FaXTwitter className="w-5 h-5" aria-hidden="true" focusable="false" />
               </a>
             </div>
           </div>
@@ -93,11 +93,11 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-white mb-4">Contacto</h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-slate-400">
-                <Mail className="w-4 h-4" />
+                <FaEnvelope className="w-4 h-4" aria-hidden="true" focusable="false" />
                 <span className="text-sm">contato@fitfetch.com</span>
               </li>
               <li className="flex items-center gap-2 text-slate-400">
-                <Phone className="w-4 h-4" />
+                <FaPhone className="w-4 h-4" aria-hidden="true" focusable="false" />
                 <span className="text-sm">(+351) 938 604 654</span>
               </li>
             </ul>
