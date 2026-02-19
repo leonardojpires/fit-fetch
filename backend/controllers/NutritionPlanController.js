@@ -38,8 +38,10 @@ class NutritionPlanController {
   static async getPlanById(req, res) {
     try {
       const { id } = req.params;
+      const userId = req.user.id;
 
-      const plan = await PlanoAlimentacao.findByPk(id, {
+      const plan = await PlanoAlimentacao.findOne({
+        where: { id, user_id: userId },
         include: [
           {
             model: Alimento,
