@@ -7,6 +7,9 @@ function Cards({ icon, title, description }) {
             src={icon}
             alt={`Ícone de ${title}`}
             className="w-full h-40 object-cover"
+            loading="lazy"
+            width="384"
+            height="160"
           />
         </div>
 
