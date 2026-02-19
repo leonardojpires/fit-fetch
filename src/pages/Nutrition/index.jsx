@@ -482,6 +482,8 @@ function Nutrition() {
                           }
                           alt={`Avatar de ${userInfo?.name || "utilizador"}`}
                           className="w-8 h-8 object-cover rounded-full shadow-md pointer-events-none"
+                          width="32"
+                          height="32"
                         />
                       </div>
                     )}

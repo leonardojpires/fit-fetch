@@ -57,6 +57,8 @@ function EditProfileModal({
                   }
                   alt={`Avatar de ${user?.name || 'utilizador'}`}
                   className="avatar-image"
+                  width="120"
+                  height="120"
                 />
                 <label htmlFor="avatar" className="avatar-overlay">
                   <FaCamera />

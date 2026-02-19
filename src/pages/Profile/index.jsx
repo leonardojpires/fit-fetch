@@ -220,6 +220,8 @@ function Profile() {
                   }
                   alt={`Foto de perfil de ${user.name}`}
                   className="w-48 h-48 object-cover rounded-full border-6 border-white shadow-lg pointer-events-none"
+                  width="192"
+                  height="192"
                 />
               </div>
               <div className="flex-1 flex flex-col items-center md:items-start justify-start text-center !mt-0 w-full">

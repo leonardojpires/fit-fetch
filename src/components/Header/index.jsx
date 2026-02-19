@@ -87,6 +87,8 @@ function Header() {
             src="/img/logos/ff_logo.svg"
             alt="Fit Fetch - Logotipo, ir para página inicial"
             className="logo select-none pointer-none w-[150px] lg:w-[150px]"
+            width="150"
+            height="50"
           />
         </Link>
       </div>
@@ -227,6 +229,8 @@ function Header() {
                 }
                 alt={`Avatar de ${userInfo?.name || 'utilizador'}`}
                 className="w-10 h-10 object-cover rounded-full shadow-md pointer-events-none"
+                width="40"
+                height="40"
               />
               {(showDropdown || dropdownClosing) && (
                 <div
