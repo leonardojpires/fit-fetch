@@ -27,8 +27,16 @@ workoutPlanRouter.post("/save/:id",
   WorkoutPlanController.saveWorkoutPlan
 );
 
-workoutPlanRouter.get("/:id", WorkoutPlanController.getWorkoutPlanById);
+workoutPlanRouter.get("/:id", 
+  verifyFirebaseToken,
+  attachUserFromDB,
+  WorkoutPlanController.getWorkoutPlanById
+);
 
-workoutPlanRouter.delete("/:id", verifyFirebaseToken, attachUserFromDB, WorkoutPlanController.deleteWorkoutPlan);
+workoutPlanRouter.delete("/:id", 
+  verifyFirebaseToken, 
+  attachUserFromDB, 
+  WorkoutPlanController.deleteWorkoutPlan
+);
 
 export default workoutPlanRouter;

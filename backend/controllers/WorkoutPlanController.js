@@ -18,7 +18,11 @@ const tLevel = {
 class WorkoutPlanController {
   static async getAllWorkoutPlans(req, res) {
     try {
-      const plans = await PlanoTreino.findAll();
+      const userId = req.user.id;
+
+      const plans = await PlanoTreino.findAll({
+        where: { is_saved: true, user_id: userId }
+      });
       return res.status(200).json(plans);
     } catch (err) {
       // console.error("Erro ao obter planos de treino: ", err);
@@ -29,11 +33,13 @@ class WorkoutPlanController {
   static async getWorkoutPlanById(req, res) {
     try {
       const { id } = req.params;
+      const userId = req.user.id;
 
       // It fetches the workout plan by its ID, including the associated exercises through many-to-many relationship
       // The 'include' is the JOIN operation to get related exercises
       // The 'through' options specifies that we don't want any attributes rom the JOIN table
-      const plan = await PlanoTreino.findByPk(id, {
+      const plan = await PlanoTreino.findOne({
+        where: { id, user_id: userId },
         include: [
           {
             model: Exercicio,
@@ -265,7 +271,7 @@ class WorkoutPlanController {
         where: { id: id, user_id: userId }
       });
 
-      if (!plan) return res.status(404).json({ mesage: "Plano de treino não encontrado!"});
+      if (!plan) return res.status(404).json({ message: "Plano de treino não encontrado!"});
 
       await ExerciciosPlano.destroy({
         where: { plano_id: id }
