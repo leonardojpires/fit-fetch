@@ -86,6 +86,9 @@ class WorkoutPlanController {
   static async generateWorkoutPlan(req, res) {
     let transaction;
     try {
+      // ============================================
+      // 1. INITIALIZE TRANSACTION & VALIDATE INPUT
+      // ============================================
       transaction = await db.sequelize.transaction();
       const { errors, normalized } = validateWorkoutPlanParams(req.body);
       if (errors.length > 0) {
@@ -93,6 +96,9 @@ class WorkoutPlanController {
         return res.status(422).json({ errors });
       }
 
+      // ============================================
+      // 2. FETCH & FILTER EXERCISES BY CRITERIA
+      // ============================================
       let selectedExercises = [];
       if (normalized.workoutType !== "cardio") {
         const allExercises = await Exercicio.findAll({
@@ -125,6 +131,9 @@ class WorkoutPlanController {
         });
       }
 
+      // ============================================
+      // 3. VALIDATE EXERCISE SELECTION
+      // ============================================
       if (
         selectedExercises.length === 0 &&
         normalized.workoutType !== "cardio"
@@ -142,6 +151,9 @@ class WorkoutPlanController {
         });
       }
 
+      // ============================================
+      // 4. DELETE PREVIOUS UNSAVED PLANS
+      // ============================================
       const currentUserId = req.user?.id || null;
       if (currentUserId) {
         const existingPlans = await PlanoTreino.findAll({
@@ -162,6 +174,9 @@ class WorkoutPlanController {
         }
       }
 
+      // ============================================
+      // 5. CREATE NEW WORKOUT PLAN
+      // ============================================
       const newPlan = await PlanoTreino.create(
         {
           user_id: req.user?.id || null,
@@ -189,6 +204,9 @@ class WorkoutPlanController {
         { transaction }
       );
 
+      // ============================================
+      // 6. ASSOCIATE EXERCISES WITH PLAN
+      // ============================================
       if (normalized.workoutType !== "cardio" && selectedExercises.length > 0) {
         for (const exercise of selectedExercises) {
           await ExerciciosPlano.create(
@@ -198,6 +216,9 @@ class WorkoutPlanController {
         }
       }
 
+      // ============================================
+      // 7. COMMIT TRANSACTION & RETURN RESPONSE
+      // ============================================
       await transaction.commit();
 
       return res.status(201).json({
@@ -222,6 +243,9 @@ class WorkoutPlanController {
         },
       });
     } catch (err) {
+      // ============================================
+      // 8. ERROR HANDLING & ROLLBACK
+      // ============================================
       // console.error("Erro ao gerar plano de treino: ", err);
       if (transaction) {
         try {
