@@ -1,5 +1,6 @@
 import db from "../models/index.mjs";
 import validateWorkoutPlanParams from "../validators/workoutPlanValidator.js";
+import { roundRobinDistribute } from './../services/workoutDisitrubtionService';
 
 const { PlanoTreino, Exercicio, ExerciciosPlano } = db;
 
@@ -84,177 +85,54 @@ class WorkoutPlanController {
   }
 
   static async generateWorkoutPlan(req, res) {
-    let transaction;
     try {
       // ============================================
-      // 1. INITIALIZE TRANSACTION & VALIDATE INPUT
+      // STEP 1) Start database transaction
       // ============================================
-      transaction = await db.sequelize.transaction();
-      const { errors, normalized } = validateWorkoutPlanParams(req.body);
-      if (errors.length > 0) {
-        await transaction.rollback();
-        return res.status(422).json({ errors });
-      }
+      
+      // ============================================
+      // STEP 2) Validate and normalize request payload
+      // ============================================
 
       // ============================================
-      // 2. FETCH & FILTER EXERCISES BY CRITERIA
+      // STEP 3) Fetch candidate exercises by criteria
       // ============================================
-      let selectedExercises = [];
-      if (normalized.workoutType !== "cardio") {
-        const allExercises = await Exercicio.findAll({
-          where: {
-            type: normalized.workoutType,
-            muscle_group: normalized.muscles,
-          },
-        });
-        const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
-        const difficulty = difficultyOrder[normalized.level];
-        const filteredExercises = allExercises.filter(
-          (ex) => difficultyOrder[ex.difficulty] <= difficulty
-        );
-        const shuffled = filteredExercises.sort(() => Math.random() - 0.5);
-        const covered = [];
-        for (const muscle of normalized.muscles) {
-          const exercise = shuffled.find(
-            (e) => e.muscle_group === muscle && !covered.includes(e)
-          );
-          if (exercise) covered.push(exercise);
-        }
-        for (const ex of shuffled) {
-          if (covered.length >= normalized.exercises_number) break;
-          if (!covered.includes(ex)) covered.push(ex);
-        }
-        selectedExercises = covered;
-      } else {
-        selectedExercises = await Exercicio.findAll({
-          where: { type: "cardio", difficulty: normalized.level },
-        });
-      }
 
       // ============================================
-      // 3. VALIDATE EXERCISE SELECTION
+      // STEP 4) Group exercises by muscle_group
       // ============================================
-      if (
-        selectedExercises.length === 0 &&
-        normalized.workoutType !== "cardio"
-      ) {
-        await transaction.rollback();
-        return res.status(422).json({
-          errors: [
-            {
-              field: "exercises_number",
-              message: `Nenhum exercício encontrado para os critérios selecionados (tipo: ${
-                normalized.workoutType
-              }, músculos: ${normalized.muscles.join(", ")})`,
-            },
-          ],
-        });
-      }
 
       // ============================================
-      // 4. DELETE PREVIOUS UNSAVED PLANS
+      // STEP 5) Apply round-robin distribution
       // ============================================
-      const currentUserId = req.user?.id || null;
-      if (currentUserId) {
-        const existingPlans = await PlanoTreino.findAll({
-          where: { user_id: currentUserId, is_saved: false },
-          attributes: ["id"],
-          transaction,
-        });
-        const planIds = existingPlans.map((p) => p.id);
-        if (planIds.length) {
-          await ExerciciosPlano.destroy({
-            where: { plano_id: planIds },
-            transaction,
-          });
-          await PlanoTreino.destroy({
-            where: { user_id: currentUserId, is_saved: false },
-            transaction,
-          });
-        }
-      }
 
       // ============================================
-      // 5. CREATE NEW WORKOUT PLAN
+      // STEP 6) Validate final selected exercises
       // ============================================
-      const newPlan = await PlanoTreino.create(
-        {
-          user_id: req.user?.id || null,
-          name: `Plano ${tWorkoutType[normalized.workoutType]} - ${new Date().toLocaleDateString('pt-PT')}`,
-          description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
-          workout_type: normalized.workoutType,
-          level: normalized.level,
-          exercises_number:
-            normalized.workoutType === "cardio" ? 0 : selectedExercises.length,
-          duration: normalized.duration || null,
-          muscles:
-            normalized.workoutType === "cardio" ? [] : normalized.muscles,
-          rest_time:
-            normalized.workoutType === "cardio" ? 0 : normalized.rest_time ?? 0,
-          series_number:
-            normalized.workoutType === "cardio"
-              ? 0
-              : normalized.series_number ?? 0,
-          reps_number:
-            normalized.workoutType === "cardio"
-              ? 0
-              : normalized.reps_number ?? 0,
-          is_saved: false,
-        },
-        { transaction }
-      );
 
       // ============================================
-      // 6. ASSOCIATE EXERCISES WITH PLAN
+      // STEP 7) Remove previous unsaved draft plans (optional)
       // ============================================
-      if (normalized.workoutType !== "cardio" && selectedExercises.length > 0) {
-        for (const exercise of selectedExercises) {
-          await ExerciciosPlano.create(
-            { plano_id: newPlan.id, exercicio_id: exercise.id },
-            { transaction }
-          );
-        }
-      }
 
       // ============================================
-      // 7. COMMIT TRANSACTION & RETURN RESPONSE
+      // STEP 8) Create workout plan record
       // ============================================
-      await transaction.commit();
 
-      return res.status(201).json({
-        message: "Plano de treino gerado com sucesso!",
-        plan: {
-          id: newPlan.id,
-          name: newPlan.name,
-          workout_type: newPlan.workout_type,
-          level: newPlan.level,
-          exercises_number: newPlan.exercises_number,
-          duration: newPlan.duration,
-          muscles: newPlan.muscles,
-          rest_time: newPlan.rest_time,
-          series_number: newPlan.series_number,
-          reps_number: newPlan.reps_number,
-          exercises: selectedExercises.map((ex) => ({
-            id: ex.id,
-            name: ex.name,
-            muscle_group: ex.muscle_group,
-            difficulty: ex.difficulty,
-          })),
-        },
-      });
-    } catch (err) {
       // ============================================
-      // 8. ERROR HANDLING & ROLLBACK
+      // STEP 9) Create plan-exercise associations
       // ============================================
-      // console.error("Erro ao gerar plano de treino: ", err);
-      if (transaction) {
-        try {
-          await transaction.rollback();
-        } catch (rollbackErr) {
-          // console.error("Falha ao fazer rollback: ", rollbackErr);
-        }
-      }
-      return res.status(500).json({ message: "Erro interno do servidor." });
+
+      // ============================================
+      // STEP 10) Commit transaction and return response
+      // ============================================
+
+    } catch(err) {
+      // ============================================
+      // STEP 11) Rollback transaction on failure
+      // ============================================
+      console.log("Erro ao gerar plano de treino: ", err);
+      await transaction?.rollback();
+      return res.status(500).json({ message: "Erro interno do servidor" })
     }
   }
 
