@@ -85,14 +85,20 @@ class WorkoutPlanController {
   }
 
   static async generateWorkoutPlan(req, res) {
+    let transaction;
     try {
       // ============================================
       // STEP 1) Start database transaction
       // ============================================
+
+      transaction = await db.sequelize.transaction();
+      if (!transaction) return res.status(500).json({ message: "Erro ao iniciar transação" })
       
       // ============================================
       // STEP 2) Validate and normalize request payload
       // ============================================
+
+      
 
       // ============================================
       // STEP 3) Fetch candidate exercises by criteria
