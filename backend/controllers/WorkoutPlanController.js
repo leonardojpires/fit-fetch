@@ -238,7 +238,7 @@ class WorkoutPlanController {
 
         name: `Plano ${tWorkoutType[normalized.workoutType]} - ${new Date().toLocaleDateString("pt-PT")}`,
 
-        description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
+        description: `Plano de treino do tipo ${normalized.workoutType} para nível ${tLevel[normalized.level]}`,
 
         workout_type: normalized.workoutType,
 

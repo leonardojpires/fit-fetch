@@ -146,6 +146,7 @@ function Workout() {
       // console.log("Payload enviado:", payload);
       await generatePlan(payload);
       setSuccessMessage("Plano de treino criado com sucesso!");
+      setIsSaved(false);
       setShowSuccessWarning(true);
     } catch (err) {
       // console.error("Erro ao gerar plano de treino: ", err);
