@@ -1,6 +1,7 @@
 import db from "../models/index.mjs";
 import validateWorkoutPlanParams from "../validators/workoutPlanValidator.js";
 import { roundRobinDistribute } from "./../services/workoutDisitrubtionService.js";
+import { Op } from "sequelize";
 
 const { PlanoTreino, Exercicio, ExerciciosPlano } = db;
 
@@ -92,8 +93,7 @@ class WorkoutPlanController {
       // ============================================
 
       transaction = await db.sequelize.transaction();
-      if (!transaction)
-        return res.status(500).json({ message: "Erro ao iniciar transação" });
+      if (!transaction) return res.status(500).json({ message: "Erro ao iniciar transação" });
 
       // ============================================
       // STEP 2) Validate and normalize request payload
@@ -117,19 +117,23 @@ class WorkoutPlanController {
       // We're using 'let' instead of 'const' because candidateExcercises wull be reassigned basde on the workout type (cardio vs. non-cardio)
       let candidateExercises;
       if (normalized.workoutType !== "cardio") {
+        const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
+        const difficulty = difficultyOrder[normalized.level] || 1; // Default to beginner if level is somehow invalid
         candidateExercises = await Exercicio.findAll({
           where: {
-            type: tWorkoutType[normalized.workoutType],
-            level: tLevel[normalized.level],
-            muscle_group: normalized.muscle_group,
+            type: normalized.workoutType,
+            difficulty: { [Op.lte]: difficulty },
+            muscle_group: { [Op.in]: normalized.muscles },
           },
+          transaction,
         });
       } else {
         candidateExercises = await Exercicio.findAll({
           where: {
-            type: tWorkoutType[normalized.workoutType],
-            level: tLevel[normalized.level],
+            type: normalized.workoutType,
+            difficulty: normalized.level,
           },
+          transaction,
         });
       }
 
@@ -224,44 +228,55 @@ class WorkoutPlanController {
       // STEP 8) Create workout plan record
       // ============================================
 
-      const newPlan = await PlanoTreino.create({
+      const isCardio = normalized.workoutType === "cardio";
+
+      const planPayload = {
         user_id: userId,
 
         name: `Plano ${tWorkoutType[normalized.workoutType]} - ${new Date().toLocaleDateString("pt-PT")}`,
 
         description: `Plano de treino do tipo ${normalized.workoutType} para nível ${normalized.level}`,
 
-        workout_type: tWorkoutType[normalized.workoutType],
+        workout_type: normalized.workoutType,
 
-        level: tLevel[normalized.level],
+        level: normalized.level,
 
-        muscle_group:
-          normalized.workoutType !== "cardio"
-            ? normalized.muscle_group.join(", ")
-            : "Vários",
-
-        exercises_number:
-          normalized.workoutType !== "cardio"
-            ? normalized.exercises_number
-            : selectedExercises.length,
-
-        rest_time:
-          normalized.workoutType !== "cardio" ? normalized.rest_time : 0,
-
-        series_number:
-          normalized.workoutType !== "cardio" ? normalized.series_number : 0,
-
-        reps_number:
-          normalized.workoutType !== "cardio" ? normalized.reps_number : 0,
+        exercises_number: isCardio
+          ? selectedExercises.length
+          : normalized.exercises_number,
 
         is_saved: false,
-      });
+      };
+
+      if (isCardio) {
+        planPayload.duration = normalized.duration;
+        planPayload.muscles = null;
+        planPayload.rest_time = 0;
+        planPayload.series_number = 0;
+        planPayload.reps_number = 0;
+      } else {
+        planPayload.duration = null;
+        planPayload.muscles = normalized.muscles;
+        planPayload.rest_time = normalized.rest_time;
+        planPayload.series_number = normalized.series_number;
+        planPayload.reps_number = normalized.reps_number;
+      }
+
+      const newPlan = await PlanoTreino.create(planPayload, { transaction });
 
       if (!newPlan) {
         await transaction.rollback();
         return res
           .status(500)
           .json({ message: "Erro ao criar plano de treino" });
+      }
+
+      const newPlanId = newPlan.id ?? newPlan.get?.("id");
+      if (!newPlanId) {
+        await transaction.rollback();
+        return res
+          .status(500)
+          .json({ message: "Erro ao obter ID do plano de treino criado" });
       }
 
       // ============================================
@@ -280,8 +295,8 @@ class WorkoutPlanController {
       */
       const exercisesForPlan = selectedExercises.map((ex) => {
         return {
-          plan_id: newPlan.id,
-          exercise_id: ex.id,
+          plano_id: newPlanId,
+          exercicio_id: ex.id,
         };
       });
 
@@ -300,10 +315,18 @@ class WorkoutPlanController {
       // STEP 10) Commit transaction and return response
       // ============================================
 
+      const previewExercises = selectedExercises.map((ex) => ({
+        id: ex.id,
+        name: ex.name ?? ex.nome ?? ex.exercise_name ?? "",
+        muscle: ex.muscle_group ?? ex.muscle ?? "",
+        difficulty: ex.difficulty ?? ex.level ?? "",
+      }));  
+
       await transaction.commit();
       return res.status(201).json({
         message: "Plano de treino gerado com sucesso!",
         plan: newPlan,
+        exercises: previewExercises,
       });
     } catch (err) {
       // ============================================

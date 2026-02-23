@@ -162,11 +162,7 @@ export default function validateWorkoutPlanParams(body) {
       }
     }
 
-    if (
-      normalizedWorkoutType !== "cardio" &&
-      Array.isArray(muscles) &&
-      exercises_number
-    ) {
+    if (Array.isArray(muscles) && exercises_number) {
       if (muscles.length > Number(exercises_number)) {
         errors.push({
           field: "Grupos Musculares",
