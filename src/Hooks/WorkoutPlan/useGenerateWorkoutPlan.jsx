@@ -8,9 +8,11 @@ export default function useGenerateWorkoutPlan() {
   const [validationErrors, setValidationErrors] = useState([]);
 
   const generatePlan = async (formData) => {
+  console.log("generatePlan chamado", formData);
     try {
       setLoading(true);
       setError(null);
+      setWorkoutPlan(null);
       const user = formData.user;
       if (!user) throw new Error("Utilizador não autenticado!");
 

@@ -118,13 +118,15 @@ class WorkoutPlanController {
       let candidateExercises;
       if (normalized.workoutType !== "cardio") {
         const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
-        const difficulty = difficultyOrder[normalized.level] || 1; // Default to beginner if level is somehow invalid
+        const difficulty = difficultyOrder[normalized.level]; // Default to beginner if level is somehow invalid
+        
         candidateExercises = await Exercicio.findAll({
           where: {
             type: normalized.workoutType,
             difficulty: { [Op.lte]: difficulty },
             muscle_group: { [Op.in]: normalized.muscles },
           },
+          order: db.sequelize.random(),
           transaction,
         });
       } else {
