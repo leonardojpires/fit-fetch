@@ -1,5 +1,6 @@
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { auth } from "../../services/firebase";
 import {
   GoogleAuthProvider,
@@ -17,6 +18,7 @@ function LoginForm({ clickEvent }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [ rememberMe, setRememberMe ] = useState(false);
   const [validationErrors, setValidationErrors] = useState([]);
 
@@ -132,10 +134,10 @@ function LoginForm({ clickEvent }) {
           <label htmlFor="password" className="text-[0.9rem]">
             Senha
           </label>
-          <div className="input-wrapper">
+          <div className="input-wrapper relative">
             <FaLock className="icon" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               id="password"
               placeholder="*******"
@@ -143,6 +145,15 @@ function LoginForm({ clickEvent }) {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <button
+              type="button"
+              className="password-viewer-icon"
+              onClick={() => setShowPassword((v) => !v)}
+              tabIndex={-1}
+              aria-label={showPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
         </div>
 

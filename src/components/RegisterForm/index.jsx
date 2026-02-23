@@ -3,6 +3,7 @@ import { auth } from "../../services/firebase.js"
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ErrorWarning from "../ErrorWarning/index";
 
 function RegisterForm({ clickEvent }) {
@@ -11,6 +12,8 @@ function RegisterForm({ clickEvent }) {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ confirmPassword, setConfirmPassword ] = useState('');
+    const [ showPassword, setShowPassword ] = useState(false);
+    const [ showConfirmPassword, setShowConfirmPassword ] = useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -126,10 +129,10 @@ function RegisterForm({ clickEvent }) {
           <label htmlFor="password" className="text-[0.9rem]">
             Senha
           </label>
-          <div className="input-wrapper">
+          <div className="input-wrapper relative">
             <FaLock className="icon" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               id="password"
               placeholder="*******"
@@ -137,6 +140,15 @@ function RegisterForm({ clickEvent }) {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <button
+              type="button"
+              className="password-viewer-icon"
+              onClick={() => setShowPassword((v) => !v)}
+              tabIndex={-1}
+              aria-label={showPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
         </div>
 
@@ -144,10 +156,10 @@ function RegisterForm({ clickEvent }) {
           <label htmlFor="password" className="text-[0.9rem]">
             Confirmar Senha
           </label>
-          <div className="input-wrapper">
+          <div className="input-wrapper relative">
             <FaLock className="icon" />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               name="confirm_password"
               id="confirm_password"
               placeholder="*******"
@@ -155,6 +167,15 @@ function RegisterForm({ clickEvent }) {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
+            <button
+              type="button"
+              className="password-viewer-icon"
+              onClick={() => setShowConfirmPassword((v) => !v)}
+              tabIndex={-1}
+              aria-label={showConfirmPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"}
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
         </div>
 
