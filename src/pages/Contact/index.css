@@ -35,3 +35,16 @@
 .contact-page input[type="checkbox"] {
     @apply w-4 h-4 cursor-pointer accent-[var(--primary)];
 }
+
+.glass-card {
+    @apply relative rounded-3xl border-2 border-black/15 bg-white/75 backdrop-blur-lg shadow-[0_8px_32px_rgba(0,0,0,0.1)] overflow-hidden;
+}
+
+.glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 45%);
+    opacity: 0.7;
+    pointer-events: none;
+}
