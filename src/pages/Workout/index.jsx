@@ -146,6 +146,7 @@ function Workout() {
       // console.log("Payload enviado:", payload);
       await generatePlan(payload);
       setSuccessMessage("Plano de treino criado com sucesso!");
+      setIsSaved(false);
       setShowSuccessWarning(true);
     } catch (err) {
       // console.error("Erro ao gerar plano de treino: ", err);
@@ -442,7 +443,7 @@ function Workout() {
               </form>
             </div>
 
-
+            {/* PLAN DIV */}
             <div id="plan-section" className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
               {loading ? (
                 <div className="flex flex-col items-center gap-4">
@@ -486,7 +487,7 @@ function Workout() {
                             </Link>
                           </td>
                           <td className="!px-4 !py-3 text-gray-600 capitalize">
-                            {ex.muscle_group}
+                            {ex.muscle}
                           </td>
                           <td className="!px-4 !py-3">
                             <span

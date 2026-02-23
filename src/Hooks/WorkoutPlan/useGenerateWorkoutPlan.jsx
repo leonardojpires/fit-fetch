@@ -8,9 +8,11 @@ export default function useGenerateWorkoutPlan() {
   const [validationErrors, setValidationErrors] = useState([]);
 
   const generatePlan = async (formData) => {
+  console.log("generatePlan chamado", formData);
     try {
       setLoading(true);
       setError(null);
+      setWorkoutPlan(null);
       const user = formData.user;
       if (!user) throw new Error("Utilizador não autenticado!");
 
@@ -36,14 +38,14 @@ export default function useGenerateWorkoutPlan() {
         return;
       }
 
-      if (!responses.ok)
-        throw new Error(data.message || "Erro ao gerar plano de treino!");
+      if (!responses.ok) throw new Error(data.message || "Erro ao gerar plano de treino!");
 
       // Normalize backend snake_case to frontend camelCase for consistency
       const normalizedPlan = {
         ...data.plan,
         workoutType: data.plan?.workout_type,
-        exercises: data.plan?.exercises || [],
+        exercises: data.exercises || [],
+        muscles: data.muscles || [],
       };
       setWorkoutPlan(normalizedPlan);
     } catch (err) {

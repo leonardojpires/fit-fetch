@@ -7,4 +7,4 @@ const storage = multer.diskStorage({
 });
 const fileFilter = (_, file, cb) =>
     file.mimetype.startsWith("image/") ? cb(null, true) : cb(new Error("Apenas imagens são permitidas!"));
-export default multer({ storage, fileFilter });
+export default multer({ storage, fileFilter, limits: { fileSize: 2 * 1024 * 1024 } });
