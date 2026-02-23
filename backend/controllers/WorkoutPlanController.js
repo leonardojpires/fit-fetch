@@ -116,10 +116,9 @@ class WorkoutPlanController {
 
       // We're using 'let' instead of 'const' because candidateExcercises wull be reassigned basde on the workout type (cardio vs. non-cardio)
       let candidateExercises;
-      if (normalized.workoutType !== "cardio") {
         const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
         const difficulty = difficultyOrder[normalized.level]; // Default to beginner if level is somehow invalid
-        
+      if (normalized.workoutType !== "cardio") {
         candidateExercises = await Exercicio.findAll({
           where: {
             type: normalized.workoutType,
@@ -129,12 +128,14 @@ class WorkoutPlanController {
           order: db.sequelize.random(),
           transaction,
         });
-      } else {
+      } 
+      else {
         candidateExercises = await Exercicio.findAll({
           where: {
             type: normalized.workoutType,
-            difficulty: normalized.level,
+            difficulty: { [Op.lte]: difficulty },
           },
+          order: db.sequelize.random(),
           transaction,
         });
       }
