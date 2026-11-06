@@ -11,7 +11,7 @@ import nutritionPlanRouter from "./routes/nutritionPlanRouter.js";
 
 dotenv.config();
 const app = express();
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'] }));
 app.use(express.json());
 app.use("/uploads", express.static("public/uploads"))
 
@@ -33,5 +33,5 @@ app.get('/', async (req, res) => {
 })
 
 app.listen(3000, () => {
-    // console.log(`Servidor em http://localhost:${process.env.PORT || 3000}/`);
+    console.log(`Servidor em http://localhost:${process.env.PORT || 3000}/`);
 });

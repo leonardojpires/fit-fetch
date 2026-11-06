@@ -108,16 +108,17 @@ class WorkoutPlanController {
           .json({ message: "Parâmetros de plano de treino inválidos", errors });
       }
 
-      console.log("Normalized input:", normalized);
+      // console.log("Normalized input:", normalized);
 
       // ============================================
       // STEP 3) Fetch candidate exercises by criteria
       // ============================================
 
-      // We're using 'let' instead of 'const' because candidateExcercises wull be reassigned basde on the workout type (cardio vs. non-cardio)
+      // We're using 'let' instead of 'const' because candidateExcercises will be reassigned basde on the workout type (cardio vs. non-cardio)
       let candidateExercises;
         const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
         const difficulty = difficultyOrder[normalized.level]; // Default to beginner if level is somehow invalid
+
       if (normalized.workoutType !== "cardio") {
         candidateExercises = await Exercicio.findAll({
           where: {
@@ -155,12 +156,13 @@ class WorkoutPlanController {
       let exerciseByMuscleGroup = {};
 
       candidateExercises.forEach((exercise) => {
-        // Ex: exercise = Bench Press; exercise.muscle_group = "Peito (Chest)"
+        // Ex: exercise = Bench Press; exercise.muscle_group = "Peito"
+        // NOTE: "Peito" is the same as "Chest"
         // Then, muscleGroup = "Peito"]
         const muscleGroup = exercise.muscle_group;
 
-        // If this is the first time we encounter this muscle group, we initialize an empty array for it in the exerciseByMuscleGroup object
-        // Ex: no "Peito" key in exerciseByMuscleGroup -> create exerciseByMuscleGroup["Pe\\\ito"] = []
+        // If this is the first time we encounter this muscle group, we initialize an empty array for it in exerciseByMuscleGroup object
+        // Ex: no "Peito" key in exerciseByMuscleGroup -> create exerciseByMuscleGroup["Peito"] = []
         /* 
           exerciseByMuscleGroup = {
             "Peito": [],
