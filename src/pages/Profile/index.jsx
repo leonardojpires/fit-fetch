@@ -4,7 +4,7 @@ import { IoNutritionOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import useRedirectIfNotAuth from "./../../hooks/useIfNotAuth";
 import useCurrentUser from "../../hooks/useCurrentUser";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../../services/firebase.js";
 import WorkoutPlanPreview from "../../components/WorkoutPlanPreview/index.jsx";
 import NutritionPlanPreview from "../../components/NutritionPlanPreview/index.jsx";
@@ -15,7 +15,8 @@ import DeleteModal from "../../components/DeleteModal/index.jsx";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useUpdateCurrentUser from "../../hooks/Users/useUpdateCurrentUser.jsx";
 import SuccessWarning from "../../components/SuccessWarning/index.jsx";
-import { motion } from "framer-motion";
+import { HelpBreadcrumb, HelpReveal } from "../../components/HelpPages";
+import { FiArrowRight, FiEdit2, FiPlus, FiHelpCircle } from "react-icons/fi";
 
 function Profile() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -194,22 +195,13 @@ function Profile() {
   }
 
   return (
-    <motion.section
-      className="w-full"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-    >
-      <div className="section !mt-40 !mb-40 flex flex-col gap-10">
-        {/* PROFILE CONTAINER */}
-        <div className="containers">
-          <div className="h-48 bg-[var(--primary)] relative">
-            <div className="absolute inset-0 bg-black/10"></div>
-          </div>
-          <div className="relative !px-8 !pb-8">
-            <div className="flex flex-col md:flex-row items-center md:items-end gap-6 !-mt-20">
-              <div className="relative">
+    <div className="ff-help-page ff-profile-page">
+      <header className="ff-help-hero">
+        <div className="ff-help-wrap">
+          <HelpBreadcrumb current="O meu perfil" />
+          <HelpReveal>
+            <div className="ff-profile-identity">
+              <div className="ff-profile-avatar">
                 <img
                   src={
                     user.avatarUrl
@@ -219,111 +211,120 @@ function Profile() {
                       : defaultAvatar
                   }
                   alt={`Foto de perfil de ${user.name}`}
-                  className="w-48 h-48 object-cover rounded-full border-6 border-white shadow-lg pointer-events-none"
-                  width="192"
-                  height="192"
+                  width="112"
+                  height="112"
                 />
               </div>
-              <div className="flex-1 flex flex-col items-center md:items-start justify-start text-center !mt-0 w-full">
-                <h1 className="font-headline font-bold text-3xl !mb-2">
-                  {user.name}
-                </h1>
-                <p className="font-body font-medium text-black/70 !mb-2">
-                  Membro desde {memberSince}
-                </p>
-                <span className="font-body font-medium text-black/70 text-sm">
-                  {user.email}
-                </span>
+              <div className="ff-profile-intro">
+                <p className="ff-help-eyebrow">A tua área pessoal</p>
+                <h1>{user.name}</h1>
+                <p className="ff-profile-email">{user.email}</p>
+                <p className="ff-profile-member">Membro desde {memberSince}</p>
               </div>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => setIsEditModalOpen(true)}
-                  className="font-body bg-[var(--primary)] !px-8 !py-3 text-white hover:bg-[var(--accent)] transition-all ease-in-out duration-200 cursor-pointer rounded-xl"
-                >
-                  Editar Perfil
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditModalOpen(true)}
+                className="ff-profile-edit"
+              >
+                <FiEdit2 aria-hidden="true" /> Editar perfil
+              </button>
             </div>
-          </div>
+          </HelpReveal>
         </div>
-
-        {/* EDIT PROFILE MODAL */}
-        <EditProfileModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          user={user}
-          defaultAvatar={defaultAvatar}
-          newAvatar={user.avatarUrl || null}
-          submitText={submitText}
-          saveChanges={updateProfile}
-        />
-
-        {/* STATS CONTAINER */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="stats-container font-body">
-            <div className="font-bold bg-[var(--primary)]/20 text-[var(--primary)] text-2xl !p-3 rounded-lg">
-              <SlEnergy aria-hidden="true" focusable="false" />
-            </div>
-
-            <div>
-              <span className="font-bold text-3xl">{workoutPlans.length}</span>
-              <p className="text-sm text-black/70">Planos de Treino</p>
-            </div>
-          </div>
-
-          <div className="stats-container font-body">
-            <div className="font-bold bg-[var(--secondary)]/20 text-[var(--secondary)] text-2xl !p-3 rounded-lg">
-              <IoNutritionOutline aria-hidden="true" focusable="false" />
-            </div>
-
-            <div>
-              <span className="font-bold text-3xl">
-                {nutritionPlans.length}
+      </header>
+      <div className="ff-help-wrap ff-profile-content">
+        <HelpReveal>
+          <section
+            className="ff-profile-overview"
+            aria-label="Os teus planos guardados"
+          >
+            <div className="ff-profile-stat">
+              <span className="ff-profile-stat-icon">
+                <SlEnergy aria-hidden="true" />
               </span>
-              <p className="text-sm text-black/70">Planos de Nutrição</p>
+              <div>
+                <span className="ff-profile-stat-value">
+                  {workoutPlans.length}
+                </span>
+                <h2>Planos de treino</h2>
+                <p>Guardados na tua conta</p>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* PLANS CONTAINER */}
-        <div className="containers">
-          <div className="flex flex-col gap-4 !p-6">
-            <div className="flex flex-col gap-2 border-b-2 border-gray-200/70 !pb-4 !mb-6">
-              <h2 className="font-headline font-bold text-2xl">
-                Os Meus Planos
-              </h2>
-              <p className="font-body font-medium text-black/70">
-                Gerir os teus planos de treino e de alimentação
-              </p>
+            <div className="ff-profile-stat ff-profile-stat-nutrition">
+              <span className="ff-profile-stat-icon">
+                <IoNutritionOutline aria-hidden="true" />
+              </span>
+              <div>
+                <span className="ff-profile-stat-value">
+                  {nutritionPlans.length}
+                </span>
+                <h2>Planos de nutrição</h2>
+                <p>Guardados na tua conta</p>
+              </div>
             </div>
-
-            <div className="flex flex-row gap-8 font-body text-lg border-b border-gray-200/70 !mb-6">
+            <div className="ff-profile-guide">
+              <span className="ff-help-eyebrow">O próximo passo é teu</span>
+              <h2>Continua a cuidar de ti.</h2>
+              <p>Cria um novo plano ou retoma um dos teus favoritos.</p>
+              <Link to="/como-funciona">
+                Explorar o guia <FiArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </section>
+        </HelpReveal>
+        <div className="ff-profile-workspace">
+          <section
+            className="ff-profile-library"
+            aria-labelledby="ff-profile-library-title"
+          >
+            <div className="ff-profile-library-heading">
+              <div>
+                <p className="ff-help-eyebrow">A tua coleção</p>
+                <h2 id="ff-profile-library-title">Os meus planos</h2>
+                <p>
+                  Organiza os teus treinos e a tua alimentação num só lugar.
+                </p>
+              </div>
+              <Link
+                className="ff-profile-create"
+                to={planType === "workout" ? "/treinos" : "/nutricao"}
+              >
+                <FiPlus aria-hidden="true" /> Criar plano
+              </Link>
+            </div>
+            <div
+              className="ff-profile-filters"
+              role="group"
+              aria-label="Tipo de plano"
+            >
               <button
                 type="button"
                 onClick={() => handlePlanTypeChange("workout")}
-                className={`!pb-2 !px-4 cursor-pointer ${
-                  planType === "workout" ? "selected-plan" : ""
-                }`}
                 aria-pressed={planType === "workout"}
+                aria-controls="ff-profile-plans"
               >
-                Planos de Treino
+                <SlEnergy aria-hidden="true" />
+                <span>Treino</span>
+                <span className="ff-profile-filter-count">
+                  {workoutPlans.length}
+                </span>
               </button>
               <button
                 type="button"
                 onClick={() => handlePlanTypeChange("nutrition")}
-                className={`!pb-2 !px-4 cursor-pointer ${
-                  planType === "nutrition" ? "selected-plan" : ""
-                }`}
                 aria-pressed={planType === "nutrition"}
+                aria-controls="ff-profile-plans"
               >
-                Planos de Alimentação
+                <IoNutritionOutline aria-hidden="true" />
+                <span>Nutrição</span>
+                <span className="ff-profile-filter-count">
+                  {nutritionPlans.length}
+                </span>
               </button>
             </div>
-
-            <div>
+            <div id="ff-profile-plans" className="ff-profile-plan-area">
               {planType === "workout" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="ff-profile-plan-grid">
                   {workoutPlans.length > 0 ? (
                     workoutPlans.map((plan) => (
                       <WorkoutPlanPreview
@@ -333,13 +334,24 @@ function Profile() {
                       />
                     ))
                   ) : (
-                    <p className="font-body text-black/70">
-                      Ainda não tens planos de treino.
-                    </p>
+                    <div className="ff-profile-empty">
+                      <span className="ff-profile-empty-icon">
+                        <SlEnergy aria-hidden="true" />
+                      </span>
+                      <h3>O teu próximo treino começa aqui.</h3>
+                      <p>
+                        Ainda não tens planos de treino guardados. Cria um plano
+                        à tua medida e guarda-o para o encontrares aqui.
+                      </p>
+                      <Link to="/treinos">
+                        Criar o primeiro treino{" "}
+                        <FiArrowRight aria-hidden="true" />
+                      </Link>
+                    </div>
                   )}
                 </div>
               ) : planType === "nutrition" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="ff-profile-plan-grid ff-profile-nutrition-grid">
                   {nutritionPlans.length > 0 ? (
                     nutritionPlans.map((plan) => (
                       <NutritionPlanPreview
@@ -349,24 +361,78 @@ function Profile() {
                       />
                     ))
                   ) : (
-                    <p className="font-body text-black/70">
-                      Ainda não tens planos de alimentação.
-                    </p>
+                    <div className="ff-profile-empty">
+                      <span className="ff-profile-empty-icon">
+                        <IoNutritionOutline aria-hidden="true" />
+                      </span>
+                      <h3>Dá espaço a uma nova rotina.</h3>
+                      <p>
+                        Ainda não tens planos de alimentação guardados. Conversa
+                        com o assistente e guarda o teu primeiro plano.
+                      </p>
+                      <Link to="/nutricao">
+                        Criar o primeiro plano alimentar{" "}
+                        <FiArrowRight aria-hidden="true" />
+                      </Link>
+                    </div>
                   )}
                 </div>
               ) : null}
             </div>
-          </div>
+          </section>
+          <aside
+            className="ff-profile-sidebar"
+            aria-labelledby="ff-profile-shortcuts-title"
+          >
+            <p className="ff-help-eyebrow">À distância de um passo</p>
+            <h2 id="ff-profile-shortcuts-title">A tua próxima sessão.</h2>
+            <p>Escolhe por onde queres continuar.</p>
+            <Link to="/treinos">
+              <span className="ff-profile-shortcut-icon">
+                <SlEnergy aria-hidden="true" />
+              </span>
+              <span>
+                <strong>Criar treino</strong>
+                <small>Define o teu foco e intensidade.</small>
+              </span>
+              <FiArrowRight aria-hidden="true" />
+            </Link>
+            <Link to="/nutricao">
+              <span className="ff-profile-shortcut-icon">
+                <IoNutritionOutline aria-hidden="true" />
+              </span>
+              <span>
+                <strong>Planear a alimentação</strong>
+                <small>Encontra o teu equilíbrio.</small>
+              </span>
+              <FiArrowRight aria-hidden="true" />
+            </Link>
+            <div className="ff-profile-help">
+              <FiHelpCircle aria-hidden="true" />
+              <h3>Precisas de orientação?</h3>
+              <p>Encontra respostas sobre os teus planos e a tua conta.</p>
+              <Link to="/faq">
+                Perguntas frequentes <FiArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </aside>
         </div>
       </div>
-
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        user={user}
+        defaultAvatar={defaultAvatar}
+        newAvatar={user.avatarUrl || null}
+        submitText={submitText}
+        saveChanges={updateProfile}
+      />
       {showSuccessWarning && (
         <SuccessWarning
           message={successMessage}
           closeWarning={closeSuccessWarning}
         />
       )}
-
       {deleteModalOpen && planToDelete && (
         <DeleteModal
           itemToDelete={planToDelete}
@@ -377,8 +443,7 @@ function Profile() {
           isDeleting={isDeletingPlan === planToDelete.id}
         />
       )}
-    </motion.section>
+    </div>
   );
 }
-
 export default Profile;

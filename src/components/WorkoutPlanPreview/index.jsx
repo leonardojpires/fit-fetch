@@ -1,5 +1,5 @@
 import { FaArrowUpRightFromSquare, FaTrash } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 function WorkoutPlanPreview({ plan, onDeletePlan }) {
   return (
@@ -43,18 +43,39 @@ function WorkoutPlanPreview({ plan, onDeletePlan }) {
             {plan.workout_type === "cardio"
               ? "cardio"
               : plan.workout_type === "weightlifting"
-              ? "musculação"
-              : plan.workout_type === "calisthenics"
-              ? "calistenia"
-              : plan.workout_type}
+                ? "musculação"
+                : plan.workout_type === "calisthenics"
+                  ? "calistenia"
+                  : plan.workout_type}
           </span>
           <span className="text-xs bg-[var(--accent)]/10 text-[var(--accent)] !px-2 !py-1 rounded">
-            {plan.level === "beginner" ? "iniciante" : plan.level === "intermediate" ? "intermédio" : plan.level === "advanced" ? "avançado" : plan.level}
+            {plan.level === "beginner"
+              ? "iniciante"
+              : plan.level === "intermediate"
+                ? "intermédio"
+                : plan.level === "advanced"
+                  ? "avançado"
+                  : plan.level}
           </span>
         </div>
         <div className="flex gap-2">
-          <Link to={`/plano-treino/${plan.id}`} title="Ver Plano" className="bg-[var(--primary)]/70 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"><FaArrowUpRightFromSquare /></Link>
-          <button onClick={() => onDeletePlan(plan.id)} title="Apahar Plano" className="bg-red-500/70 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"><FaTrash /></button>
+          <Link
+            to={`/plano-treino/${plan.id}`}
+            title="Ver plano"
+            aria-label={`Ver plano: ${plan.name}`}
+            className="bg-[var(--primary)]/70 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"
+          >
+            <FaArrowUpRightFromSquare aria-hidden="true" /> Ver plano
+          </Link>
+          <button
+            onClick={() => onDeletePlan(plan.id)}
+            title="Apagar plano"
+            aria-label={`Apagar plano: ${plan.name}`}
+            type="button"
+            className="bg-red-500/70 text-white rounded-sm !p-1 cursor-pointer hover:translate-y-[-2px] hover:scale-[1.02] transition-all ease-in-out duration-200"
+          >
+            <FaTrash aria-hidden="true" />
+          </button>
         </div>
       </div>
     </div>

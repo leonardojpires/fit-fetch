@@ -28,3 +28,4 @@ dist-ssr
 /backend/firebase/serviceAccountKey.json
 
 /docs
+/backend/public/uploads/avatars
