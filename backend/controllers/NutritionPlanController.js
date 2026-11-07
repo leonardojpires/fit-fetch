@@ -223,7 +223,7 @@ class NutritionPlanController {
         isValid: true,
       });
     } catch (err) {
-      // console.error("Erro ao chamar AI:", err);
+      console.error("Erro ao chamar AI:", err);
       return res.status(500).json({ message: NutritionPlanController.errorMessage });
     }
   }

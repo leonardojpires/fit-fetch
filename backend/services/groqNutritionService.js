@@ -43,9 +43,10 @@ export async function generateNutritionPlanWithAI(userMessage, conversationHisto
          * - Instructions on how to structure the response
          * - JSON format specification
          */
-        const systemPrompt = `Es um assistente de nutrição amigável e atencioso! 🍎 Teu objetivo é ajudar os utilizadores a criar planos alimentares personalizados. SEMPRE respondes em JSON com este formato:
+        const systemPrompt = String.raw`Es um assistente de nutrição amigável e atencioso! 🍎 Teu objetivo é ajudar os utilizadores a criar planos alimentares personalizados. SEMPRE respondes em JSON com este formato:
 
-{"message": "texto", "plan": null ou objeto}
+{"message": "texto", "plan": null}
+Quando geras um plano, substitui null por um objeto com o formato indicado abaixo.
 
 ALIMENTOS DISPONÍVEIS: ${foodsContext}
 
@@ -63,14 +64,12 @@ Se o utilizador dá informação inicial:
 Se o utilizador está indeciso:
 {"message": "Sem problema! 😊 Posso ajudar-te. Vê aqui o que preciso de saber:\n• Qual é o teu objetivo? (perder peso, ganhar massa, melhorar energia, etc.)\n• Tens restrições dietéticas?\n• Que tipo de comida gostas?\nDepois é só me dizeres 'cria um plano' e pronto!", "plan": null}
 
-Se o utilizador pede um plano com dados suficientes:
-{"message": "Perfeito! Criei um plano personalizado para ti! 🎯 Vê os detalhes ao lado com as 5 refeições diárias adaptadas aos teus objetivos.", "plan": {objeto completo}}
-
 Se algo não está claro:
 {"message": "Deixa-me confirmar: procuras um plano para [objetivo]? E tens estas preferências: [lista]? Se sim, diz-me 'cria plano' e ready! 🚀", "plan": null}
 
 FORMATO DO PLANO (quando tiveres dados suficientes):
-{"message": "Perfeito! Aqui está o teu plano 🎯", "plan": {"plan_name": "Nome", "description": "Desc breve", "diet_type": "Cutting/Bulking/Maintenance", "total_calories": 1500, "total_protein": 120, "total_carbs": 150, "total_fibers": 25, "total_fat": 40, "meals": [{"meal_type": "Pequeno-almoço", "foods": [{"name": "Ovo", "quantity": 100, "calories": 155, "protein": 13, "carbs": 1, "fat": 11}]}, {"meal_type": "Lanche da manhã", "foods": [...]}, {"meal_type": "Almoço", "foods": [...]}, {"meal_type": "Lanche da tarde", "foods": [...]}, {"meal_type": "Jantar", "foods": [...]}]}}
+{"message": "Perfeito! Aqui está o teu plano 🎯", "plan": {"plan_name": "Nome", "description": "Desc breve", "diet_type": "Cutting/Bulking/Maintenance", "total_calories": 1500, "total_protein": 120, "total_carbs": 150, "total_fibers": 25, "total_fat": 40, "meals": [{"meal_type": "Pequeno-almoço", "foods": [{"name": "Ovo", "quantity": 100, "calories": 155, "protein": 13, "carbs": 1, "fat": 11}]}, {"meal_type": "Lanche da manhã", "foods": []}, {"meal_type": "Almoço", "foods": []}, {"meal_type": "Lanche da tarde", "foods": []}, {"meal_type": "Jantar", "foods": []}]}}
+Este exemplo mostra apenas a estrutura: preenche foods em todas as 5 refeições e calcula os totais para os alimentos e quantidades escolhidos.
 
 REGRAS IMPORTANTES:
 - SEMPRE retorna JSON válido
@@ -109,14 +108,12 @@ REGRAS IMPORTANTES:
             { role: 'user', content: userMessage }
         ];
 
-        // Temperature: 0.5 (balanced - garante JSON mas mantém coerência)
-        // max_tokens: 2000 (garante espaço para JSON completo)
-        // response_format: force JSON output
+        // Allow room for reasoning and the full plan; JSON mode can still reject invalid output.
         const response = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+            model: "openai/gpt-oss-20b",
             messages: messages,
             temperature: 0.7,
-            max_tokens: 2500,
+            max_completion_tokens: 6000,
             response_format: { type: "json_object" }
         });
 
@@ -185,6 +182,12 @@ REGRAS IMPORTANTES:
         }
 
     } catch (err) {
+        if (err.code === 'json_validate_failed' || err.error?.error?.code === 'json_validate_failed') {
+            return {
+                message: "Não foi possível gerar o plano neste momento. Tenta novamente, por favor.",
+                plan: null
+            };
+        }
         // console.error("Erro ao gerar plano com GROQ:", err);
         throw new Error(`Erro ao gerar plano: ${err.message}`);
     }
