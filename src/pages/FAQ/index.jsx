@@ -1,7 +1,20 @@
 import "./index.css";
 import { useState } from "react";
-import { FiArrowRight, FiMinus, FiPlus } from "react-icons/fi";
-import { motion } from "framer-motion";
+import {
+  FiArrowRight,
+  FiMinus,
+  FiPlus,
+  FiUser,
+  FiLayers,
+  FiMessageCircle,
+  FiBookOpen,
+} from "react-icons/fi";
+import {
+  HelpReveal,
+  HelpBreadcrumb,
+  HelpContact,
+} from "../../components/HelpPages";
+import { LuLeaf } from "react-icons/lu";
 import { Link } from "react-router-dom";
 
 const faqItems = [
@@ -26,7 +39,8 @@ const faqItems = [
       "Sim! Podes gerar quantas vezes quiseres. Cada geração pode sugerir combinações diferentes, mantendo coerência com os teus critérios.",
   },
   {
-    question: "O que acontece se gerar um novo plano antes de guardar o anterior?",
+    question:
+      "O que acontece se gerar um novo plano antes de guardar o anterior?",
     answer:
       "Se tiveres um plano não guardado, ao gerar outro o anterior pode ser substituído. Se queres mantê-lo, guarda-o antes de gerar novamente.",
   },
@@ -37,70 +51,171 @@ const faqItems = [
   },
 ];
 
-function FAQ() {
-  const [openFaq, setOpenFaq] = useState(0);
+const faqGroups = [
+  {
+    id: "conta",
+    title: "Conta e acesso",
+    description: "O essencial para começares.",
+    icon: FiUser,
+    items: [0],
+  },
+  {
+    id: "planos",
+    title: "Os teus planos",
+    description: "Cria, experimenta e guarda.",
+    icon: FiLayers,
+    items: [3, 4],
+  },
+  {
+    id: "nutricao",
+    title: "Nutrição",
+    description: "Do assistente ao plano guardado.",
+    icon: LuLeaf,
+    items: [1, 2, 5],
+  },
+];
 
-  const toggleFaq = (index) => {
-    setOpenFaq((prev) => (prev === index ? -1 : index));
-  };
+export default function FAQ() {
+  const [openFaq, setOpenFaq] = useState(0);
+  const toggleFaq = (index) =>
+    setOpenFaq((previous) => (previous === index ? -1 : index));
 
   return (
-    <section className="w-full">
-      <div className="section !mt-40 !py-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="flex flex-col justify-center items-center text-center !mb-6"
-        >
-          <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-black !mt-4 !mb-4">
-            Dúvidas Frequentes
-          </h1>
-          <p className="font-body text-black/70 text-xl max-w-2xl mx-auto !mb-6">
-            Encontra as respostas às perguntas mais comuns sobre a plataforma e como tirar o máximo proveito dela
-          </p>
-        </motion.div>
-
-        <motion.article
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          id="faq"
-          className="glass-card !mt-4"
-        >
-          <div className="glass-card-content">
-            <div className="flex flex-col gap-2">
-              {faqItems.map((faq, index) => (
-                <div key={faq.question} className="faq-item">
-                  <button
-                    type="button"
-                    className="faq-button font-headline"
-                    onClick={() => toggleFaq(index)}
-                    aria-expanded={openFaq === index}
-                    aria-controls={`faq-panel-${index}`}
-                  >
-                    <span className="text-lg">{faq.question}</span>
-                    <span className="faq-icon">
-                      {openFaq === index ? <FiMinus aria-hidden="true" focusable="false" /> : <FiPlus aria-hidden="true" focusable="false" />}
-                    </span>
-                  </button>
-                  {openFaq === index && (
-                    <div id={`faq-panel-${index}`} className="faq-answer">
-                      <p className="font-body text-base text-black/70">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))}
+    <div className="ff-help-page ff-faq-page">
+      <header className="ff-help-hero">
+        <div className="ff-help-wrap">
+          <HelpBreadcrumb current="Perguntas frequentes" />
+          <HelpReveal>
+            <div className="ff-faq-hero-grid">
+              <div>
+                <p className="ff-help-eyebrow">Estamos aqui para ajudar</p>
+                <h1>
+                  Perguntas frequentes.
+                  <br />
+                  <span>Respostas para avançares.</span>
+                </h1>
+                <p className="ff-help-hero-description">
+                  Tudo o que precisas de saber para dar os primeiros passos,
+                  criar planos e tirar mais partido do Fit Fetch.
+                </p>
+              </div>
+              <div className="ff-faq-guide">
+                <span className="ff-help-icon">
+                  <FiBookOpen aria-hidden="true" />
+                </span>
+                <h2>É a tua primeira vez?</h2>
+                <p>
+                  Conhece o percurso, do primeiro objetivo ao plano pronto a
+                  usar.
+                </p>
+                <Link to="/como-funciona">
+                  Vê como funciona <FiArrowRight aria-hidden="true" />
+                </Link>
+              </div>
             </div>
+          </HelpReveal>
+        </div>
+      </header>
+      <div className="ff-help-wrap">
+        <div className="ff-faq-layout">
+          <aside className="ff-faq-sidebar">
+            <nav aria-label="Temas das perguntas">
+              <p className="ff-help-eyebrow">Encontra a tua resposta</p>
+              <ul>
+                {faqGroups.map((group) => {
+                  const Icon = group.icon;
+                  return (
+                    <li key={group.id}>
+                      <a href={`#faq-${group.id}`}>
+                        <Icon aria-hidden="true" />
+                        <span>{group.title}</span>
+                        <span
+                          className="ff-faq-count"
+                          aria-label={`${group.items.length} perguntas`}
+                        >
+                          {group.items.length}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+            <div className="ff-faq-sidebar-note">
+              <FiMessageCircle aria-hidden="true" />
+              <h2>Ainda tens dúvidas?</h2>
+              <p>Conta-nos como podemos ajudar.</p>
+              <Link className="ff-help-text-link" to="/contacto">
+                Entrar em contacto <FiArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </aside>
+          <div className="ff-faq-groups">
+            {faqGroups.map((group) => (
+              <HelpReveal key={group.id}>
+                <section
+                  id={`faq-${group.id}`}
+                  className="ff-faq-group"
+                  aria-labelledby={`faq-heading-${group.id}`}
+                  tabIndex={-1}
+                >
+                  <div className="ff-faq-group-heading">
+                    <h2 id={`faq-heading-${group.id}`}>{group.title}</h2>
+                    <p>{group.description}</p>
+                  </div>
+                  <div className="ff-faq-questions">
+                    {group.items.map((index) => {
+                      const faq = faqItems[index];
+                      return (
+                        <article
+                          key={faq.question}
+                          className="ff-faq-item"
+                          data-open={openFaq === index}
+                        >
+                          <h3>
+                            <button
+                              id={`faq-trigger-${index}`}
+                              type="button"
+                              className="ff-faq-button"
+                              onClick={() => toggleFaq(index)}
+                              aria-expanded={openFaq === index}
+                              aria-controls={`faq-panel-${index}`}
+                            >
+                              <span>{faq.question}</span>
+                              <span className="ff-faq-toggle">
+                                {openFaq === index ? (
+                                  <FiMinus aria-hidden="true" />
+                                ) : (
+                                  <FiPlus aria-hidden="true" />
+                                )}
+                              </span>
+                            </button>
+                          </h3>
+                          <div
+                            id={`faq-panel-${index}`}
+                            className="ff-faq-answer"
+                            role="region"
+                            aria-labelledby={`faq-trigger-${index}`}
+                            hidden={openFaq !== index}
+                          >
+                            <p>{faq.answer}</p>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              </HelpReveal>
+            ))}
           </div>
-        </motion.article>
+        </div>
+        <HelpReveal>
+          <HelpContact
+            title="A tua pergunta não está aqui?"
+            description="Entra em contacto e diz-nos em que podemos ajudar."
+          />
+        </HelpReveal>
       </div>
-    </section>
+    </div>
   );
 }
-
-export default FAQ;

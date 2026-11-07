@@ -1,0 +1,264 @@
+/* Shared only by the two help pages; all selectors stay within their boundary. */
+.ff-help-page {
+  width: 100%;
+  background: #fff;
+  color: #17243a;
+  font-family: var(--body);
+  line-height: 1.7;
+}
+.ff-help-page .ff-help-wrap {
+  width: min(1200px, calc(100% - 64px));
+  margin-inline: auto;
+}
+.ff-help-page h1,
+.ff-help-page h2,
+.ff-help-page h3 {
+  font-family: var(--headline);
+  font-weight: 700;
+}
+.ff-help-page h1 {
+  font-size: clamp(2.4rem, 4vw, 3.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+.ff-help-page h1 span {
+  color: #85b3ff;
+}
+.ff-help-page h2 {
+  font-size: clamp(1.8rem, 2.6vw, 2.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+.ff-help-page h3 {
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+.ff-help-page p {
+  margin: 0;
+}
+.ff-help-page .ff-help-hero {
+  padding: 124px 0 64px;
+  color: #f3f6fc;
+  background:
+    radial-gradient(ellipse at 80% 30%, #246ce517, transparent 55%), #0f172a;
+  border-bottom: 1px solid #ffffff10;
+}
+.ff-help-page .ff-help-breadcrumb {
+  margin-bottom: 40px;
+  font-size: 0.75rem;
+  color: #afbed4;
+}
+.ff-help-page .ff-help-breadcrumb ol,
+.ff-help-page .ff-help-breadcrumb li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+}
+.ff-help-page .ff-help-breadcrumb a {
+  color: #afbed4;
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.ff-help-page .ff-help-breadcrumb a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.ff-help-page .ff-help-eyebrow {
+  margin-bottom: 16px;
+  color: #245dbb;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+.ff-help-page .ff-help-hero .ff-help-eyebrow {
+  color: #9bbef7;
+}
+.ff-help-page .ff-help-hero-description {
+  max-width: 58ch;
+  margin-top: 24px;
+  color: #b9c5d8;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+.ff-help-page .ff-help-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+.ff-help-page .ff-help-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+.ff-help-page .ff-help-button svg {
+  flex-shrink: 0;
+}
+.ff-help-page .ff-help-button-primary {
+  background: #246ce5;
+  color: #fff;
+}
+.ff-help-page .ff-help-button-primary:hover {
+  background: #1c58bf;
+}
+.ff-help-page .ff-help-button-outline {
+  border-color: #526078;
+  color: #e2eaf7;
+  background: #ffffff03;
+}
+.ff-help-page .ff-help-button-outline:hover {
+  border-color: #9bbef7;
+  background: #ffffff0a;
+}
+.ff-help-page .ff-help-button-light {
+  background: #fff;
+  color: #194d9c;
+}
+.ff-help-page .ff-help-button-light:hover {
+  background: #e7effc;
+}
+.ff-help-page .ff-help-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  color: #245dbb;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-underline-offset: 5px;
+}
+.ff-help-page .ff-help-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #dce7fa;
+  border-radius: 12px;
+  background: #edf3fe;
+  color: #2460c4;
+  font-size: 22px;
+}
+.ff-help-page .ff-help-contact {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 80px;
+  padding: 36px;
+  border: 1px solid #23446e;
+  border-radius: 14px;
+  background: linear-gradient(115deg, #173b77, #143c64 65%, #10533f);
+  color: #fff;
+}
+.ff-help-page .ff-help-contact-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid #ffffff2b;
+  border-radius: 12px;
+  background: #ffffff08;
+  font-size: 24px;
+}
+.ff-help-page .ff-help-contact h2 {
+  font-size: 1.4rem;
+  letter-spacing: -0.015em;
+}
+.ff-help-page .ff-help-contact p {
+  margin-top: 8px;
+  color: #d5e3f4;
+  font-size: 0.875rem;
+}
+.ff-help-page a:focus-visible,
+.ff-help-page button:focus-visible {
+  outline: 3px solid #246ce5;
+  outline-offset: 4px;
+}
+.ff-help-page .ff-help-hero a:focus-visible,
+.ff-help-page .ff-help-contact a:focus-visible {
+  outline-color: #f8cb65;
+}
+.ff-help-page section[id] {
+  scroll-margin-top: 116px;
+}
+.ff-help-page section[tabindex="-1"]:focus {
+  outline: none;
+}
+.ff-help-page section[tabindex="-1"]:focus-visible {
+  outline: 3px solid #246ce5;
+  outline-offset: 6px;
+}
+.ff-help-page .ff-help-reveal:focus-within {
+  opacity: 1 !important;
+  transform: none !important;
+}
+@media (max-width: 760px) {
+  .ff-help-page .ff-help-wrap {
+    width: calc(100% - 40px);
+  }
+  .ff-help-page .ff-help-hero {
+    padding-block: 110px 44px;
+  }
+  .ff-help-page .ff-help-breadcrumb {
+    margin-bottom: 24px;
+  }
+  .ff-help-page .ff-help-contact {
+    grid-template-columns: auto 1fr;
+    padding: 26px;
+    gap: 18px;
+    margin-bottom: 48px;
+  }
+  .ff-help-page .ff-help-contact .ff-help-button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+@media (max-width: 420px) {
+  .ff-help-page .ff-help-wrap {
+    width: calc(100% - 32px);
+  }
+  .ff-help-page .ff-help-actions {
+    flex-direction: column;
+  }
+  .ff-help-page .ff-help-contact {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-help-page *,
+  .ff-help-page {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto;
+  }
+  .ff-help-page .ff-help-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  html:has(.ff-help-page) {
+    scroll-behavior: auto;
+  }
+}
+@media (forced-colors: active) {
+  .ff-help-page .ff-help-button,
+  .ff-help-page .ff-help-contact,
+  .ff-help-page .ff-help-icon {
+    border: 1px solid ButtonText;
+  }
+}

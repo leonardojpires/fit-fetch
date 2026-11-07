@@ -1,69 +1,289 @@
-@reference "tailwindcss";
-
-.how-page {
-  @apply relative min-h-screen overflow-hidden;
+.ff-how-page .ff-how-hero-grid {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  align-items: center;
+  gap: 70px;
 }
-
-.hiw-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.08), transparent 45%),
-    radial-gradient(circle at 80% 10%, rgba(0, 200, 83, 0.15), transparent 35%);
-  pointer-events: none;
+.ff-how-page .ff-how-overview {
+  padding: 28px;
+  border: 1px solid #ffffff1f;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffffff07, #ffffff02);
 }
-
-.hiw-hero > * {
+.ff-how-page .ff-how-overview > p {
+  margin-bottom: 24px;
+  color: #9eb3d2;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+.ff-how-page .ff-how-overview ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ff-how-page .ff-how-overview li {
   position: relative;
-  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 26px;
 }
-
-.hiw-cta-primary {
-  @apply inline-flex items-center gap-2 rounded-full bg-[var(--primary)] text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.01] transition duration-200 !px-5 !py-3;
+.ff-how-page .ff-how-overview li:last-child {
+  padding-bottom: 0;
 }
-
-.hiw-cta-secondary {
-  @apply inline-flex items-center gap-2 rounded-full border-2 border-[var(--secondary)] text-[var(--secondary)] hover:bg-[var(--secondary)]/10 hover:scale-[1.01] transition duration-200 !px-5 !py-3;
-}
-
-.glass-card {
-  @apply relative rounded-3xl border-2 border-black/15 bg-white/75 backdrop-blur-lg shadow-[0_8px_32px_rgba(0,0,0,0.1)] overflow-hidden;
-}
-
-.glass-card::before {
+.ff-how-page .ff-how-overview li:not(:last-child)::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 45%);
-  opacity: 0.7;
-  pointer-events: none;
+  top: 41px;
+  bottom: 1px;
+  left: 19px;
+  width: 1px;
+  background: #ffffff1f;
 }
-
-.glass-card-content {
-  @apply flex flex-col gap-6 !p-6 md:!p-8;
+.ff-how-page .ff-how-overview li > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  height: 40px;
+  border: 1px solid #7ba9f33b;
+  border-radius: 50%;
+  background: #246ce514;
+  color: #b5d1ff;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
-
-.step-card {
-  @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-sm transition duration-200 !p-3 md:!p-4;
+.ff-how-page .ff-how-overview li:last-child > span {
+  background: #008c3a20;
+  border-color: #3bc48a50;
+  color: #87e3b6;
 }
-
-.step-card:hover {
-  @apply -translate-y-1 border-[var(--primary)]/60 bg-white/70 backdrop-blur-sm shadow-md;
+.ff-how-page .ff-how-overview strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
-
-.step-icon {
-  @apply flex items-center justify-center rounded-xl bg-[var(--primary)]/20 text-[var(--primary)] !p-2;
+.ff-how-page .ff-how-overview small {
+  display: block;
+  margin-top: 3px;
+  color: #afbed4;
+  font-size: 0.75rem;
 }
-
-.feature-list {
-  @apply flex flex-col gap-3 !mt-4;
+.ff-how-page .ff-how-jump {
+  background: #f6f8fc;
+  border-bottom: 1px solid #e2e8f2;
 }
-
-.feature-item {
-  @apply flex items-start gap-3 rounded-xl border-2 border-black/10 bg-white/35 backdrop-blur-sm !p-3;
+.ff-how-page .ff-how-jump .ff-help-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  padding-block: 16px;
 }
-
-.feature-icon {
-  @apply flex items-center justify-center rounded-lg bg-[var(--primary)]/20 text-[var(--primary)] flex-shrink-0 !p-2 text-lg;
+.ff-how-page .ff-how-jump span {
+  margin-right: auto;
+  color: #536176;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
-
+.ff-how-page .ff-how-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  color: #344660;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.ff-how-page .ff-how-jump a:hover {
+  color: #245dbb;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.ff-how-page .ff-how-section {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  align-items: start;
+  gap: 80px;
+  padding-block: 80px;
+  border-bottom: 1px solid #e2e8f2;
+}
+.ff-how-page .ff-how-section-intro > .ff-help-icon {
+  margin-bottom: 24px;
+}
+.ff-how-page .ff-how-section-intro > p:not(.ff-help-eyebrow) {
+  margin-top: 20px;
+  color: #536176;
+  font-size: 0.95rem;
+}
+.ff-how-page .ff-how-section-intro > .ff-help-text-link {
+  margin-top: 18px;
+}
+.ff-how-page .ff-how-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 32px;
+  padding: 18px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #f6f8fc;
+}
+.ff-how-page .ff-how-note svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: #245dbb;
+}
+.ff-how-page .ff-how-note p {
+  font-size: 0.8rem;
+  color: #536176;
+}
+.ff-how-page .ff-how-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ff-how-page .ff-how-step {
+  position: relative;
+  display: flex;
+  gap: 24px;
+  padding-bottom: 28px;
+}
+.ff-how-page .ff-how-step:last-child {
+  padding-bottom: 0;
+}
+.ff-how-page .ff-how-step:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 48px;
+  bottom: 4px;
+  left: 21px;
+  width: 1px;
+  background: #dde5f1;
+}
+.ff-how-page .ff-how-step-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 44px;
+  height: 44px;
+  border: 1px solid #dbe6f8;
+  border-radius: 50%;
+  background: #f0f5fe;
+  color: #245dbb;
+  font-family: var(--headline);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.ff-how-page .ff-how-step-content {
+  flex: 1;
+  padding: 4px 0 22px;
+  border-bottom: 1px solid #edf0f6;
+}
+.ff-how-page .ff-how-step:last-child .ff-how-step-content {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.ff-how-page .ff-how-step-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ff-how-page .ff-how-step-heading svg {
+  flex-shrink: 0;
+  color: #65758e;
+  width: 18px;
+  height: 18px;
+}
+.ff-how-page .ff-how-step-content p {
+  margin-top: 10px;
+  color: #536176;
+  font-size: 0.875rem;
+  line-height: 1.85;
+}
+.ff-how-page .ff-how-nutrition .ff-help-icon,
+.ff-how-page .ff-how-nutrition .ff-how-step-number {
+  color: #08773e;
+  background: #eaf6ef;
+  border-color: #d1e9dc;
+}
+.ff-how-page .ff-how-nutrition .ff-help-eyebrow {
+  color: #08773e;
+}
+.ff-how-page .ff-how-tools {
+  padding-block: 80px;
+}
+.ff-how-page .ff-help-section-heading {
+  margin-bottom: 34px;
+}
+.ff-how-page .ff-help-section-heading > p:last-child {
+  margin-top: 14px;
+  color: #536176;
+  font-size: 0.95rem;
+}
+.ff-how-page .ff-how-features {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+.ff-how-page .ff-how-features article {
+  padding: 26px;
+  border: 1px solid #e0e7f1;
+  border-radius: 12px;
+  background: #f8fafd;
+}
+.ff-how-page .ff-how-features .ff-help-icon {
+  margin-bottom: 22px;
+  width: 42px;
+  height: 42px;
+  font-size: 19px;
+}
+.ff-how-page .ff-how-features p {
+  margin-top: 12px;
+  color: #536176;
+  font-size: 0.825rem;
+}
+@media (max-width: 1000px) {
+  .ff-how-page .ff-how-hero-grid {
+    gap: 30px;
+    grid-template-columns: 1.4fr 1fr;
+  }
+  .ff-how-page .ff-how-section {
+    gap: 40px;
+    grid-template-columns: 1fr 1.5fr;
+  }
+  .ff-how-page .ff-how-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .ff-how-page .ff-how-hero-grid,
+  .ff-how-page .ff-how-section {
+    grid-template-columns: 1fr;
+  }
+  .ff-how-page .ff-how-overview {
+    margin-top: 10px;
+  }
+  .ff-how-page .ff-how-jump .ff-help-wrap {
+    gap: 8px 20px;
+  }
+  .ff-how-page .ff-how-jump span {
+    width: 100%;
+  }
+  .ff-how-page .ff-how-section,
+  .ff-how-page .ff-how-tools {
+    padding-block: 48px;
+  }
+  .ff-how-page .ff-how-step {
+    gap: 16px;
+  }
+}
+@media (max-width: 420px) {
+  .ff-how-page .ff-how-features {
+    grid-template-columns: 1fr;
+  }
+  .ff-how-page .ff-how-jump .ff-help-wrap {
+    gap: 6px 16px;
+  }
+}

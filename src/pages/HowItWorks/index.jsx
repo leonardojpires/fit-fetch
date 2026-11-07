@@ -1,6 +1,11 @@
 import "./index.css";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import {
+  HelpReveal,
+  HelpBreadcrumb,
+  HelpContact,
+} from "../../components/HelpPages";
+import { LuDumbbell, LuLeaf } from "react-icons/lu";
 import {
   FiSettings,
   FiFilter,
@@ -51,8 +56,7 @@ const trainingSteps = [
 const nutritionSteps = [
   {
     title: "Abre a Nutrição",
-    description:
-      "Acede à página de Nutrição (precisas de estar autenticado).",
+    description: "Acede à página de Nutrição (precisas de estar autenticado).",
     icon: FiMessageSquare,
   },
   {
@@ -75,194 +79,240 @@ const nutritionSteps = [
   },
 ];
 
-function HowItWorks() {
+function StepList({ steps }) {
   return (
-    <section className="!py-28 how-page">
-      <div className="section !pt-16 !pb-16">
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="flex flex-col justify-center items-center text-center !mb-12"
-        >
-          <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-black !mt-4 !mb-4">
-            Cria os teus planos rapidamente
-          </h1>
-          <p className="font-body text-black/70 text-xl max-w-2xl mx-auto !mb-6">
-            Descobre como funciona, que regras garantem qualidade e como aproveitar cada plano.
-          </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Link to="/treinos" className="hiw-cta-primary font-headline">
-              Começar agora <FiArrowRight aria-hidden="true" focusable="false" />
-            </Link>
-            <Link to="/faq" className="hiw-cta-secondary font-headline">
-              Ver perguntas
-            </Link>
-          </div>
-        </motion.div>
-
-        {/* Main Content */}
-        <div className="flex flex-col gap-6 !mt-8">
-          {/* Steps */}
-          <motion.article
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="glass-card"
-          >
-            <div className="glass-card-content">
-              <h2 className="font-headline text-2xl font-bold text-black">
-                5 passos simples
-              </h2>
-
-              <div className="flex flex-col gap-2 !mt-6">
-                {trainingSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div key={step.title} className="step-card">
-                      <div className="flex items-start gap-3">
-                        <div className="step-icon flex-shrink-0">
-                          <Icon />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-headline text-base font-semibold text-black">
-                            {index + 1}. {step.title}
-                          </h3>
-                          <p className="font-body text-gray-700 text-sm !mt-1">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+    <ol className="ff-how-steps">
+      {steps.map((step, index) => {
+        const Icon = step.icon;
+        return (
+          <li key={step.title} className="ff-how-step">
+            <span className="ff-how-step-number" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div className="ff-how-step-content">
+              <div className="ff-how-step-heading">
+                <h3>{step.title}</h3>
+                <Icon aria-hidden="true" />
               </div>
+              <p>{step.description}</p>
             </div>
-          </motion.article>
-
-          {/* Nutrition Chatbot */}
-          <motion.article
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="glass-card"
-          >
-            <div className="glass-card-content">
-              <h2 className="font-headline text-2xl font-bold text-black">
-                Chatbot de Nutrição: como funciona
-              </h2>
-              <p className="font-body text-gray-700 text-sm !mt-2">
-                Na página de <Link to="/nutricao" className="underline text-[var(--primary)]">Nutrição</Link>,
-                conversas com um assistente que entende os teus objetivos e preferências.
-                Quando pedes um plano (ex.: "criar plano"), é mostrado um preview com alimentos e totais.
-                Podes guardar o plano na tua conta e consultá-lo mais tarde em Perfil.
-              </p>
-
-              <div className="flex flex-col gap-2 !mt-6">
-                {nutritionSteps.map((step, index) => {
-                  const Icon = step.icon;
-                  return (
-                    <div key={step.title} className="step-card">
-                      <div className="flex items-start gap-3">
-                        <div className="step-icon flex-shrink-0">
-                          <Icon />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-headline text-base font-semibold text-black">
-                            {index + 1}. {step.title}
-                          </h3>
-                          <p className="font-body text-gray-700 text-sm !mt-1">
-                            {step.description}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </motion.article>
-
-          {/* Features */}
-          <motion.article
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="glass-card"
-          >
-            <div className="glass-card-content">
-              <h2 className="font-headline text-2xl font-bold text-black">
-                Tira o máximo partido
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 !mt-4">
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <FiClock />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-semibold text-black text-base">
-                      Vê tudo organizado
-                    </h3>
-                    <p className="font-body text-gray-700 text-sm">
-                      Séries, repetições, descanso — pronto para começar.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <FiBookmark />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-semibold text-black text-base">
-                      Guarda favoritos
-                    </h3>
-                    <p className="font-body text-gray-700 text-sm">
-                      Acumula planos e volta a qualquer um sempre.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <FiDownload />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-semibold text-black text-base">
-                      Leva em PDF
-                    </h3>
-                    <p className="font-body text-gray-700 text-sm">
-                      Exporta para a ginásio sem internet.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <FiDatabase />
-                  </div>
-                  <div>
-                    <h3 className="font-headline font-semibold text-black text-base">
-                      Recupera a qualquer momento
-                    </h3>
-                    <p className="font-body text-gray-700 text-sm">
-                      Todos os planos guardados na tua conta.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.article>
-        </div>
-      </div>
-    </section>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
-export default HowItWorks;
+const features = [
+  {
+    icon: FiClock,
+    title: "Tudo organizado",
+    description: "Séries, repetições e descanso num plano pronto a usar.",
+  },
+  {
+    icon: FiBookmark,
+    title: "Planos guardados",
+    description:
+      "Guarda os planos que queres repetir e volta a eles quando precisares.",
+  },
+  {
+    icon: FiDownload,
+    title: "Contigo, em PDF",
+    description:
+      "Exporta o teu treino e leva-o para o ginásio, mesmo sem internet.",
+  },
+  {
+    icon: FiDatabase,
+    title: "Sempre à mão",
+    description: "Consulta os teus planos guardados diretamente no teu perfil.",
+  },
+];
+
+export default function HowItWorks() {
+  return (
+    <div className="ff-help-page ff-how-page">
+      <header className="ff-help-hero">
+        <div className="ff-help-wrap">
+          <HelpBreadcrumb current="Como funciona" />
+          <HelpReveal>
+            <div className="ff-how-hero-grid">
+              <div>
+                <p className="ff-help-eyebrow">O teu guia Fit Fetch</p>
+                <h1>
+                  Uma rotina melhor.
+                  <br />
+                  <span>Um passo de cada vez.</span>
+                </h1>
+                <p className="ff-help-hero-description">
+                  Descobre como criar, guardar e aproveitar os teus planos de
+                  treino e nutrição. Do primeiro objetivo ao próximo treino,
+                  começa por aqui.
+                </p>
+                <div className="ff-help-actions">
+                  <Link
+                    className="ff-help-button ff-help-button-primary"
+                    to="/treinos"
+                  >
+                    Criar o meu treino <FiArrowRight aria-hidden="true" />
+                  </Link>
+                  <Link
+                    className="ff-help-button ff-help-button-outline"
+                    to="/faq"
+                  >
+                    Ver perguntas frequentes
+                  </Link>
+                </div>
+              </div>
+              <aside className="ff-how-overview" aria-label="O teu percurso">
+                <p>DO OBJETIVO À AÇÃO</p>
+                <ol>
+                  <li>
+                    <span aria-hidden="true">01</span>
+                    <div>
+                      <strong>Define o teu objetivo</strong>
+                      <small>O plano começa contigo.</small>
+                    </div>
+                  </li>
+                  <li>
+                    <span aria-hidden="true">02</span>
+                    <div>
+                      <strong>Cria o teu plano</strong>
+                      <small>Treino e nutrição à tua medida.</small>
+                    </div>
+                  </li>
+                  <li>
+                    <span aria-hidden="true">03</span>
+                    <div>
+                      <strong>Guarda e começa</strong>
+                      <small>A tua próxima etapa, organizada.</small>
+                    </div>
+                  </li>
+                </ol>
+              </aside>
+            </div>
+          </HelpReveal>
+        </div>
+      </header>
+      <nav className="ff-how-jump" aria-label="Nesta página">
+        <div className="ff-help-wrap">
+          <span>Neste guia</span>
+          <a href="#como-treino">
+            <LuDumbbell aria-hidden="true" /> Treino
+          </a>
+          <a href="#como-nutricao">
+            <LuLeaf aria-hidden="true" /> Nutrição
+          </a>
+          <a href="#como-ferramentas">
+            <FiBookmark aria-hidden="true" /> Os teus planos
+          </a>
+        </div>
+      </nav>
+      <div className="ff-help-wrap">
+        <HelpReveal>
+          <section
+            id="como-treino"
+            className="ff-how-section"
+            aria-labelledby="ff-how-training-title"
+            tabIndex={-1}
+          >
+            <div className="ff-how-section-intro">
+              <span className="ff-help-icon">
+                <LuDumbbell aria-hidden="true" />
+              </span>
+              <p className="ff-help-eyebrow">01 / Treino</p>
+              <h2 id="ff-how-training-title">
+                Do teu objetivo
+                <br />
+                ao teu plano.
+              </h2>
+              <p>
+                Escolhe o teu foco e ajusta os detalhes. Segue estes cinco
+                passos para teres um treino pronto a usar.
+              </p>
+              <Link className="ff-help-text-link" to="/treinos">
+                Explorar treinos <FiArrowRight aria-hidden="true" />
+              </Link>
+              <div className="ff-how-note">
+                <FiBookmark aria-hidden="true" />
+                <p>
+                  Queres manter um plano? Guarda-o antes de gerar o seguinte.
+                </p>
+              </div>
+            </div>
+            <StepList steps={trainingSteps} />
+          </section>
+        </HelpReveal>
+        <HelpReveal>
+          <section
+            id="como-nutricao"
+            className="ff-how-section ff-how-nutrition"
+            aria-labelledby="ff-how-nutrition-title"
+            tabIndex={-1}
+          >
+            <div className="ff-how-section-intro">
+              <span className="ff-help-icon">
+                <LuLeaf aria-hidden="true" />
+              </span>
+              <p className="ff-help-eyebrow">02 / Nutrição</p>
+              <h2 id="ff-how-nutrition-title">
+                Uma conversa.
+                <br />
+                Um novo equilíbrio.
+              </h2>
+              <p>
+                Partilha os teus objetivos, preferências e restrições com o
+                assistente de nutrição. Pede um plano e consulta os alimentos e
+                totais antes de guardar.
+              </p>
+              <Link className="ff-help-text-link" to="/nutricao">
+                Explorar nutrição <FiArrowRight aria-hidden="true" />
+              </Link>
+              <div className="ff-how-note">
+                <FiMessageSquare aria-hidden="true" />
+                <p>
+                  Para começar, entra na tua conta e experimenta pedir “criar
+                  plano”.
+                </p>
+              </div>
+            </div>
+            <StepList steps={nutritionSteps} />
+          </section>
+        </HelpReveal>
+        <HelpReveal>
+          <section
+            id="como-ferramentas"
+            className="ff-how-tools"
+            aria-labelledby="ff-how-tools-title"
+            tabIndex={-1}
+          >
+            <div className="ff-help-section-heading">
+              <p className="ff-help-eyebrow">03 / Depois de criar</p>
+              <h2 id="ff-how-tools-title">O teu plano. Sempre contigo.</h2>
+              <p>Pequenos detalhes que tornam a tua rotina mais simples.</p>
+            </div>
+            <div className="ff-how-features">
+              {features.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <article key={feature.title}>
+                    <span className="ff-help-icon">
+                      <Icon aria-hidden="true" />
+                    </span>
+                    <h3>{feature.title}</h3>
+                    <p>{feature.description}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        </HelpReveal>
+        <HelpReveal>
+          <HelpContact
+            title="Podemos ajudar no próximo passo."
+            description="Se ainda tens dúvidas sobre o Fit Fetch, fala connosco."
+          />
+        </HelpReveal>
+      </div>
+    </div>
+  );
+}

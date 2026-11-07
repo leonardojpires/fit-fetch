@@ -1,17 +1,259 @@
-@reference "tailwindcss";
-
-.faq-item {
-  @apply rounded-2xl border-2 border-black/12 bg-white/50 backdrop-blur-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)];
+.ff-faq-page .ff-faq-hero-grid {
+  display: grid;
+  grid-template-columns: 1.9fr 1fr;
+  align-items: center;
+  gap: 64px;
 }
-
-.faq-button {
-  @apply w-full flex items-center justify-between text-left text-base text-black !px-4 !py-3 md:!px-6 md:!py-4 cursor-pointer ;
+.ff-faq-page .ff-faq-guide {
+  padding: 28px;
+  border: 1px solid #ffffff20;
+  border-radius: 14px;
+  background: #ffffff04;
 }
-
-.faq-answer {
-  @apply text-black/70 leading-relaxed border-t-2 border-black/10 !px-4 !pt-4 !pb-4 md:!px-6 md:!pb-5;
+.ff-faq-page .ff-faq-guide .ff-help-icon {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 18px;
+  background: #246ce51c;
+  border-color: #709ce636;
+  color: #b0ceff;
+  font-size: 20px;
 }
-
-.faq-icon {
-  @apply rounded-full bg-[var(--primary)]/10 border border-[var(--primary)]/30 text-[var(--primary)] !p-2;
+.ff-faq-page .ff-faq-guide h2 {
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+.ff-faq-page .ff-faq-guide p {
+  margin-top: 10px;
+  color: #b9c5d8;
+  font-size: 0.85rem;
+}
+.ff-faq-page .ff-faq-guide a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: 14px;
+  color: #b5d1ff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-underline-offset: 5px;
+}
+.ff-faq-page .ff-faq-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  align-items: start;
+  gap: 72px;
+  padding-block: 72px 80px;
+}
+.ff-faq-page .ff-faq-sidebar {
+  position: sticky;
+  top: 120px;
+}
+.ff-faq-page .ff-faq-sidebar nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.ff-faq-page .ff-faq-sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #344660;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background-color 0.18s ease;
+}
+.ff-faq-page .ff-faq-sidebar nav a:hover {
+  background: #f0f5fd;
+  border-color: #dce6f7;
+  color: #245dbb;
+}
+.ff-faq-page .ff-faq-sidebar nav svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.ff-faq-page .ff-faq-count {
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #edf2f9;
+  color: #536176;
+  font-size: 0.7rem;
+}
+.ff-faq-page .ff-faq-sidebar-note {
+  margin-top: 32px;
+  padding: 24px;
+  border: 1px solid #e0e7f1;
+  border-radius: 12px;
+  background: #f8fafd;
+}
+.ff-faq-page .ff-faq-sidebar-note > svg {
+  color: #245dbb;
+  width: 22px;
+  height: 22px;
+  margin-bottom: 18px;
+}
+.ff-faq-page .ff-faq-sidebar-note h2 {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+.ff-faq-page .ff-faq-sidebar-note p {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #536176;
+}
+.ff-faq-page .ff-faq-sidebar-note .ff-help-text-link {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  gap: 8px;
+}
+.ff-faq-page .ff-faq-groups {
+  display: grid;
+  gap: 42px;
+  min-width: 0;
+}
+.ff-faq-page .ff-faq-group-heading {
+  margin-bottom: 20px;
+}
+.ff-faq-page .ff-faq-group-heading h2 {
+  font-size: 1.45rem;
+  letter-spacing: -0.015em;
+}
+.ff-faq-page .ff-faq-group-heading p {
+  margin-top: 6px;
+  color: #536176;
+  font-size: 0.85rem;
+}
+.ff-faq-page .ff-faq-questions {
+  border: 1px solid #dce4ef;
+  border-radius: 12px;
+  overflow: clip;
+  background: #fff;
+}
+.ff-faq-page .ff-faq-item + .ff-faq-item {
+  border-top: 1px solid #e4eaf3;
+}
+.ff-faq-page .ff-faq-item[data-open="true"] {
+  background: #f7faff;
+}
+.ff-faq-page .ff-faq-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  min-height: 76px;
+  padding: 22px 26px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: #17243a;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.55;
+  cursor: pointer;
+}
+.ff-faq-page .ff-faq-button:hover {
+  color: #245dbb;
+  background: #f4f7fc;
+}
+.ff-faq-page .ff-faq-button:focus-visible {
+  outline-offset: -4px;
+  border-radius: 6px;
+}
+.ff-faq-page .ff-faq-toggle {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  height: 28px;
+  border: 1px solid #dce6f6;
+  border-radius: 7px;
+  color: #245dbb;
+  background: #f0f5fd;
+}
+.ff-faq-page .ff-faq-item[data-open="true"] .ff-faq-toggle {
+  background: #246ce5;
+  color: #fff;
+  border-color: #246ce5;
+}
+.ff-faq-page .ff-faq-answer {
+  padding: 0 78px 26px 26px;
+  color: #536176;
+  font-size: 0.9rem;
+  line-height: 1.85;
+  animation: ff-faq-answer-in 0.18s ease-out;
+}
+.ff-faq-page .ff-faq-answer[hidden] {
+  display: none;
+}
+@keyframes ff-faq-answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 1000px) {
+  .ff-faq-page .ff-faq-hero-grid {
+    grid-template-columns: 1.5fr 1fr;
+    gap: 30px;
+  }
+  .ff-faq-page .ff-faq-layout {
+    grid-template-columns: 220px 1fr;
+    gap: 36px;
+  }
+}
+@media (max-width: 760px) {
+  .ff-faq-page .ff-faq-hero-grid,
+  .ff-faq-page .ff-faq-layout {
+    grid-template-columns: 1fr;
+  }
+  .ff-faq-page .ff-faq-layout {
+    padding-block: 36px 48px;
+    gap: 36px;
+  }
+  .ff-faq-page .ff-faq-sidebar {
+    position: static;
+  }
+  .ff-faq-page .ff-faq-sidebar nav ul {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .ff-faq-page .ff-faq-sidebar nav a {
+    flex-wrap: wrap;
+    height: 100%;
+    padding: 12px;
+    border-color: #e0e7f1;
+    font-size: 0.8rem;
+  }
+  .ff-faq-page .ff-faq-sidebar nav a > span:not(.ff-faq-count) {
+    width: 100%;
+    order: 1;
+  }
+  .ff-faq-page .ff-faq-sidebar-note {
+    display: none;
+  }
+  .ff-faq-page .ff-faq-button {
+    padding: 20px;
+    gap: 16px;
+    font-size: 0.95rem;
+  }
+  .ff-faq-page .ff-faq-answer {
+    padding: 0 20px 24px;
+  }
 }

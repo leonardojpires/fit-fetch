@@ -1,6 +1,14 @@
 import "./index.css";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { HelpBreadcrumb, HelpReveal } from "../../components/HelpPages";
+import {
+  FiArrowRight,
+  FiArrowUpRight,
+  FiBookOpen,
+  FiMessageCircle,
+  FiAlertCircle,
+} from "react-icons/fi";
 import SuccessWarning from "../../components/SuccessWarning";
 import { MdOutlineAlternateEmail } from "react-icons/md";
 import { FaHeadphonesAlt } from "react-icons/fa";
@@ -59,7 +67,7 @@ function Contact() {
           phone: formData.yphone || "N/A",
           message: formData.ymessage,
         },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
       );
       setStatus("success");
       setFormData({
@@ -70,6 +78,7 @@ function Contact() {
         ymessage: "",
         yagree: false,
       });
+      // eslint-disable-next-line no-unused-vars -- Preserve the existing submission handler.
     } catch (error) {
       // console.error("Erro ao enviar e-mail: ", error);
       setStatus("error");
@@ -80,136 +89,164 @@ function Contact() {
 
   return (
     <>
-      <motion.section
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="!py-28 contact-page"
-      >
-        <div className="section !py-16">
-          {/* HEADING DIV */}
-          <div className="flex flex-col justify-center items-center text-center !mb-6">
-            <h1 className="font-headline text-4xl md:text-5xl font-bold leading-tight text-black !mt-4 !mb-4">
-              Contacta-nos
-            </h1>
-            <p className="font-body text-black/70 text-xl max-w-2xl mx-auto !mb-6">
-              Precisas de ajuda? Contacta o suporte do Fit Fetch e recebe o
-              melhor apoio possível
-            </p>
-          </div>
-          {/* CONTACT DIV */}
-          <div className="glass-card">
-            <div className="flex flex-col gap-6 !p-6">
-              {/* CONTACT DATA */}
-              <div className="flex flex-row justify-center gap-6 flex-wrap">
-                {contactData.map((contact) => (
-                  <div
-                    key={contact.id}
-                    className="flex flex-1 flex-row justify-start items-center gap-4 bg-gray-100 border-[1px] border-[var(--primary)]/50 rounded-lg !p-2 !pr-6 max-w-sm"
-                  >
-                    <div className="!text-sm bg-[var(--primary)]/10 rounded-md !p-2 flex items-center justify-center">
-                      {contact.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h2 className="text-md font-headline font-semibold">
-                        {contact.method}
-                      </h2>
-                      <p className="text-xs font-body text-black/70">
-                        {contact.details}
-                      </p>
-                      <span className="text-xs text-[var(--primary)] font-bold font-body">
-                        {contact.info}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+      <div className="ff-help-page ff-contact-page">
+        <header className="ff-help-hero">
+          <div className="ff-help-wrap">
+            <HelpBreadcrumb current="Contacto" />
+            <HelpReveal>
+              <div className="ff-contact-hero-grid">
+                <div>
+                  <p className="ff-help-eyebrow">Vamos conversar</p>
+                  <h1>
+                    O próximo passo
+                    <br />
+                    <span>começa com uma conversa.</span>
+                  </h1>
+                  <p className="ff-help-hero-description">
+                    Uma dúvida, uma sugestão ou ajuda com o teu plano? Fala com
+                    a equipa Fit Fetch. Estamos aqui para te ajudar.
+                  </p>
+                </div>
+                <div className="ff-contact-hero-note">
+                  <span className="ff-contact-hero-icon">
+                    <FiMessageCircle aria-hidden="true" />
+                  </span>
+                  <p>O teu percurso importa.</p>
+                  <span>Encontra a melhor forma de falar connosco.</span>
+                </div>
               </div>
-              {/* CONTACT FORM */}
-              <div>
-                <form onSubmit={handleSubmit}>
-                  <div className="flex flex-col gap-2 !mb-4">
-                    <label htmlFor="yname">Nome</label>
-                    <input
-                      type="text"
-                      placeholder="Ex: João"
-                      name="yname"
-                      id="yname"
-                      value={formData.yname}
-                      onChange={handleChange}
-                      aria-describedby="name-hint"
-                      required
-                    />
-                    <small id="name-hint" className="text-gray-600 text-sm">Obrigatório</small>
+            </HelpReveal>
+          </div>
+        </header>
+
+        <div className="ff-help-wrap">
+          <div className="ff-contact-layout">
+            <HelpReveal>
+              <section
+                className="ff-contact-form-card"
+                aria-labelledby="ff-contact-form-title"
+              >
+                <div className="ff-contact-form-heading">
+                  <span className="ff-help-eyebrow">Entra em contacto</span>
+                  <h2 id="ff-contact-form-title">Envia-nos uma mensagem.</h2>
+                  <p>
+                    Conta-nos em que podemos ajudar. Os campos assinalados com{" "}
+                    <span aria-hidden="true">*</span>
+                    <span className="ff-contact-sr-only">asterisco</span> são
+                    obrigatórios.
+                  </p>
+                </div>
+                <form
+                  onSubmit={handleSubmit}
+                  aria-labelledby="ff-contact-form-title"
+                  aria-busy={loading}
+                >
+                  <div className="ff-contact-fields">
+                    <div className="ff-contact-field">
+                      <label htmlFor="yname">
+                        Nome <span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="O teu nome"
+                        name="yname"
+                        id="yname"
+                        autoComplete="name"
+                        value={formData.yname}
+                        onChange={handleChange}
+                        aria-describedby="name-hint"
+                        required
+                      />
+                      <small id="name-hint" className="ff-contact-sr-only">
+                        Obrigatório
+                      </small>
+                    </div>
+                    <div className="ff-contact-field">
+                      <label htmlFor="yemail">
+                        E-mail <span aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="nome@exemplo.com"
+                        name="yemail"
+                        id="yemail"
+                        autoComplete="email"
+                        value={formData.yemail}
+                        onChange={handleChange}
+                        aria-describedby="email-hint"
+                        required
+                      />
+                      <small id="email-hint">
+                        O endereço para receberes a nossa resposta.
+                      </small>
+                    </div>
+                    <div className="ff-contact-field">
+                      <label htmlFor="ysubject">
+                        Assunto <span aria-hidden="true">*</span>
+                      </label>
+                      <select
+                        name="ysubject"
+                        id="ysubject"
+                        value={formData.ysubject}
+                        onChange={handleChange}
+                        aria-describedby="subject-hint"
+                        required
+                      >
+                        <option value="" disabled>
+                          Seleciona uma opção
+                        </option>
+                        <option value="workout_plans">Planos de Treino</option>
+                        <option value="nutrition_plans">
+                          Planos de Nutrição
+                        </option>
+                        <option value="account_authentication">
+                          Conta e Autenticação
+                        </option>
+                        <option value="suggestion_improvement">
+                          Sugestão ou Melhoria
+                        </option>
+                        <option value="other">Outro</option>
+                      </select>
+                      <small id="subject-hint">
+                        Seleciona o motivo do contacto.
+                      </small>
+                    </div>
+                    <div className="ff-contact-field">
+                      <label htmlFor="yphone">
+                        Telefone{" "}
+                        <span className="ff-contact-optional">(opcional)</span>
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="Ex.: 912 345 678"
+                        name="yphone"
+                        id="yphone"
+                        autoComplete="tel"
+                        value={formData.yphone}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="ff-contact-field ff-contact-field-wide">
+                      <label htmlFor="ymessage">
+                        Mensagem <span aria-hidden="true">*</span>
+                      </label>
+                      <textarea
+                        placeholder="Descreve a tua dúvida ou sugestão…"
+                        name="ymessage"
+                        id="ymessage"
+                        rows={6}
+                        value={formData.ymessage}
+                        onChange={handleChange}
+                        aria-describedby="message-hint"
+                        required
+                      />
+                      <small id="message-hint">
+                        Inclui os detalhes que nos ajudem a compreender o teu
+                        pedido.
+                      </small>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2 !mb-4">
-                    <label htmlFor="yemail">E-Mail</label>
-                    <input
-                      type="email"
-                      placeholder="Ex: joao@exemplo.com"
-                      name="yemail"
-                      id="yemail"
-                      value={formData.yemail}
-                      onChange={handleChange}
-                      aria-describedby="email-hint"
-                      required
-                    />
-                    <small id="email-hint" className="text-gray-600 text-sm">E-mail válido obrigatório</small>
-                  </div>
-                  <div className="flex flex-col gap-2 !mb-4">
-                    <label htmlFor="ysubject">Assunto</label>
-                    <select
-                      name="ysubject"
-                      id="ysubject"
-                      value={formData.ysubject}
-                      onChange={handleChange}
-                      aria-describedby="subject-hint"
-                      required
-                    >
-                      <option value="" disabled>
-                        Seleciona uma opção
-                      </option>
-                      <option value="workout_plans">Planos de Treino</option>
-                      <option value="nutrition_plans">
-                        Planos de Nutrição
-                      </option>
-                      <option value="account_authentication">
-                        Conta e Autenticação
-                      </option>
-                      <option value="suggestion_improvement">
-                        Sugestão ou Melhoria
-                      </option>
-                      <option value="other">Outro</option>
-                    </select>
-                    <small id="subject-hint" className="text-gray-600 text-sm">Seleciona o motivo do contacto</small>
-                  </div>
-                  <div className="flex flex-col gap-2 !mb-4">
-                    <label htmlFor="yphone">
-                      Contacto Telefónico (opcional)
-                    </label>
-                    <input
-                      type="tel"
-                      placeholder="Ex: 123 456 789"
-                      name="yphone"
-                      id="yphone"
-                      value={formData.yphone}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2 !mb-4">
-                    <label htmlFor="ymessage">Mensagem</label>
-                    <textarea
-                      placeholder="Escreve aqui a tua mensagem"
-                      name="ymessage"
-                      id="ymessage"
-                      value={formData.ymessage}
-                      onChange={handleChange}
-                      aria-describedby="message-hint"
-                      required
-                    ></textarea>
-                    <small id="message-hint" className="text-gray-600 text-sm">Mínimo 10 caracteres</small>
-                  </div>
-                  <div className="flex flex-row items-center gap-2 !mb-4">
+                  <div className="ff-contact-consent">
                     <input
                       type="checkbox"
                       name="yagree"
@@ -218,29 +255,113 @@ function Contact() {
                       onChange={handleChange}
                       aria-describedby="agree-hint"
                     />
-                    <label htmlFor="yagree">
-                      Concordo em ser contactado para suporte
-                    </label>
-                    <small id="agree-hint" className="text-gray-600 text-sm">(Obrigatório)</small>
+                    <div>
+                      <label htmlFor="yagree">
+                        Concordo em ser contactado para suporte.
+                      </label>
+                      <small id="agree-hint">
+                        É necessário concordar para enviar a mensagem.
+                      </small>
+                    </div>
                   </div>
                   {status === "error" && (
-                    <p className="text-red-600 !mb-4">
-                      ✗ Erro ao enviar mensagem. Tenta novamente.
+                    <p className="ff-contact-error" role="alert">
+                      <FiAlertCircle aria-hidden="true" /> Erro ao enviar
+                      mensagem. Tenta novamente.
                     </p>
                   )}
-                  <button
-                    type="submit"
-                    disabled={loading || !formData.yagree}
-                    className="bg-[var(--primary)] text-white !py-2 !px-8 cursor-pointer hover:bg-[var(--accent)] rounded-lg hover:scale-[1.02] transition-all ease-in-out duration-200 w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {loading ? "A enviar..." : "Enviar Mensagem"}
-                  </button>
+                  <div className="ff-contact-submit-row">
+                    <span className="ff-contact-submit-note">
+                      O teu feedback ajuda-nos a melhorar.
+                    </span>
+                    <button
+                      type="submit"
+                      disabled={loading || !formData.yagree}
+                      className="ff-contact-submit"
+                    >
+                      {loading ? (
+                        <>
+                          <span
+                            className="ff-contact-spinner"
+                            aria-hidden="true"
+                          />
+                          A enviar...
+                        </>
+                      ) : (
+                        <>
+                          Enviar mensagem <FiArrowRight aria-hidden="true" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <span className="ff-contact-sr-only" role="status">
+                    {loading ? "A enviar mensagem…" : ""}
+                  </span>
                 </form>
-              </div>
-            </div>
+              </section>
+            </HelpReveal>
+            <HelpReveal>
+              <aside
+                className="ff-contact-sidebar"
+                aria-labelledby="ff-contact-channels-title"
+              >
+                <p className="ff-help-eyebrow">Ao teu lado</p>
+                <h2 id="ff-contact-channels-title">
+                  Como preferes
+                  <br />
+                  falar connosco?
+                </h2>
+                <p className="ff-contact-sidebar-intro">
+                  Usa o formulário ou entra em contacto diretamente por e-mail
+                  ou telefone.
+                </p>
+                <div className="ff-contact-channels">
+                  {contactData.map((contact) => (
+                    <div className="ff-contact-channel" key={contact.id}>
+                      <span
+                        className="ff-contact-channel-icon"
+                        aria-hidden="true"
+                      >
+                        {contact.icon}
+                      </span>
+                      <div>
+                        <h3>{contact.method}</h3>
+                        <p>{contact.details}</p>
+                        <a
+                          href={
+                            contact.id === 1
+                              ? `mailto:${contact.info}`
+                              : "tel:+351938604654"
+                          }
+                        >
+                          {contact.info}
+                          <FiArrowUpRight aria-hidden="true" />
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="ff-contact-resources">
+                  <span className="ff-help-icon">
+                    <FiBookOpen aria-hidden="true" />
+                  </span>
+                  <h3>A resposta pode estar aqui.</h3>
+                  <p>
+                    Consulta as perguntas frequentes ou descobre como criar e
+                    guardar os teus planos.
+                  </p>
+                  <Link to="/faq">
+                    Perguntas frequentes <FiArrowRight aria-hidden="true" />
+                  </Link>
+                  <Link to="/como-funciona">
+                    Como funciona <FiArrowRight aria-hidden="true" />
+                  </Link>
+                </div>
+              </aside>
+            </HelpReveal>
           </div>
         </div>
-      </motion.section>
+      </div>
       {status === "success" && (
         <SuccessWarning
           message="A mensagem foi enviada com sucesso!"
