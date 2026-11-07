@@ -1,55 +1,57 @@
-import { lazy, Suspense } from "react";
-import Hero from "../../components/Home/Hero/index";
-import About from "./../../components/Home/About/index";
-import { motion } from "framer-motion";
+import { lazy, Suspense, useState } from "react";
+import { motion as Motion, useReducedMotion } from "framer-motion";
+import Hero from "../../components/Home/Hero";
+import About from "../../components/Home/About";
+import "./index.css";
 
 const Services = lazy(() => import("../../components/Home/Services"));
-const Testimonials = lazy(() => import("../../components/Home/Testimonials/index"));
-const CTA = lazy(() => import("./../../components/Home/CTA/index"));
+const Testimonials = lazy(() => import("../../components/Home/Testimonials"));
+const CTA = lazy(() => import("../../components/Home/CTA"));
 
-function Home() {
+function SectionReveal({ children }) {
+  const reduceMotion = useReducedMotion();
+
   return (
-    <>
-      <Hero />
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <About />
-      </motion.div>
-
-      <Suspense fallback={<div className="w-full h-40"></div>}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <Services />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <Testimonials />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          <CTA />
-        </motion.div>
-      </Suspense>
-    </>
+    <Motion.div
+      className="ff-section-reveal"
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.65,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      {children}
+    </Motion.div>
   );
 }
 
-export default Home;
+export default function Home() {
+  const [motionPaused, setMotionPaused] = useState(false);
+
+  return (
+    <div className="ff-home" lang="pt-PT" data-motion-paused={motionPaused}>
+      <SectionReveal>
+        <Hero
+          motionPaused={motionPaused}
+          onToggleMotion={() => setMotionPaused((paused) => !paused)}
+        />
+      </SectionReveal>
+      <SectionReveal>
+        <About />
+      </SectionReveal>
+      <Suspense fallback={<div className="w-full h-40"></div>}>
+        <SectionReveal>
+          <Services />
+        </SectionReveal>
+        <SectionReveal>
+          <Testimonials />
+        </SectionReveal>
+        <SectionReveal>
+          <CTA />
+        </SectionReveal>
+      </Suspense>
+    </div>
+  );
+}

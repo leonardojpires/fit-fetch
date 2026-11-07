@@ -1,65 +1,90 @@
-@import 'tailwindcss';
-
-.title {
-    @apply text-center uppercase;
+.ff-home .ff-testimonials {
+  background: #fff;
 }
-
-.testimonials-div {
-    @apply relative overflow-hidden w-full;
+.ff-home .ff-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  padding-block: 12px;
 }
-
-.testimonial {
-    @apply h-full flex flex-col border border-white/60 bg-gradient-to-t from-white/40 to-white/60 backdrop-blur-[20px] !p-4 rounded-2xl;
+.ff-home .ff-testimonial {
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border: 1px solid var(--ff-line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 28px #0f172a06;
+  animation: ff-testimonial-float 5s ease-in-out infinite;
 }
-
-.up {
-    animation: up 5s ease-in-out infinite;
+.ff-home .ff-testimonial:nth-child(even) {
+  animation-delay: -2.5s;
 }
-
-.down {
-    animation: down 5s ease-in-out infinite;
+.ff-home .ff-testimonials-grid:hover .ff-testimonial {
+  animation-play-state: paused;
 }
-
-@keyframes up {
-    0% {
-        transform: translateY(-2px);
-    }
-
-    25% {
-        transform: translateY(2px);
-    }
-
-    50% {
-        transform: translateY(-2px);
-    }
-
-    75% {
-        transform: translateY(2px)
-    }
-
-    100% {
-        transform: translateY(-2px);
-    }
+@keyframes ff-testimonial-float {
+  0%,
+  100% {
+    transform: translateY(4px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
-
-@keyframes down {
-    0% {
-        transform: translateY(2px);
-    }
-
-    25% {
-        transform: translateY(-2px);
-    }
-
-    50% {
-        transform: translateY(2px)
-    }
-
-    75% {
-        transform: translateY(-2px);
-    }
-
-    100% {
-        transform: translateY(2px);
-    }
+.ff-home .ff-rating {
+  display: inline-flex;
+  gap: 4px;
+  color: #93630e;
+  margin-bottom: 22px;
+}
+.ff-home .ff-rating svg {
+  width: 17px;
+  height: 17px;
+}
+.ff-home .ff-star-filled {
+  fill: #e6a725;
+}
+.ff-home .ff-testimonial blockquote {
+  flex: 1;
+  color: #364359;
+  font-size: 0.925rem;
+  line-height: 1.8;
+}
+.ff-home .ff-testimonial figcaption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #edf0f5;
+}
+.ff-home .ff-testimonial img {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ff-home .ff-member-name {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.ff-home .ff-member-caption {
+  display: block;
+  color: var(--ff-muted);
+  font-size: 0.7rem;
+  margin-top: 2px;
+}
+@media (max-width: 1100px) {
+  .ff-home .ff-testimonials-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .ff-home .ff-testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }

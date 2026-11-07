@@ -1,26 +1,43 @@
-import './index.css';
-import Cards from './Cards/index';
-import services from './servicesData.js';
+import { Link } from "react-router-dom";
+import { FiArrowUpRight } from "react-icons/fi";
+import Cards from "./Cards";
+import services from "./servicesData";
+import "./index.css";
 
-function Services() {
-    return (
-        <section className="section !mt-20 !mb-10" id="servicos">
-            <h3 className="title font-headline !mb-5">O que o Fit Fetch oferece</h3>
-            <p className="description font-body !mb-10">As ferramentas disponíveis no Fit Fetch que te permitem desbloquear o teu potencial, foco e força</p>
-
-            <div className="services-div !mt-0"> 
-                {services.map((service, index) => (
-                    <Cards
-                        key={index}
-                        icon={service.icon}
-                        title={service.title}
-                        description={service.description}
-                    />
-                ))}
-            </div>
-
-        </section>
-    )
+export default function Services() {
+  return (
+    <section
+      id="servicos"
+      className="ff-section ff-services"
+      aria-labelledby="ff-services-title"
+      tabIndex={-1}
+    >
+      <div className="ff-wrap">
+        <div className="ff-section-intro">
+          <div>
+            <p className="ff-eyebrow">02 / À tua medida</p>
+            <h2 id="ff-services-title">
+              Tudo para dares
+              <br />
+              <span>o próximo passo.</span>
+            </h2>
+          </div>
+          <div>
+            <p className="ff-lead">
+              Do primeiro treino à organização dos teus planos, encontra as
+              ferramentas que acompanham a tua evolução.
+            </p>
+            <Link className="ff-text-link" to="/como-funciona">
+              Como funciona <FiArrowUpRight aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+        <div className="ff-services-grid">
+          {services.map((service, index) => (
+            <Cards key={service.title} {...service} number={index + 1} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
-
-export default Services;

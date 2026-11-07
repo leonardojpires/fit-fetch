@@ -1,45 +1,61 @@
-@import 'tailwindcss';
-
-.title-div {
-    @apply flex flex-row justify-center items-center text-5xl font-bold !mb-5;
+.ff-home .ff-about {
+  background: #fff;
 }
-
-.title {
-    @apply !text-5xl uppercase !mb-0;
+.ff-home .ff-about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
 }
-
-.description {
-    @apply text-lg text-center text-black/70;
+.ff-home .ff-about-card {
+  padding: 32px;
+  background: linear-gradient(180deg, #fff, #f8fafd);
+  border: 1px solid var(--ff-line);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #0f172a03;
 }
-
-.cards-section {
-    @apply w-full flex flex-col justify-around !items-center gap-8 !mb-5 md:flex-row;
+.ff-home .ff-about-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
 }
-
-.card, .card-text {
-    @apply transition-all ease-in-out duration-100;
+.ff-home .ff-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  background: #e5eeff;
+  color: #2460c4;
+  border-radius: 12px;
+  font-size: 27px;
 }
-
-.card {
-    @apply flex-1 flex flex-col justify-between items-start gap-5 bg-white border border-white/60 
-    !px-5 !py-8 bg-gradient-to-t from-white/40 to-white/60 backdrop-blur-[20px] 
-    rounded-2xl hover:scale-[1.03] transition-all ease-in-out duration-200 h-full;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+.ff-home .ff-about-card:nth-child(2) .ff-icon {
+  background: #e1f4ea;
+  color: #007b39;
 }
-
-.card:hover {
-    @apply text-[var(--accent)] transition-all ease-in-out duration-200;
-    /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; */
+.ff-home .ff-about-card:nth-child(3) .ff-icon {
+  background: #fff1d5;
+  color: #956312;
 }
-
-.card-icon {
-    @apply flex items-center text-6xl text-white bg-[var(--primary)] rounded-xl !p-4;
-
-    background: #82b0ff;
-    background: linear-gradient(236deg,rgba(31, 113, 255, 1) 0%, rgb(77, 133, 235) 100%);
-    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+.ff-home .ff-card-number {
+  font-family: var(--headline);
+  color: #536176;
+  font-size: 0.85rem;
 }
-
-.card-text {
-    @apply font-medium;
+.ff-home .ff-about-card p {
+  margin-top: 14px;
+  color: var(--ff-muted);
+  font-size: 0.95rem;
+}
+@media (max-width: 760px) {
+  .ff-home .ff-about-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .ff-home .ff-about-card {
+    padding: 26px;
+  }
+  .ff-home .ff-about-card-top {
+    margin-bottom: 22px;
+  }
 }

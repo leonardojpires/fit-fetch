@@ -1,28 +1,14 @@
-function Cards({ icon, title, description }) {
+export default function Cards({ icon, title, description, number }) {
   return (
-    <div className="h-full flex items-stretch hover:scale-[1.02] transition-all">
-      <div className="flex flex-col max-w-sm w-full border border-white/60 bg-gradient-to-t from-white/40 bg-white backdrop-blur-[20px] rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all h-full">
-        <div className="relative">
-          <img 
-            src={icon}
-            alt={`Ícone de ${title}`}
-            className="w-full h-40 object-cover"
-            loading="lazy"
-            width="384"
-            height="160"
-          />
-        </div>
-
-        <div className="p-5 flex flex-col justify-between flex-1">
-          <div className="!p-4">
-            <h3 className="text-xl font-bold font-body text-[var(--primary)] !mb-2">{title}</h3>
-            <p className="text-gray-500 font-body">{description}</p>
-          </div>
-        </div>
+    <article className="ff-service-card">
+      <div className="ff-service-image">
+        <img src={icon} alt="" loading="lazy" width="384" height="216" />
+        <span aria-hidden="true">0{number}</span>
       </div>
-    </div>
-  )
+      <div className="ff-service-copy">
+        <h3>{title}</h3>
+        <p>{description}</p>
+      </div>
+    </article>
+  );
 }
-
-
-export default Cards;

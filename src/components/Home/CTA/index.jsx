@@ -1,25 +1,34 @@
-import './index.css';
-import { IoPersonAddOutline } from "react-icons/io5";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { FiArrowRight } from "react-icons/fi";
+import "./index.css";
 
-function CTA() {
-    return (
-        <section className="section rounded-2xl !mt-10 !mb-20 !shadow-2xl !px-0">
-                <div className="w-full cta-background rounded-2xl">
-                    <div className="cta-div">
-                        <span className="cta-span font-body">Começa uma nova vida</span>
-                        <h2 className="cta-title font-heading">Inscreve-te agora no Fit Fetch e começa uma nova vida</h2>
-                        <p className="cta-paragraph font-body">Orgulha-te do teu progresso, não importa o quão pequeno seja. Faz de ti o teu melhor projeto</p>
-                        <div className="flex flex-row justify-center items-center gap-5 !mt-5">
-                            <Link to="/entrar" className="cta-button font-body">
-                                INSCREVE-TE AGORA
-                                <IoPersonAddOutline />
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-        </section>
-    )
+export default function CTA() {
+  return (
+    <section className="ff-cta-section" aria-labelledby="ff-cta-title">
+      <div className="ff-wrap">
+        <div className="ff-cta">
+          <div className="ff-cta-copy">
+            <p className="ff-eyebrow">O próximo passo é teu</p>
+            <h2 id="ff-cta-title">
+              Faz de ti o teu
+              <br />
+              melhor projeto.
+            </h2>
+            <p>
+              Orgulha-te de cada conquista, por mais pequena que seja. A tua
+              nova rotina começa aqui.
+            </p>
+          </div>
+          <div className="ff-cta-actions">
+            <Link to="/entrar" className="ff-button ff-button-white">
+              Inscreve-te agora <FiArrowRight aria-hidden="true" />
+            </Link>
+            <Link to="/contacto" className="ff-cta-contact">
+              Tens dúvidas? Fala connosco
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
-
-export default CTA;

@@ -1,21 +1,31 @@
-function TestimonialsCards({ name, image, stars, text }) {
-    return (
-        <div className="testimonial">
-            <div className="flex flex-row items-center gap-3 !mb-3">
-                <img 
-                    src={ image } 
-                    alt={`${name} - Utilizador Fit Fetch`} 
-                    className="w-16 h-16 pointer-events-none rounded-full shadow-xl" 
-                    loading="lazy"
-                    width="64"
-                    height="64"
-                />
-                <span className="text-lg font-body font-semibold text-[var(--primary)]">{ name }</span>
-            </div>
-            <span className="font-body !mb-2">{ "⭐".repeat(stars) }</span>
-            <p className="font-body">{ text }</p>
-        </div>
-    )
-}
+import { FiStar } from "react-icons/fi";
 
-export default TestimonialsCards;
+export default function TestimonialsCards({ name, image, stars, text }) {
+  return (
+    <figure className="ff-testimonial">
+      <span
+        className="ff-rating"
+        role="img"
+        aria-label={`${stars} de 5 estrelas`}
+      >
+        {Array.from({ length: 5 }, (_, index) => (
+          <FiStar
+            key={index}
+            aria-hidden="true"
+            className={index < stars ? "ff-star-filled" : ""}
+          />
+        ))}
+      </span>
+      <blockquote>
+        <p>“{text}”</p>
+      </blockquote>
+      <figcaption>
+        <img src={image} alt="" loading="lazy" width="44" height="44" />
+        <div>
+          <span className="ff-member-name">{name}</span>
+          <span className="ff-member-caption">Membro Fit Fetch</span>
+        </div>
+      </figcaption>
+    </figure>
+  );
+}
