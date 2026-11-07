@@ -7,7 +7,8 @@ import useCreateNutritionPlan from "../../hooks/Nutrition/useCreateNutritionPlan
 import useGetUserNutritionPlans from "../../hooks/Nutrition/useGetUserNutritionPlans";
 import useCurrentUser from "./../../hooks/useCurrentUser";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
-import { motion } from "framer-motion";
+import PlanWorkspace from "../../components/PlanWorkspace";
+import { FiClipboard } from "react-icons/fi";
 import { IoMdSend } from "react-icons/io";
 import { IoBookmarksOutline } from "react-icons/io5";
 import ErrorWarning from "../../components/ErrorWarning";
@@ -401,37 +402,25 @@ function Nutrition() {
 
   return (
     <>
-      <motion.section
-        className="w-full !py-28 pb-48"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <div className="section !py-16">
-          <h1 className="font-headline font-bold text-4xl md:text-5xl text-black !mb-3">
-            Cria o Teu Plano Alimentar Personalizado
-          </h1>
-          <p className="font-body font-medium text-lg md:text-xl text-black/70 !mb-8">
-            Descreve os teus objetivos e preferências para um plano nutricional
-            ideal!
-          </p>
-
-          <div className="flex flex-col items-start lg:flex-row !gap-6 !mt-4">
+      <PlanWorkspace kind="nutrition">
+        <div className="ff-help-wrap ff-plan-content">
+          <div className="ff-plan-columns">
             {/* Chatbot Section */}
-            <div
-              className="lg:w-1/2 w-full bg-gray-100 !p-6 rounded-lg shadow-sm flex flex-col"
-              style={{ height: "600px" }}
-            >
-              <h2 className="font-headline font-bold text-2xl text-[var(--primary)] !mb-2">
-                Assistente de Nutrição
-              </h2>
-              <p className="font-body text-gray-600 !mb-4 text-sm">
+            <div className="ff-plan-chat">
+              <p className="ff-plan-eyebrow">01 / A tua conversa</p>
+              <h2 className="ff-plan-card-title">Assistente de Nutrição</h2>
+              <p className="ff-plan-card-description">
                 Conversa com o assistente para criar o teu plano ideal
               </p>
 
               {/* Chat Messages */}
-              <div className="flex-1 overflow-y-auto !mb-4 bg-white rounded-lg !p-4 !space-y-3">
+              <div
+                className="ff-chat-messages"
+                role="log"
+                aria-label="Conversa com o assistente de nutrição"
+                aria-relevant="additions text"
+                tabIndex={0}
+              >
                 {messages.map((msg, index) => (
                   <div
                     key={index}
@@ -516,19 +505,21 @@ function Nutrition() {
               </div>
 
               {/* Input */}
-              <form onSubmit={handleSubmit} className="flex !gap-2">
+              <form onSubmit={handleSubmit} className="ff-chat-composer">
                 <input
+                  aria-label="Mensagem para o assistente de nutrição"
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   placeholder="Descreve os teus objetivos..."
                   disabled={chatLoading}
-                  className="flex-1 !px-3 !py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none transition-all font-body text-sm"
+                  className="ff-chat-input"
                 />
                 <button
                   type="submit"
                   disabled={chatLoading || !inputMessage.trim()}
-                  className="!px-4 !py-2 bg-[var(--primary)] text-white rounded-lg hover:bg-[var(--accent)] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  className="ff-chat-send"
+                  aria-label="Enviar mensagem"
                   title="Enviar mensagem"
                 >
                   <IoMdSend aria-hidden="true" focusable="false" />
@@ -537,13 +528,15 @@ function Nutrition() {
             </div>
 
             {/* Preview Section */}
-            <div
-              id="plan-section"
-              className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center"
-            >
+            <div id="plan-section" className="ff-plan-preview">
+              <div className="ff-plan-panel-heading">
+                <p className="ff-plan-eyebrow">02 / O resultado</p>
+                <h2>O teu plano alimentar</h2>
+                <p>Revê os detalhes e guarda o plano que queres seguir.</p>
+              </div>
               {isGenerating && chatLoading ? (
-                <div className="flex flex-col items-center !gap-4">
-                  <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>
+                <div className="ff-plan-loading" role="status">
+                  <div className="ff-plan-spinner" aria-hidden="true"></div>
                   <p className="font-body text-gray-600 text-center text-base md:text-lg">
                     A gerar o plano alimentar...
                   </p>
@@ -561,8 +554,8 @@ function Nutrition() {
                   </div>
 
                   {/* Macros Grid */}
-                  <div className="grid grid-cols-2 lg:grid-cols-4 !gap-3 !mb-5">
-                    <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
+                  <div className="ff-nutrition-macros">
+                    <div className="ff-nutrition-macro">
                       <div className="text-2xl font-bold text-gray-800">
                         {macros
                           ? macros.total_calories.toLocaleString()
@@ -572,7 +565,7 @@ function Nutrition() {
                         Calorias
                       </div>
                     </div>
-                    <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
+                    <div className="ff-nutrition-macro">
                       <div className="text-2xl font-bold text-gray-800">
                         {(macros
                           ? macros.total_protein
@@ -586,7 +579,7 @@ function Nutrition() {
                         Proteína
                       </div>
                     </div>
-                    <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
+                    <div className="ff-nutrition-macro">
                       <div className="text-2xl font-bold text-gray-800">
                         {(macros ? macros.total_carbs : "N/A").toFixed?.(1) ||
                           macros.total_carbs ||
@@ -594,10 +587,10 @@ function Nutrition() {
                         g
                       </div>
                       <div className="text-xs text-gray-500 font-body">
-                        Carbos
+                        Hidratos de carbono
                       </div>
                     </div>
-                    <div className="bg-white !p-3 rounded-lg shadow-sm text-center">
+                    <div className="ff-nutrition-macro">
                       <div className="text-2xl font-bold text-gray-800">
                         {(macros
                           ? macros.total_fat
@@ -616,10 +609,7 @@ function Nutrition() {
                   {/* Meals */}
                   <div className="!space-y-3 !mb-5">
                     {nutritionPlan.meals.map((meal, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-white !p-4 rounded-lg shadow-sm border-l-4 border-[var(--accent)]"
-                      >
+                      <div key={idx} className="ff-nutrition-meal">
                         <h4 className="font-headline font-semibold text-base text-[var(--primary)] !mb-2">
                           {meal.meal_type}
                         </h4>
@@ -635,10 +625,7 @@ function Nutrition() {
                             const multiplier = quantity / serving_size;
 
                             return (
-                              <div
-                                key={foodIdx}
-                                className="flex justify-between items-start"
-                              >
+                              <div key={foodIdx} className="ff-nutrition-food">
                                 <div className="flex-1">
                                   <div className="font-medium text-gray-800">
                                     {food.name}
@@ -660,7 +647,7 @@ function Nutrition() {
                                     g
                                   </div>
                                 </div>
-                                <span className="text-xs bg-[var(--accent)] text-white !px-2 !py-1 rounded-full !ml-2">
+                                <span className="ff-food-quantity">
                                   {food.quantity}g
                                 </span>
                               </div>
@@ -676,7 +663,7 @@ function Nutrition() {
                     <button
                       onClick={handleSavePlan}
                       disabled={isSaving || isSaved}
-                      className="flex flex-center items-center !gap-2 font-body text-[var(--primary)] border border-[var(--primary)] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="ff-plan-action"
                     >
                       {isSaving ? (
                         <>
@@ -716,15 +703,26 @@ function Nutrition() {
                   </div>
                 </div>
               ) : (
-                <p className="font-body text-gray-600 text-center text-base md:text-lg">
-                  O plano alimentar vai aparecer aqui
-                </p>
+                <div className="ff-plan-empty">
+                  <span className="ff-plan-empty-icon">
+                    <FiClipboard aria-hidden="true" />
+                  </span>
+                  <h3>O teu plano começa aqui.</h3>
+                  <p>
+                    Conversa com o assistente e pede para criar um plano. As
+                    refeições e os totais nutricionais aparecem aqui.
+                  </p>
+                  <div className="ff-plan-empty-lines" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
               )}
             </div>
           </div>
-          <div className="!mt-12" />
         </div>
-      </motion.section>
+      </PlanWorkspace>
 
       {/* Warnings */}
       {validationErrors.length > 0 && (

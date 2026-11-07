@@ -1,33 +1,163 @@
-/* Nutrition page scoped styles (safe defaults) */
-
-/* Smooth scrolling inside chat/message container */
-.section .overflow-y-auto {
-  scroll-behavior: smooth;
+.ff-nutrition-page .ff-plan-guide .ff-help-icon {
+  color: #86dfb6;
+  background: #008c3a15;
+  border-color: #71d8a740;
 }
-
-/* Custom scrollbar for WebKit browsers */
-.section .overflow-y-auto::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.ff-nutrition-page .ff-plan-chat {
+  display: flex;
+  flex-direction: column;
+  height: 700px;
+  min-height: 540px;
 }
-.section .overflow-y-auto::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.ff-nutrition-page .ff-plan-preview h3 {
+  color: #08773e;
+  font-size: 1.25rem;
+}
+.ff-nutrition-page .ff-chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 14px;
+  margin-bottom: 18px;
+  background: #f8fafd;
+  border: 1px solid #e5ebf4;
+  border-radius: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #a5b8d6 #f0f4fa;
+}
+.ff-nutrition-page .ff-chat-messages > div + div {
+  margin-top: 20px;
+}
+.ff-nutrition-page .ff-chat-messages .max-w-\[75\%\] {
+  max-width: 85%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ff-nutrition-page .ff-chat-messages .bg-gray-100 {
+  background: #fff;
+  border: 1px solid #e2e8f2;
+}
+.ff-nutrition-page .ff-chat-messages p,
+.ff-nutrition-page .ff-chat-messages li {
+  line-height: 1.75;
+  font-size: 0.85rem;
+}
+.ff-nutrition-page .ff-chat-messages .bg-gradient-to-br {
+  background: #08773e;
+}
+.ff-nutrition-page .ff-chat-composer {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+.ff-nutrition-page .ff-chat-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #becbdd;
   border-radius: 8px;
+  color: #17243a;
+  background: #fafbfd;
+  font: inherit;
+  font-size: 0.85rem;
 }
-.section .overflow-y-auto::-webkit-scrollbar-thumb {
-  background: var(--primary);
+.ff-nutrition-page .ff-chat-input::placeholder {
+  color: #637087;
+}
+.ff-nutrition-page .ff-chat-send {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  flex-shrink: 0;
+  min-height: 48px;
+  border: 1px solid #246ce5;
   border-radius: 8px;
+  color: #fff;
+  background: #246ce5;
+  font-size: 20px;
+  cursor: pointer;
 }
-.section .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+.ff-nutrition-page .ff-chat-send:hover:not(:disabled) {
+  background: #1c58bf;
 }
-
-/* Ensure gradients and important overrides play nicely */
-.section .rounded-lg {
-  will-change: transform;
+.ff-nutrition-page .ff-chat-send:disabled {
+  background: #e7edf6;
+  border-color: #d4deed;
+  color: #526079;
+  opacity: 1;
 }
-
-/* Buttons feel snappier */
-.section button {
-  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+.ff-nutrition-page .ff-nutrition-macros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.ff-nutrition-page .ff-nutrition-macro {
+  padding: 16px;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  background: #f6f8fc;
+  text-align: left;
+}
+.ff-nutrition-page .ff-nutrition-macro > div:first-child {
+  font-family: var(--headline);
+  font-size: 1.4rem;
+}
+.ff-nutrition-page .ff-nutrition-macro > div:last-child {
+  margin-top: 4px;
+  color: #536176;
+  font-size: 0.75rem;
+}
+.ff-nutrition-page .ff-nutrition-meal {
+  margin-bottom: 14px;
+  padding: 20px;
+  border: 1px solid #dce5ef;
+  border-radius: 10px;
+  background: #fff;
+}
+.ff-nutrition-page .ff-nutrition-meal h4 {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e6ecf3;
+  color: #08773e;
+}
+.ff-nutrition-page .ff-nutrition-food {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 8px;
+  overflow-wrap: anywhere;
+}
+.ff-nutrition-page .ff-nutrition-food > div {
+  min-width: 0;
+}
+.ff-nutrition-page .ff-food-quantity {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: #eaf6ef;
+  color: #08773e;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.ff-nutrition-page .ff-plan-empty-icon {
+  background: #eaf6ef;
+  border-color: #d1e9dc;
+  color: #08773e;
+}
+@media (max-width: 760px) {
+  .ff-nutrition-page .ff-plan-chat {
+    height: 650px;
+  }
+  .ff-nutrition-page .ff-chat-messages {
+    padding: 16px 10px;
+  }
+  .ff-nutrition-page .ff-chat-messages .max-w-\[75\%\] {
+    max-width: calc(100% - 40px);
+  }
+  .ff-nutrition-page .ff-nutrition-meal {
+    padding: 16px;
+  }
 }

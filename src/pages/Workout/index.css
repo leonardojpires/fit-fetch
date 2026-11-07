@@ -1,24 +1,241 @@
-@import 'tailwindcss';
-
-.workout-radio {
-  @apply w-4 h-4 text-[var(--primary)] bg-gray-100 border-gray-300 focus:ring-[var(--primary)] focus:ring-2 cursor-pointer;
+.ff-workout-page .ff-workout-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
 }
-
-.workout-input {
-    @apply w-full !px-4 !py-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-[var(--primary)] focus:border-[var(--primary)] outline-none transition-all;
+.ff-workout-page .ff-workout-form > .ff-workout-label,
+.ff-workout-page .ff-workout-options,
+.ff-workout-page .ff-workout-muscles,
+.ff-workout-page .ff-workout-submit-row {
+  grid-column: 1 / -1;
 }
-
-@keyframes slide-in {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
+.ff-workout-page .ff-workout-label {
+  color: #25344c;
+  font-size: 0.825rem;
+  font-weight: 600;
+}
+.ff-workout-page .ff-workout-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: -10px;
+}
+.ff-workout-page .ff-workout-option {
+  position: relative;
+  min-width: 0;
+}
+.ff-workout-page .ff-workout-option label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 8px;
+  border: 1px solid #c5d1e2;
+  border-radius: 8px;
+  color: #536176;
+  background: #fafbfd;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.ff-workout-page .workout-radio {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.ff-workout-page .workout-radio:checked + label {
+  color: #2158b4;
+  border-color: #246ce5;
+  background: #edf3fe;
+  box-shadow: inset 0 0 0 1px #246ce5;
+  font-weight: 700;
+}
+.ff-workout-page .workout-radio:focus-visible + label {
+  outline: 3px solid #246ce5;
+  outline-offset: 3px;
+}
+.ff-workout-page .ff-workout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.ff-workout-page .workout-input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #becbdd;
+  border-radius: 8px;
+  background: #fafbfd;
+  color: #17243a;
+  font: inherit;
+  font-size: 0.875rem;
+}
+.ff-workout-page .workout-input::placeholder {
+  color: #637087;
+}
+.ff-workout-page .ff-workout-field small {
+  font-size: 0.72rem;
+  color: #536176;
+}
+.ff-workout-page .ff-workout-muscles {
+  padding-top: 24px;
+  border-top: 1px solid #e5ebf4;
+}
+.ff-workout-page .ff-workout-muscles h3 {
+  font-size: 1rem;
+}
+.ff-workout-page .ff-workout-muscles > p {
+  margin: 8px 0 20px;
+  color: #536176;
+  font-size: 0.8rem;
+}
+.ff-workout-page .muscles-container {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px !important;
+}
+.ff-workout-page .muscle-card-epic {
+  min-width: 0;
+  padding: 18px 8px !important;
+  border: 1px solid #dce4ef;
+  border-radius: 10px;
+  background: #fafbfd;
+  box-shadow: none;
+  transform: none;
+}
+.ff-workout-page .muscle-card-epic:hover {
+  background: #f0f5fd;
+  transform: none;
+  box-shadow: none;
+}
+.ff-workout-page .muscle-card-epic.selected {
+  border-color: #246ce5;
+  background: #edf3fe;
+  box-shadow: inset 0 0 0 1px #246ce5;
+  transform: none;
+}
+.ff-workout-page .muscle-icon,
+.ff-workout-page .muscle-card-epic.selected .muscle-icon {
+  font-size: 27px;
+  color: #2460c4;
+  transform: none;
+}
+.ff-workout-page .muscle-name-epic,
+.ff-workout-page .muscle-card-epic.selected .muscle-name-epic {
+  color: #25344c;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.ff-workout-page .muscle-description,
+.ff-workout-page .muscle-card-epic.selected .muscle-description {
+  color: #536176;
+  font-size: 0.65rem;
+}
+.ff-workout-page .selected-indicator {
+  width: 18px;
+  height: 18px;
+  top: 6px;
+  right: 6px;
+  background: #246ce5;
+  box-shadow: none;
+}
+.ff-workout-page .indicator-check {
+  font-size: 12px;
+  color: #fff;
+}
+.ff-workout-page .shine-effect,
+.ff-workout-page .color-bar,
+.ff-workout-page .empty-icon {
+  display: none;
+}
+.ff-workout-page .selection-summary {
+  padding: 16px !important;
+  border: 1px solid #dce4ef;
+  border-radius: 10px;
+  background: #f6f8fc;
+  box-shadow: none;
+}
+.ff-workout-page .summary-header {
+  gap: 8px;
+}
+.ff-workout-page .summary-text {
+  color: #344660;
+  font-size: 0.75rem;
+}
+.ff-workout-page .summary-icon {
+  font-size: 16px;
+}
+.ff-workout-page .muscle-pill {
+  min-height: 44px;
+  padding: 8px 12px !important;
+  gap: 8px;
+  border: 1px solid #cbd9ef;
+  border-radius: 6px;
+  box-shadow: none;
+  transform: none;
+}
+.ff-workout-page .pill-name {
+  font-size: 0.75rem;
+}
+.ff-workout-page .pill-icon,
+.ff-workout-page .pill-remove {
+  color: #245dbb;
+  font-size: 16px;
+}
+.ff-workout-page .empty-state {
+  padding: 14px;
+  background: #f6f8fc;
+  border: 1px dashed #d1dcec;
+  border-radius: 8px;
+}
+.ff-workout-page .empty-text {
+  font-size: 0.75rem;
+  color: #536176;
+}
+.ff-workout-page .ff-workout-result {
+  overflow-x: auto;
+}
+.ff-workout-page .ff-workout-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+  font-size: 0.825rem;
+}
+.ff-workout-page .ff-workout-table caption {
+  text-align: left;
+  color: #536176;
+  font-size: 0.75rem;
+  margin-bottom: 14px;
+}
+.ff-workout-page .ff-workout-table thead tr {
+  background: #f0f4fb;
+  color: #344660;
+}
+.ff-workout-page .ff-workout-table th {
+  font-size: 0.75rem;
+}
+.ff-workout-page .ff-workout-summary {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid #e0e7f1;
+  border-radius: 8px;
+  background: #f8fafd;
+  font-size: 0.8rem;
+  color: #536176;
+}
+@media (max-width: 420px) {
+  .ff-workout-page .ff-workout-options {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: translateX(0);
-    opacity: 1;
+  .ff-workout-page .ff-workout-form {
+    grid-template-columns: 1fr;
   }
-}
-
-.animate-slide-in {
-  animation: slide-in 0.3s ease-out;
+  .ff-workout-page .muscles-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

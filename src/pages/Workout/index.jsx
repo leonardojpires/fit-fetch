@@ -10,7 +10,8 @@ import SuccessWarning from "../../components/SuccessWarning";
 import { IoMdDownload } from "react-icons/io";
 import { IoBookmarksOutline, IoBookmarksSharp } from "react-icons/io5";
 import pdfWorkoutExporter from "../../utils/pdfWorkoutExporter.js";
-import { motion } from "framer-motion";
+import PlanWorkspace from "../../components/PlanWorkspace";
+import { FiClipboard, FiArrowRight } from "react-icons/fi";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -92,19 +93,20 @@ function Workout() {
 
   async function submitAndGenerate(e) {
     e.preventDefault();
-    
+
     const planSection = document.getElementById("plan-section");
     if (planSection) {
       const yOffset = -100;
-      const y = planSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      const y =
+        planSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
 
     if (loading) return;
     if (!user) {
       // console.error("Nenhum utilizador autenticado!");
       return;
-  }
+    }
 
     try {
       // Build payload based on workout type to avoid sending irrelevant fields
@@ -170,7 +172,7 @@ function Workout() {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Erro ao guardar o plano de treino!");
@@ -181,7 +183,7 @@ function Workout() {
       setSuccessMessage(
         isSaved
           ? "Plano de treino removido dos guardados!"
-          : "Plano de treino guardado com sucesso!"
+          : "Plano de treino guardado com sucesso!",
       );
       setShowSuccessWarning(true);
     } catch (err) {
@@ -206,34 +208,24 @@ function Workout() {
 
   return (
     <>
-      <motion.section
-        className="w-full !py-28 pb-48"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <div className="section !py-10">
-          <h1 className="font-headline font-bold text-4xl md:text-5xl text-black !mb-3">
-            Cria o Teu Plano Personalizado
-          </h1>
-          <p className="font-body font-medium text-lg md:text-xl text-black/70 !mb-8">
-            Escolhe o que queres treinar da forma que quiseres!
-          </p>
-
-          <div className="flex flex-col items-start lg:flex-row gap-6 !mt-4">
-            <div className="lg:w-1/2 w-full bg-gray-100 !p-6 rounded-lg shadow-sm">
-              <h2 className="font-headline font-bold text-2xl text-[var(--primary)] !mb-4">
-                Seleciona o Tipo de Treino
-              </h2>
-              <p className="font-body text-gray-600 !mb-6">
+      <PlanWorkspace kind="workout">
+        <div className="ff-help-wrap ff-plan-content">
+          <div className="ff-plan-columns">
+            <div className="ff-plan-settings">
+              <p className="ff-plan-eyebrow">01 / As tuas preferências</p>
+              <h2 className="ff-plan-card-title">Seleciona o Tipo de Treino</h2>
+              <p className="ff-plan-card-description">
                 Escolhe as tuas preferências para o teu treino ideal
               </p>
 
-              <form onSubmit={submitAndGenerate} className="font-body">
-                <span className="text-lg font-medium">Tipo de treino</span>
-                <div className="flex flex-col lg:flex-row gap-6 !mb-6 !mt-2">
-                  <div className="flex items-center gap-2">
+              <form onSubmit={submitAndGenerate} className="ff-workout-form">
+                <span className="ff-workout-label">Tipo de treino</span>
+                <div
+                  className="ff-workout-options"
+                  role="radiogroup"
+                  aria-label="Tipo de treino"
+                >
+                  <div className="ff-workout-option">
                     <input
                       type="radio"
                       name="workoutType"
@@ -247,7 +239,7 @@ function Workout() {
                       Calistenia
                     </label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="ff-workout-option">
                     <input
                       type="radio"
                       name="workoutType"
@@ -261,7 +253,7 @@ function Workout() {
                       Musculação
                     </label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="ff-workout-option">
                     <input
                       type="radio"
                       name="workoutType"
@@ -276,9 +268,13 @@ function Workout() {
                     </label>
                   </div>
                 </div>
-                <span className="text-lg font-medium">Nível</span>
-                <div className="flex flex-col lg:flex-row gap-6 !mb-6 !mt-2">
-                  <div className="flex items-center gap-2">
+                <span className="ff-workout-label">Nível</span>
+                <div
+                  className="ff-workout-options"
+                  role="radiogroup"
+                  aria-label="Nível"
+                >
+                  <div className="ff-workout-option">
                     <input
                       type="radio"
                       name="level"
@@ -292,7 +288,7 @@ function Workout() {
                       Iniciante
                     </label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="ff-workout-option">
                     <input
                       type="radio"
                       name="level"
@@ -306,7 +302,7 @@ function Workout() {
                       Intermédio
                     </label>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="ff-workout-option">
                     <input
                       type="radio"
                       name="level"
@@ -323,10 +319,10 @@ function Workout() {
                 </div>
                 {formData.workoutType !== "cardio" && (
                   <>
-                    <div className="flex flex-col items-start gap-2 !mb-4">
+                    <div className="ff-workout-field">
                       <label
                         htmlFor="series_number"
-                        className="text-lg font-medium"
+                        className="ff-workout-label"
                       >
                         Número de séries
                       </label>
@@ -345,11 +341,8 @@ function Workout() {
                         Entre 1 e 4 séries
                       </small>
                     </div>
-                    <div className="flex flex-col items-start gap-2 !mb-4">
-                      <label
-                        htmlFor="reps_number"
-                        className="text-lg font-medium"
-                      >
+                    <div className="ff-workout-field">
+                      <label htmlFor="reps_number" className="ff-workout-label">
                         Número de repetições
                       </label>
                       <input
@@ -367,10 +360,10 @@ function Workout() {
                         Entre 5 e 20 repetições
                       </small>
                     </div>
-                    <div className="flex flex-col items-start gap-2 !mb-4">
+                    <div className="ff-workout-field">
                       <label
                         htmlFor="exercises_number"
-                        className="text-lg font-medium"
+                        className="ff-workout-label"
                       >
                         Número de exercícios
                       </label>
@@ -385,11 +378,8 @@ function Workout() {
                         className="workout-input"
                       />
                     </div>
-                    <div className="flex flex-col items-start gap-2 !mb-4">
-                      <label
-                        htmlFor="rest_time"
-                        className="text-lg font-medium"
-                      >
+                    <div className="ff-workout-field">
+                      <label htmlFor="rest_time" className="ff-workout-label">
                         Descanso (segundos)
                       </label>
                       <input
@@ -407,12 +397,16 @@ function Workout() {
                         Em segundos
                       </small>
                     </div>
-                    <BodySelector onMuscleSelect={handleMuscleSelect} />
+                    <div className="ff-workout-muscles">
+                      <h3>Grupos musculares</h3>
+                      <p>Seleciona os grupos que queres trabalhar.</p>
+                      <BodySelector onMuscleSelect={handleMuscleSelect} />
+                    </div>
                   </>
                 )}
                 {formData.workoutType === "cardio" && (
-                  <div className="flex flex-col items-start gap-2 !mb-4">
-                    <label htmlFor="duration" className="text-lg font-medium">
+                  <div className="ff-workout-field">
+                    <label htmlFor="duration" className="ff-workout-label">
                       Duração (minutos)
                     </label>
                     <input
@@ -432,11 +426,8 @@ function Workout() {
                     </small>
                   </div>
                 )}
-                <div className="flex justify-center">
-                  <button
-                    type="submit"
-                    className="w-full bg-[var(--primary)] text-white !px-4 !py-2 !mt-5 cursor-pointer rounded-xl hover:bg-[var(--accent)] transition-all ease-in-out duration-200"
-                  >
+                <div className="ff-workout-submit-row">
+                  <button type="submit" className="ff-plan-primary-button">
                     Gerar plano
                   </button>
                 </div>
@@ -444,26 +435,46 @@ function Workout() {
             </div>
 
             {/* PLAN DIV */}
-            <div id="plan-section" className="lg:w-1/2 w-full bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg !p-6 flex items-start justify-center">
+            <div id="plan-section" className="ff-plan-preview">
+              <div className="ff-plan-panel-heading">
+                <p className="ff-plan-eyebrow">02 / O resultado</p>
+                <h2>O teu plano de treino</h2>
+                <p>Revê os detalhes e guarda o plano que queres seguir.</p>
+              </div>
               {loading ? (
-                <div className="flex flex-col items-center gap-4">
-                  <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-[var(--primary)]"></div>
+                <div className="ff-plan-loading" role="status">
+                  <div className="ff-plan-spinner" aria-hidden="true"></div>
                   <p className="font-body text-gray-600 text-center text-base md:text-lg">
                     A gerar o plano de treino...
                   </p>
                 </div>
               ) : workoutPlan ? (
-                <div className="w-full overflow-x-auto">
-                  <table className="w-full border-collapse !mb-5">
+                <div
+                  className="ff-workout-result"
+                  tabIndex={0}
+                  role="region"
+                  aria-label="Detalhes do plano de treino"
+                >
+                  <table className="ff-workout-table">
+                    <caption>Exercícios do teu plano de treino</caption>
                     <thead>
                       <tr className="bg-[var(--primary)] text-white">
-                        <th className="!px-4 !py-3 text-left font-headline font-semibold">
+                        <th
+                          scope="col"
+                          className="!px-4 !py-3 text-left font-headline font-semibold"
+                        >
                           Exercício
                         </th>
-                        <th className="!px-4 !py-3 text-left font-headline font-semibold">
+                        <th
+                          scope="col"
+                          className="!px-4 !py-3 text-left font-headline font-semibold"
+                        >
                           Músculo
                         </th>
-                        <th className="!px-4 !py-3 text-left font-headline font-semibold">
+                        <th
+                          scope="col"
+                          className="!px-4 !py-3 text-left font-headline font-semibold"
+                        >
                           Dificuldade
                         </th>
                       </tr>
@@ -482,7 +493,11 @@ function Workout() {
                               target="_blank"
                               className="flex flex-row gap-2 items-center hover:underline"
                             >
-                              <FaExternalLinkAlt className="text-black/50 text-sm" aria-hidden="true" focusable="false" />{" "}
+                              <FaExternalLinkAlt
+                                className="text-black/50 text-sm"
+                                aria-hidden="true"
+                                focusable="false"
+                              />{" "}
                               {ex.name}
                             </Link>
                           </td>
@@ -495,15 +510,15 @@ function Workout() {
                                 ex.difficulty === "beginner"
                                   ? "bg-green-100 text-green-800"
                                   : ex.difficulty === "intermediate"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-red-100 text-red-800"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
                               }`}
                             >
                               {ex.difficulty === "beginner"
                                 ? "Iniciante"
                                 : ex.difficulty === "intermediate"
-                                ? "Intermédio"
-                                : "Avançado"}
+                                  ? "Intermédio"
+                                  : "Avançado"}
                             </span>
                           </td>
                         </tr>
@@ -511,7 +526,7 @@ function Workout() {
                     </tbody>
                   </table>
                   {workoutPlan.workoutType !== "cardio" && (
-                    <div className="flex flex-col gap-2">
+                    <div className="ff-workout-summary">
                       <span className="font-body">
                         <strong>Descanso entre séries:</strong>{" "}
                         {convertToMinutes(workoutPlan.rest_time)}{" "}
@@ -534,31 +549,59 @@ function Workout() {
                           user,
                           convertToMinutes,
                           tWorkoutType,
-                          tLevel
+                          tLevel,
                         )
                       }
-                      className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer"
+                      className="ff-plan-action"
                     >
-                      <IoMdDownload aria-hidden="true" focusable="false" /> Exportar para PDF
+                      <IoMdDownload aria-hidden="true" focusable="false" />{" "}
+                      Exportar para PDF
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleSavePlan(workoutPlan.id)}
                       disabled={isSaving}
-                      className="flex flex-center items-center gap-2 font-body text-[var(--primary)] border border-[var(--primary))] rounded-lg !px-4 !py-2 hover:text-white hover:bg-[var(--primary)] transition-all ease-in-out duration-200 !mt-3 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="ff-plan-action"
                     >
                       {isSaving ? (
                         <>
-                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          <svg
+                            className="animate-spin h-4 w-4"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                            focusable="false"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              fill="none"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
                           </svg>
                           A processar...
                         </>
                       ) : (
                         <>
-                          {isSaved ? <IoBookmarksSharp aria-hidden="true" focusable="false" /> : <IoBookmarksOutline aria-hidden="true" focusable="false" />}{" "}
+                          {isSaved ? (
+                            <IoBookmarksSharp
+                              aria-hidden="true"
+                              focusable="false"
+                            />
+                          ) : (
+                            <IoBookmarksOutline
+                              aria-hidden="true"
+                              focusable="false"
+                            />
+                          )}{" "}
                           {isSaved ? "Plano Guardado" : "Guardar Plano"}
                         </>
                       )}
@@ -566,15 +609,26 @@ function Workout() {
                   </div>
                 </div>
               ) : (
-                <p className="font-body text-gray-600 text-center text-base md:text-lg">
-                  O plano de treino vai aparecer aqui
-                </p>
+                <div className="ff-plan-empty">
+                  <span className="ff-plan-empty-icon">
+                    <FiClipboard aria-hidden="true" />
+                  </span>
+                  <h3>O teu plano começa aqui.</h3>
+                  <p>
+                    Define as preferências ao lado e seleciona “Gerar plano”. Os
+                    exercícios e os detalhes da sessão aparecem aqui.
+                  </p>
+                  <div className="ff-plan-empty-lines" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                </div>
               )}
             </div>
           </div>
-          <div className="!mt-12" />
         </div>
-      </motion.section>
+      </PlanWorkspace>
 
       {/* Warnings */}
       {validationErrors.length > 0 && (
