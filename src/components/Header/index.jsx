@@ -1,305 +1,402 @@
 import "./index.css";
-import { CiLogin } from "react-icons/ci";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { CgProfile } from "react-icons/cg";
-import { GoGear } from "react-icons/go";
-import { IoMdExit, IoIosArrowDown } from "react-icons/io";
-import { FaChevronDown } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import {
+  FiArrowRight,
+  FiChevronDown,
+  FiHelpCircle,
+  FiLayers,
+  FiLogOut,
+  FiMenu,
+  FiSettings,
+  FiUser,
+  FiX,
+} from "react-icons/fi";
+import { LuDumbbell, LuLeaf } from "react-icons/lu";
 import { auth } from "../../services/firebase";
 import { signOut } from "firebase/auth";
 import defaultAvatar from "../../../public/img/avatar/default_avatar.jpg";
 import useCurrentUser from "../../hooks/useCurrentUser";
 
-function Header() {
-  const { user: userInfo, setUser, loading: userLoading } = useCurrentUser();
+const navigationGroups = [
+  {
+    id: "questions",
+    label: "Questões",
+    caption: "Conhece o Fit Fetch",
+    links: [
+      {
+        to: "/como-funciona",
+        label: "Como funciona",
+        description: "O primeiro passo para a tua nova rotina.",
+        icon: FiLayers,
+      },
+      {
+        to: "/faq",
+        label: "Perguntas frequentes",
+        description: "Respostas simples às tuas dúvidas.",
+        icon: FiHelpCircle,
+      },
+    ],
+  },
+  {
+    id: "plans",
+    label: "Planos",
+    caption: "Investe no teu bem-estar",
+    links: [
+      {
+        to: "/treinos",
+        label: "Treino",
+        description: "Dá forma aos teus objetivos.",
+        icon: LuDumbbell,
+      },
+      {
+        to: "/nutricao",
+        label: "Nutrição",
+        description: "Encontra o teu equilíbrio à mesa.",
+        icon: LuLeaf,
+      },
+    ],
+  },
+];
 
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [dropdownClosing, setDropdownClosing] = useState(false);
-  const [openNav, setOpenNav] = useState(null);
+function HeaderNavigation({ userInfo, userLoading, handleLogout, pathname }) {
+  const [openPanel, setOpenPanel] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const headerRef = useRef(null);
+  const mobileTriggerRef = useRef(null);
+  const triggerRefs = useRef({});
 
-  const toggleDropdown = () => {
-    if (showDropdown) {
-      setShowDropdown(false);
-    } else {
-      setShowDropdown(true);
+  const closeNavigation = () => {
+    setOpenPanel(null);
+    setMobileOpen(false);
+  };
+
+  useEffect(() => {
+    const handleOutsidePointer = (event) => {
+      if (!headerRef.current?.contains(event.target)) {
+        setOpenPanel(null);
+        setMobileOpen(false);
+      }
+    };
+    const handleEscape = (event) => {
+      if (event.key !== "Escape") return;
+      if (openPanel) {
+        event.preventDefault();
+        triggerRefs.current[openPanel]?.focus();
+        setOpenPanel(null);
+      } else if (mobileOpen) {
+        event.preventDefault();
+        mobileTriggerRef.current?.focus();
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", handleOutsidePointer);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutsidePointer);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [openPanel, mobileOpen]);
+
+  // A breakpoint change must not leave focus in a now-hidden mobile menu.
+  useEffect(() => {
+    const breakpoint = window.matchMedia("(max-width: 959px)");
+    const resetNavigation = () => {
+      if (headerRef.current?.contains(document.activeElement)) {
+        headerRef.current.querySelector(".ff-brand")?.focus();
+      }
+      setOpenPanel(null);
+      setMobileOpen(false);
+    };
+    breakpoint.addEventListener("change", resetNavigation);
+    return () => breakpoint.removeEventListener("change", resetNavigation);
+  }, []);
+
+  const closePanelOnBlur = (event, id) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      setOpenPanel((current) => (current === id ? null : current));
     }
   };
 
-  /*   const closeDropdown = () => {
-    if (showDropdown) {
-      setDropdownClosing(true);
-      setTimeout(() => {
-        setShowDropdown(false);
-        setDropdownClosing(false);
-      }, 300);
-    }
-  }; */
+  return (
+    <header
+      ref={headerRef}
+      className="ff-header"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget))
+          closeNavigation();
+      }}
+    >
+      <a
+        className="ff-header-skip"
+        href="#main-content"
+        onClick={closeNavigation}
+      >
+        Saltar para o conteúdo
+      </a>
+      <div className="ff-header-inner">
+        <Link
+          className="ff-brand"
+          to="/"
+          aria-label="Fit Fetch — página inicial"
+          onClick={closeNavigation}
+        >
+          <img src="/img/logos/ff_logo.svg" alt="" width="154" height="52" />
+          <span className="ff-brand-caption">
+            Treino <span aria-hidden="true">·</span> Nutrição{" "}
+            <span aria-hidden="true">·</span> Bem-estar
+          </span>
+        </Link>
 
-  let isInAdmin = false;
+        <button
+          className="ff-mobile-toggle"
+          type="button"
+          ref={mobileTriggerRef}
+          aria-expanded={mobileOpen}
+          aria-controls="ff-primary-navigation"
+          aria-label={mobileOpen ? "Fechar navegação" : "Abrir navegação"}
+          onClick={() => {
+            setMobileOpen((value) => !value);
+            setOpenPanel(null);
+          }}
+        >
+          {mobileOpen ? (
+            <FiX aria-hidden="true" />
+          ) : (
+            <FiMenu aria-hidden="true" />
+          )}
+        </button>
 
+        <nav
+          id="ff-primary-navigation"
+          className="ff-primary-nav"
+          aria-label="Navegação principal"
+          data-open={mobileOpen}
+        >
+          <ul className="ff-nav-list">
+            <li>
+              <NavLink
+                to="/"
+                end
+                className="ff-nav-link"
+                onClick={closeNavigation}
+              >
+                Início
+              </NavLink>
+            </li>
+            {navigationGroups.map((group) => (
+              <li
+                className="ff-nav-group"
+                key={group.id}
+                onBlur={(event) => closePanelOnBlur(event, group.id)}
+              >
+                <button
+                  className="ff-nav-link ff-nav-disclosure"
+                  type="button"
+                  ref={(node) => {
+                    triggerRefs.current[group.id] = node;
+                  }}
+                  aria-expanded={openPanel === group.id}
+                  aria-controls={`ff-panel-${group.id}`}
+                  data-active={group.links.some((link) => link.to === pathname)}
+                  onClick={() =>
+                    setOpenPanel((current) =>
+                      current === group.id ? null : group.id,
+                    )
+                  }
+                >
+                  {group.label}
+                  <FiChevronDown
+                    className="ff-nav-chevron"
+                    aria-hidden="true"
+                  />
+                </button>
+                <div
+                  id={`ff-panel-${group.id}`}
+                  className="ff-nav-panel"
+                  hidden={openPanel !== group.id}
+                >
+                  <p className="ff-panel-caption">{group.caption}</p>
+                  <ul className="ff-panel-links">
+                    {group.links.map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <li key={link.to}>
+                          <NavLink
+                            to={link.to}
+                            className="ff-panel-link"
+                            onClick={closeNavigation}
+                          >
+                            <span
+                              className={`ff-nav-icon ${link.to === "/nutricao" ? "ff-nav-icon-green" : ""}`}
+                            >
+                              <Icon aria-hidden="true" />
+                            </span>
+                            <span className="ff-panel-text">
+                              <span className="ff-panel-title">
+                                {link.label}
+                              </span>
+                              <span className="ff-panel-description">
+                                {link.description}
+                              </span>
+                            </span>
+                            <FiArrowRight
+                              className="ff-panel-arrow"
+                              aria-hidden="true"
+                            />
+                          </NavLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </li>
+            ))}
+            <li>
+              <NavLink
+                to="/contacto"
+                className="ff-nav-link"
+                onClick={closeNavigation}
+              >
+                Contacto
+              </NavLink>
+            </li>
+          </ul>
+          <p className="ff-mobile-note">O teu ritmo. Os teus objetivos.</p>
+        </nav>
+
+        <div
+          className="ff-account"
+          onBlur={(event) => closePanelOnBlur(event, "profile")}
+        >
+          {userInfo ? (
+            <>
+              <button
+                className="ff-profile-trigger"
+                type="button"
+                ref={(node) => {
+                  triggerRefs.current.profile = node;
+                }}
+                aria-expanded={openPanel === "profile"}
+                aria-controls="ff-account-panel"
+                aria-label={`Conta de ${userInfo?.name || "utilizador"}`}
+                onClick={() => {
+                  setOpenPanel((current) =>
+                    current === "profile" ? null : "profile",
+                  );
+                  setMobileOpen(false);
+                }}
+              >
+                <span className="ff-avatar">
+                  <img
+                    src={
+                      userInfo?.avatarUrl
+                        ? userInfo.avatarUrl.startsWith("http")
+                          ? userInfo.avatarUrl
+                          : `http://localhost:3000${userInfo.avatarUrl}`
+                        : defaultAvatar
+                    }
+                    alt=""
+                    width="36"
+                    height="36"
+                  />
+                </span>
+                <span className="ff-profile-summary">
+                  <span className="ff-profile-name">{userInfo?.name}</span>
+                  <span className="ff-profile-caption">A minha conta</span>
+                </span>
+                <FiChevronDown className="ff-nav-chevron" aria-hidden="true" />
+              </button>
+              <div
+                id="ff-account-panel"
+                className="ff-nav-panel ff-account-panel"
+                hidden={openPanel !== "profile"}
+              >
+                <div className="ff-account-heading">
+                  <span className="ff-panel-caption">A tua área pessoal</span>
+                  <span className="ff-account-name">{userInfo?.name}</span>
+                </div>
+                <ul className="ff-panel-links">
+                  <li>
+                    <NavLink
+                      to="/perfil"
+                      className="ff-panel-link"
+                      onClick={closeNavigation}
+                    >
+                      <span className="ff-nav-icon">
+                        <FiUser aria-hidden="true" />
+                      </span>
+                      <span className="ff-panel-text">
+                        <span className="ff-panel-title">O meu perfil</span>
+                        <span className="ff-panel-description">
+                          Gere a tua informação pessoal.
+                        </span>
+                      </span>
+                      <FiArrowRight
+                        className="ff-panel-arrow"
+                        aria-hidden="true"
+                      />
+                    </NavLink>
+                  </li>
+                  {userInfo?.role === "admin" && (
+                    <li>
+                      <Link
+                        to="/admin"
+                        className="ff-panel-link"
+                        onClick={closeNavigation}
+                      >
+                        <span className="ff-nav-icon">
+                          <FiSettings aria-hidden="true" />
+                        </span>
+                        <span className="ff-panel-title">Administração</span>
+                        <FiArrowRight
+                          className="ff-panel-arrow"
+                          aria-hidden="true"
+                        />
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+                <div className="ff-account-footer">
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="ff-signout"
+                  >
+                    <FiLogOut aria-hidden="true" /> Sair da conta
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <Link to="/entrar" className="ff-signin" onClick={closeNavigation}>
+              {userLoading ? "..." : "Entrar"}
+              <FiArrowRight aria-hidden="true" />
+            </Link>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export default function Header() {
+  const { user: userInfo, loading: userLoading } = useCurrentUser();
   const location = useLocation();
-  if (
-    location.pathname === "/admin" ||
-    location.pathname.startsWith("/admin")
-  ) {
-    isInAdmin = true;
-  }
-
-  /*   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, [setUser]); */
-
-  const [showMenu, setShowMenu] = useState(false);
-  const [menuClosing, setMenuClosing] = useState(false);
-  const toggleMenu = () => {
-    if (showMenu) {
-      setShowMenu(false);
-    } else {
-      setShowMenu(true);
-    }
-  };
 
   const handleLogout = async () => {
     await signOut(auth);
   };
 
-  const handleDropdownHover = (key) => setOpenNav(key);
-  const handleDropdownLeave = () => setOpenNav(false);
-  const handleDropdownClick = (e, key) => {
-    e.preventDefault();
-    setOpenNav((prev) => (prev === key ? false : key));
-  };
+  if (location.pathname.startsWith("/admin")) return null;
 
-  return !isInAdmin ? (
-    <header className="header relative w-full flex items-center justify-evenly !px-4 !lg:px-6 !py-5 bg-[var(--primary)]/80 backdrop-blur-md">
-      {/* LOGO */}
-      <div>
-        <Link to="/">
-          <img
-            src="/img/logos/ff_logo.svg"
-            alt="Fit Fetch - Logotipo, ir para página inicial"
-            className="logo select-none pointer-none w-[150px] lg:w-[150px]"
-            width="150"
-            height="50"
-          />
-        </Link>
-      </div>
-
-      {/* NAVIGATION */}
-      <nav
-        className={`nav ${showMenu || menuClosing ? "responsive-nav" : ""} ${
-          menuClosing ? "menu-closing" : ""
-        }`}
-      >
-        <Link
-          to="/"
-          className="font-headline nav-link underline-hover focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
-          onClick={toggleMenu}
-        >
-          INÍCIO
-        </Link>
-        <div
-          className="relative w-full flex justify-center items-center"
-          onMouseEnter={() => handleDropdownHover("quest")}
-          onMouseLeave={handleDropdownLeave}
-        >
-          <button
-            type="button"
-            className="font-headline flex gap-1 justify-center items-center nav-link underline-hover cursor-pointer focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
-            onClick={(e) => handleDropdownClick(e, "quest")}
-            aria-expanded={openNav === "quest"}
-            aria-haspopup="true"
-          >
-            QUESTÕES <FaChevronDown aria-hidden="true" focusable="false" />
-          </button>
-          <AnimatePresence>
-            {openNav === "quest" && (
-              <motion.div
-                key="quest-dropdown"
-                initial={{ opacity: 0, y: -10, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                className="absolute top-full left-[50%] right-0 translate-x-[-50%] min-w-[250px] bg-white/95 backdrop-blur-md shadow-2xl rounded-md !py-2 flex flex-col justify-center items-center z-[200] !p-2 pointer-events-auto cursor-pointer"
-              >
-                <Link
-                  to="/como-funciona"
-                  className="sublink"
-                  onClick={toggleMenu}
-                >
-                  COMO FUNCIONA
-                </Link>
-                <Link to="/faq" className="sublink" onClick={toggleMenu}>
-                  FAQ
-                </Link>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        <div
-          className="relative w-full flex justify-center items-center"
-          onMouseEnter={() => handleDropdownHover("plans")}
-          onMouseLeave={handleDropdownLeave}
-        >
-          <button
-            type="button"
-            className="font-headline flex gap-1 justify-center items-center nav-link underline-hover cursor-pointer focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
-            onClick={(e) => handleDropdownClick(e, "plans")}
-            aria-expanded={openNav === "plans"}
-            aria-haspopup="true"
-          >
-            PLANOS <FaChevronDown aria-hidden="true" focusable="false" />
-          </button>
-          <AnimatePresence>
-            {openNav === "plans" && (
-              <motion.div
-                key="plans-dropdown"
-                initial={{ opacity: 0, y: -10, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                className="absolute top-full left-[50%] right-0 translate-x-[-50%] min-w-[250px] bg-white/95 backdrop-blur-md shadow-2xl rounded-md !py-2 flex flex-col justify-center items-center z-[200] !p-2 pointer-events-auto cursor-pointer"
-              >
-                <Link to="/treinos" className="sublink" onClick={toggleMenu}>
-                  TREINO
-                </Link>
-                <Link to="/nutricao" className="sublink" onClick={toggleMenu}>
-                  NUTRIÇÃO
-                </Link>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-        <Link
-          to="/contacto"
-          className="font-headline nav-link underline-hover focus:outline-2 focus:outline-offset-2 focus:outline-[var(--secondary)] rounded-sm"
-          onClick={toggleMenu}
-        >
-          CONTACTO
-        </Link>
-
-        {/* MOBILE BUTTON */}
-        {userInfo ? (
-          <div></div>
-        ) : (
-          <Link
-            to="/entrar"
-            className="font-headline auth-button-mobile flex lg:hidden"
-            onClick={toggleMenu}
-          >
-            ENTRAR <CiLogin />
-          </Link>
-        )}
-      </nav>
-
-      {/* USER DROPDOWN */}
-      <div className="flex flex-row justify-center items-center gap-4">
-        <div
-          className="flex cursor-pointer font-body group focus:outline-2 focus:outline-offset-2 rounded-sm"
-          onClick={toggleDropdown}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              toggleDropdown();
-            }
-          }}
-          role="button"
-          tabIndex={0}
-          aria-expanded={showDropdown}
-          aria-haspopup="true"
-        >
-          
-          {userInfo ? (
-            <div className="relative flex flex-row items-center gap-3">
-              <img
-                src={
-                  userInfo?.avatarUrl
-                    ? userInfo.avatarUrl.startsWith("http")
-                      ? userInfo.avatarUrl
-                      : `http://localhost:3000${userInfo.avatarUrl}`
-                    : defaultAvatar
-                }
-                alt={`Avatar de ${userInfo?.name || 'utilizador'}`}
-                className="w-10 h-10 object-cover rounded-full shadow-md pointer-events-none"
-                width="40"
-                height="40"
-              />
-              {(showDropdown || dropdownClosing) && (
-                <div
-                  className={`user-dropdown ${
-                    dropdownClosing ? "dropdown-closing" : ""
-                  } absolute top-full !mt-2 w-40  bg-[var(--text-secondary)] dark:bg-white  shadow-lg rounded-md !py-2 flex flex-col z-50`}
-                >
-                  <Link to="/perfil" className="profile-button">
-                    <CgProfile /> Perfil
-                  </Link>
-                  {userInfo?.role === "admin" && (
-                    <Link to="/admin" className="profile-button">
-                      <GoGear /> Admin
-                    </Link>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="profile-button text-left cursor-pointer"
-                  >
-                    <IoMdExit /> Sair
-                  </button>
-                </div>
-              )}
-              <div className="hidden lg:flex flex-row justify-center items-center gap-2 text-sm !font-body">
-                <span className="flex flex-row items-center gap-2 font-bold text-[var(--primary)]">
-                  {userInfo?.name}
-                  <IoIosArrowDown
-                    className={`${
-                      showDropdown ? "rotate-180" : ""
-                    }`}
-                  />
-                </span>
-              </div>
-            </div>
-          ) : (
-            <Link to="/entrar" className="font-headline auth-button">
-              {userLoading ? "..." : "ENTRAR"} <CiLogin />
-            </Link>
-          )}
-        </div>
-        <div className="menu-button lg:hidden" onClick=
-        {toggleMenu}>
-          <AnimatePresence mode="wait">
-            {showMenu ? (
-              <motion.div
-                key="close-icon"
-                initial={{ opacity: 0, rotate: -90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: 90 }}
-                transition={{ duration: 0.2 }}
-              >
-                <MdClose />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="hamburger-icon"
-                initial={{ opacity: 0, rotate: 90 }}
-                animate={{ opacity: 1, rotate: 0 }}
-                exit={{ opacity: 0, rotate: -90 }}
-                transition={{ duration: 0.2 }}
-              >
-                <GiHamburgerMenu />
-              </motion.div>
-            )}
-            </AnimatePresence>
-        </div>
-      </div>
-    </header>
-  ) : null;
+  return (
+    <HeaderNavigation
+      key={location.pathname}
+      pathname={location.pathname}
+      userInfo={userInfo}
+      userLoading={userLoading}
+      handleLogout={handleLogout}
+    />
+  );
 }
-
-export default Header;
