@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 !pb-8">
 
           <div className="flex flex-col gap-3">
-            <h3 className="text-2xl font-bold text-white">Fit Fetch</h3>
+            <img src="/img/logos/ff_logo.svg" alt="Fit Fetch" width="154" height="52" className="w-[154px] h-auto" />
             <p className="text-sm text-slate-400">
               A tua plataforma completa para fitness e bem-estar. Transforma o teu corpo e mente.
             </p>

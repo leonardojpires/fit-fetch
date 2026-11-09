@@ -53,7 +53,8 @@ export default function AuthLayout({ children, recovery = false }) {
             </ul>
           </div>
           <p className="ff-auth-signature">
-            Fit Fetch <span>O teu ritmo. Os teus objetivos.</span>
+            <img src="/img/logos/ff_logo.svg" alt="Fit Fetch" width="154" height="52" />
+            <span>O teu ritmo. Os teus objetivos.</span>
           </p>
         </aside>
         <div className="ff-auth-panel">{children}</div>

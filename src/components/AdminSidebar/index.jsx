@@ -53,7 +53,7 @@ export default function AdminSidebar() {
       >
         <div>
           <div className="brand">
-            Fit<span>Fetch</span>
+            <img src="/img/logos/ff_logo.svg" alt="Fit Fetch" width="154" height="52" />
             <small>ÁREA DE ADMINISTRAÇÃO</small>
           </div>
           <nav aria-label="Administração">
