@@ -1,3 +1,4 @@
+import AdminDialog from "../../../components/AdminDialog";
 import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
@@ -6,7 +7,7 @@ import { FiEdit2, FiTrash2, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { CgGym } from "react-icons/cg";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
 import useRedirectIfNotAuth from "../../../hooks/useIfNotAuth";
-import DeleteModal from "./../../../components/DeleteModal/index";
+import DeleteModal from "../../../components/AdminDialog/DeleteDialog";
 import SuccessWarning from "../../../components/SuccessWarning";
 import useGetAllExercises from "../../../hooks/Exercises/useGetAllExercises";
 import useAddExercise from "../../../hooks/Exercises/useAddExercise";
@@ -75,7 +76,10 @@ function ExercisesPage() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const sortedExercises = getSortedExercises(exercises);
-  const currentExercises = sortedExercises.slice(indexOfFirstItem, indexOfLastItem);
+  const currentExercises = sortedExercises.slice(
+    indexOfFirstItem,
+    indexOfLastItem,
+  );
 
   const totalPages = Math.ceil(exercises.length / itemsPerPage);
 
@@ -234,22 +238,22 @@ function ExercisesPage() {
     <section className="section-admin admin-dashboard min-h-screen">
       <AdminSidebar />
       <div className="admin-content">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">
+        <div className="admin-page-heading">
           <div className="w-full sm:flex-1">
             <h1 className="admin-title font-headline">Exercícios</h1>
             <p className="admin-description font-body">
               Gestão de exercícios da plataforma
             </p>
           </div>
-          <div
+          <button
+            type="button"
             className="admin-button font-body w-full sm:w-auto"
             onClick={openAddModal}
           >
-            <button></button>
-            <CgGym />{" "}
+            <CgGym aria-hidden="true" />{" "}
             <span className="hidden sm:inline">Adicionar Exercício</span>
             <span className="inline sm:hidden">Adicionar</span>
-          </div>
+          </button>
         </div>
 
         <SearchBar
@@ -259,22 +263,37 @@ function ExercisesPage() {
           setSearchItem={setSearchItem}
         />
 
-        <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body overflow-hidden">
-          <div className="table-scroll-container overflow-x-auto overflow-y-auto">
+        <p className="admin-scroll-hint">
+          Desliza a tabela para consultar os detalhes e as ações.
+        </p>
+        <div className="admin-table-card">
+          <div
+            className="table-scroll-container"
+            tabIndex={0}
+            role="region"
+            aria-label="Tabela de exercícios"
+          >
             <table className="w-full table-fixed min-w-[820px] sm:min-w-full">
               <thead className="text-left bg-white sticky top-0 z-10">
                 <tr>
                   {headers.map((header) => (
                     <th
                       key={header.key}
-                      onClick={() => handleHeaderClick(header.key)}
                       scope="col"
                       className={`!p-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width}`}
                       aria-sort={
-                        sort.field === header.key ? sort.direction : "none"
+                        sort.field === header.key
+                          ? sort.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
                       }
                     >
-                      <div className="flex items-center !gap-1">
+                      <button
+                        className="admin-sort-button"
+                        type="button"
+                        onClick={() => handleHeaderClick(header.key)}
+                      >
                         {header.label}
                         {sort.field === header.key &&
                           (sort.direction === "asc" ? (
@@ -290,7 +309,7 @@ function ExercisesPage() {
                               focusable="false"
                             />
                           ))}
-                      </div>
+                      </button>
                     </th>
                   ))}
                   <th className="!p-3" scope="col">
@@ -403,6 +422,8 @@ function ExercisesPage() {
             {/* Navigation buttons */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
+                type="button"
+                aria-label="Página anterior"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="flex items-center justify-center w-9 h-9 rounded-lg bg-white border-2 border-gray-200 hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-current transition-all cursor-pointer font-bold"
@@ -414,6 +435,7 @@ function ExercisesPage() {
                 <input
                   type="number"
                   name="page"
+                  aria-label="Página atual"
                   id="page"
                   value={currentPage}
                   onChange={(e) => setCurrentPage(Number(e.target.value))}
@@ -423,6 +445,8 @@ function ExercisesPage() {
               </div>
 
               <button
+                type="button"
+                aria-label="Página seguinte"
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
@@ -437,8 +461,9 @@ function ExercisesPage() {
 
         {/* Modal: Adicionar/Editar Exercício */}
         {isModalOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          <AdminDialog
+            aria-label="Gestão de registo"
+            className="admin-modal"
             onClick={closeModal}
           >
             <div
@@ -454,10 +479,14 @@ function ExercisesPage() {
                 className="flex flex-col !gap-4"
               >
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-name"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Nome
                   </label>
                   <input
+                    id="admin-name"
                     type="text"
                     name="name"
                     value={formData.name}
@@ -469,10 +498,14 @@ function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-muscle_group"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Grupo Muscular
                   </label>
                   <select
+                    id="admin-muscle_group"
                     name="muscle_group"
                     value={formData.muscle_group}
                     onChange={handleInputChange}
@@ -492,10 +525,14 @@ function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-type"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Tipo de Exercício
                   </label>
                   <select
+                    id="admin-type"
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
@@ -513,10 +550,14 @@ function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-difficulty"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Dificuldade
                   </label>
                   <select
+                    id="admin-difficulty"
                     name="difficulty"
                     value={formData.difficulty}
                     onChange={handleInputChange}
@@ -532,10 +573,14 @@ function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-description"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Descrição
                   </label>
                   <textarea
+                    id="admin-description"
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
@@ -546,10 +591,14 @@ function ExercisesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-video_url"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Link do Vídeo
                   </label>
                   <input
+                    id="admin-video_url"
                     type="url"
                     name="video_url"
                     value={formData.video_url}
@@ -607,7 +656,7 @@ function ExercisesPage() {
                 </div>
               </form>
             </div>
-          </div>
+          </AdminDialog>
         )}
 
         {/* Modal: Eliminar Exercício */}

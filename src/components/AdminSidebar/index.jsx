@@ -1,5 +1,5 @@
 import "./index.css";
-import React, { useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import { FiMenu, FiX } from "react-icons/fi";
@@ -26,38 +26,43 @@ export default function AdminSidebar() {
     <>
       {/* Mobile Only */}
       <button
-        className="lg:hidden fixed top-4 right-4 z-50 !p-2 rounded-lg bg-[var(--primary)] text-white hover:bg-[var(--accent)] transition-colors"
+        className="admin-menu-toggle"
         onClick={toggleMenu}
-        aria-label="Abrir menu de navegação"
+        aria-label={
+          isOpen
+            ? "Fechar navegação administrativa"
+            : "Abrir navegação administrativa"
+        }
+        aria-controls="admin-navigation"
         aria-expanded={isOpen}
         type="button"
       >
-        {isOpen ? <FiX size={24} aria-hidden="true" focusable="false" /> : <FiMenu size={24} aria-hidden="true" focusable="false" />}
+        <span>Administração</span>{" "}
+        {isOpen ? (
+          <FiX size={24} aria-hidden="true" focusable="false" />
+        ) : (
+          <FiMenu size={24} aria-hidden="true" focusable="false" />
+        )}
       </button>
-
-      {isOpen && (
-        <div
-          className="lg:hidden fixed inset-0 bg-black/40 z-30"
-          onClick={closeMenu}
-        />
-      )}
 
       {/* Sidebar */}
       <aside
         className={`admin-sidebar font-body ${isOpen ? "open" : ""}`}
-        aria-label="Admin sidebar"
+        id="admin-navigation"
+        aria-label="Navegação administrativa"
       >
         <div>
-          <div className="brand">Admin</div>
-          <nav>
+          <div className="brand">
+            Fit<span>Fetch</span>
+            <small>ÁREA DE ADMINISTRAÇÃO</small>
+          </div>
+          <nav aria-label="Administração">
             {links.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  isActive
-                    ? "admin-nav-link active !text-[var(--primary)] font-medium"
-                    : "admin-nav-link"
+                  isActive ? "admin-nav-link active" : "admin-nav-link"
                 }
                 end
                 onClick={closeMenu}
@@ -76,7 +81,7 @@ export default function AdminSidebar() {
           }}
           className="back-link"
         >
-          <FaArrowLeft />
+          <FaArrowLeft aria-hidden="true" />
           <span>Voltar</span>
         </NavLink>
       </aside>

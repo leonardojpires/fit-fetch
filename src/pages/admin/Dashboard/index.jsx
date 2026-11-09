@@ -1,10 +1,11 @@
+import { Link } from "react-router-dom";
 import useAdminRedirect from "./../../../hooks/useAdminRedirect.jsx";
 import useRedirectIfNotAuth from "./../../../hooks/useIfNotAuth.jsx";
 import AdminSidebar from "../../../components/AdminSidebar";
 import "../index.css";
 import useGetAllUsers from "../../../hooks/Users/useGetAllUsers.jsx";
-import useGetAllExercises from './../../../hooks/Exercises/useGetAllExercises';
-import useGetAllFoods from './../../../hooks/Foods/useGetAllFoods';
+import useGetAllExercises from "./../../../hooks/Exercises/useGetAllExercises";
+import useGetAllFoods from "./../../../hooks/Foods/useGetAllFoods";
 
 function Dashboard() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -42,31 +43,56 @@ function Dashboard() {
   ];
 
   return (
-    <section className="section-admin admin-dashboard min-w-full min-h-screen">
+    <section className="section-admin admin-dashboard">
       <AdminSidebar />
-      <div className="admin-content flex flex-col items-center">
-        <div className="w-full max-w-5xl text-center !mb-6 sm:!mb-8 md:!mb-10">
-          <h1 className="admin-title font-headline">
-            Dashboard Fit Fetch
-          </h1>
-          <p className="admin-description font-body">
-            Bem-vindo(a) ao painel de administração
-          </p>
+      <div className="admin-content">
+        <header className="admin-page-heading">
+          <div>
+            <p className="admin-eyebrow">Administração · Fit Fetch</p>
+            <h1 className="admin-title">Visão geral</h1>
+            <p className="admin-description">
+              Acompanha a plataforma e gere os seus conteúdos num só lugar.
+            </p>
+          </div>
+        </header>
+        <div className="admin-stats">
+          {dashboardData.map((item, index) => (
+            <article className="admin-stat" key={index}>
+              <h2>{item.titulo}</h2>
+              <strong>{item.valor}</strong>
+              <p>{item.descricao}</p>
+            </article>
+          ))}
         </div>
-        <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 place-items-center !gap-4 sm:!gap-5 md:!gap-6 lg:!gap-10">
-            { dashboardData.map((item, index) => (
-                <div key={index} className="w-full max-w-xs bg-[var(--background)] !p-5 sm:!p-5 md:!p-6 rounded-lg shadow-md font-body hover:translate-y-[-5px] transition-transform text-center">
-                    <div>
-                        <h2 className="text-base sm:text-lg md:text-xl font-medium !mb-2 sm:!mb-3">{item.titulo}</h2>
-                    </div>
-                    <span className="block text-2xl sm:text-3xl md:text-4xl text-[var(--primary)] font-bold !mb-2 sm:!mb-3">{item.valor}</span>
-                    <p className="text-sm sm:text-base md:text-lg text-black/70">{item.descricao}</p>
-                </div>
-            )) }
-        </div>
+        <section
+          className="admin-quick-section"
+          aria-labelledby="admin-manage-title"
+        >
+          <h2 id="admin-manage-title">Gestão da plataforma</h2>
+          <p>Escolhe uma área para consultar e atualizar os registos.</p>
+          <div className="admin-quick-grid">
+            <Link to="/admin/utilizadores">
+              <span className="admin-quick-number">01</span>
+              <h3>Utilizadores</h3>
+              <p>Consulta as contas e gere os perfis e permissões.</p>
+              <span>Gerir utilizadores →</span>
+            </Link>
+            <Link to="/admin/exercicios">
+              <span className="admin-quick-number">02</span>
+              <h3>Exercícios</h3>
+              <p>Organiza o catálogo de exercícios e as suas demonstrações.</p>
+              <span>Gerir exercícios →</span>
+            </Link>
+            <Link to="/admin/alimentos">
+              <span className="admin-quick-number">03</span>
+              <h3>Alimentos</h3>
+              <p>Atualiza os alimentos, porções e valores nutricionais.</p>
+              <span>Gerir alimentos →</span>
+            </Link>
+          </div>
+        </section>
       </div>
     </section>
   );
 }
-
 export default Dashboard;

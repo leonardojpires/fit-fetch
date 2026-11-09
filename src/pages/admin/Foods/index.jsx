@@ -1,3 +1,4 @@
+import AdminDialog from "../../../components/AdminDialog";
 import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "../../../components/AdminSidebar/index";
@@ -6,13 +7,13 @@ import { FiEdit2, FiTrash2, FiChevronUp, FiChevronDown } from "react-icons/fi";
 import { IoRestaurant } from "react-icons/io5";
 import useAdminRedirect from "../../../hooks/useAdminRedirect";
 import useRedirectIfNotAuth from "../../../hooks/useIfNotAuth";
-import DeleteModal from "./../../../components/DeleteModal/index";
+import DeleteModal from "../../../components/AdminDialog/DeleteDialog";
 import useGetAllFoods from "../../../hooks/Foods/useGetAllFoods";
 import useAddFood from "../../../hooks/Foods/useAddFood";
 import useUpdateFood from "../../../hooks/Foods/useUpdateFood";
 import useDeleteFood from "../../../hooks/Foods/useDeleteFood";
 import SuccessWarning from "../../../components/SuccessWarning";
-import SearchBar from './../../../components/SearchBar/index';
+import SearchBar from "./../../../components/SearchBar/index";
 
 function FoodsPage() {
   const { loading: authLoading } = useRedirectIfNotAuth();
@@ -68,7 +69,6 @@ function FoodsPage() {
       return () => clearTimeout(timer);
     }
   }, [showSuccessWarning]);
-  
 
   if (authLoading || adminLoading) {
     return (
@@ -172,7 +172,9 @@ function FoodsPage() {
       const updatedFood = await updateFood(foodToEdit.id, formData);
       if (updatedFood && updatedFood.food) {
         setFoods((prev) =>
-          prev.map((f) => (f.id === updatedFood.food.id ? updatedFood.food : f))
+          prev.map((f) =>
+            f.id === updatedFood.food.id ? updatedFood.food : f,
+          ),
         );
         setSuccessMessage("Alimento editado com sucesso!");
         setShowSuccessWarning(true);
@@ -232,17 +234,22 @@ function FoodsPage() {
     <section className="section-admin admin-dashboard min-h-screen">
       <AdminSidebar />
       <div className="admin-content">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">
+        <div className="admin-page-heading">
           <div className="w-full sm:flex-1">
             <h1 className="admin-title font-headline">Alimentos</h1>
             <p className="admin-description font-body">
               Gestão de alimentos da plataforma
             </p>
           </div>
-          <div className="admin-button font-body w-full sm:w-auto" onClick={openAddModal}>
-            <button></button>
-            <IoRestaurant /> <span className="hidden sm:inline">Adicionar Alimento</span><span className="inline sm:hidden">Adicionar</span>
-          </div>
+          <button
+            type="button"
+            className="admin-button font-body w-full sm:w-auto"
+            onClick={openAddModal}
+          >
+            <IoRestaurant aria-hidden="true" />{" "}
+            <span className="hidden sm:inline">Adicionar Alimento</span>
+            <span className="inline sm:hidden">Adicionar</span>
+          </button>
         </div>
 
         <SearchBar
@@ -252,121 +259,148 @@ function FoodsPage() {
           setSearchItem={setSearchItem}
         />
 
-        <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body overflow-hidden">
-          <div className="table-scroll-container overflow-x-auto overflow-y-auto">
+        <p className="admin-scroll-hint">
+          Desliza a tabela para consultar os detalhes e as ações.
+        </p>
+        <div className="admin-table-card">
+          <div
+            className="table-scroll-container"
+            tabIndex={0}
+            role="region"
+            aria-label="Tabela de alimentos"
+          >
             <table className="w-full table-auto min-w-[1200px] sm:min-w-full">
               <thead className="text-left bg-white sticky top-0 z-10">
                 <tr>
                   {headers.map((header) => (
                     <th
                       key={header.key}
-                      onClick={() => handleHeaderClick(header.key)}
                       scope="col"
                       className={`!px-4 !py-3 cursor-pointer hover:bg-gray-50 select-none w-${header.width} ${header.key === "name" ? "text-left" : "text-center"} whitespace-nowrap`}
-                      aria-sort={sort.field === header.key ? sort.direction : "none"}
+                      aria-sort={
+                        sort.field === header.key
+                          ? sort.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
+                      }
                     >
-                      <div className="flex items-center !gap-1">
+                      <button
+                        className="admin-sort-button"
+                        type="button"
+                        onClick={() => handleHeaderClick(header.key)}
+                      >
                         {header.label}
                         {sort.field === header.key &&
                           (sort.direction === "asc" ? (
-                            <FiChevronUp size={16} aria-hidden="true" focusable="false" />
+                            <FiChevronUp
+                              size={16}
+                              aria-hidden="true"
+                              focusable="false"
+                            />
                           ) : (
-                            <FiChevronDown size={16} aria-hidden="true" focusable="false" />
+                            <FiChevronDown
+                              size={16}
+                              aria-hidden="true"
+                              focusable="false"
+                            />
                           ))}
-                      </div>
+                      </button>
                     </th>
                   ))}
-                  <th className="!p-3" scope="col">Ações</th>
+                  <th className="!p-3" scope="col">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
-              {foods.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={9}
-                    className="!p-6 text-center text-sm text-gray-500"
-                  >
-                    Sem alimentos.
-                  </td>
-                </tr>
-              ) : (
-                currentFoods
-                  .filter((food) => {
-                    return searchItem === ""
-                      ? true
-                      : food.name
-                          .toLowerCase()
-                          .includes(searchItem.toLowerCase());
-                  })
-                  .map((food) => (
-                    <tr
-                      key={food.id}
-                      className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                {foods.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={9}
+                      className="!p-6 text-center text-sm text-gray-500"
                     >
-                      <td className="!p-3">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <div className="font-medium">
-                              {food.name.charAt(0).toUpperCase() +
-                                food.name.slice(1)}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              ID: {food.id}
+                      Sem alimentos.
+                    </td>
+                  </tr>
+                ) : (
+                  currentFoods
+                    .filter((food) => {
+                      return searchItem === ""
+                        ? true
+                        : food.name
+                            .toLowerCase()
+                            .includes(searchItem.toLowerCase());
+                    })
+                    .map((food) => (
+                      <tr
+                        key={food.id}
+                        className="border-t border-gray-200/30 last:border-b last:border-gray-200/30 hover:bg-gray-50 transition-colors dark:border-gray-700/30 dark:last:border-gray-700/30"
+                      >
+                        <td className="!p-3">
+                          <div className="flex items-center gap-3">
+                            <div>
+                              <div className="font-medium">
+                                {food.name.charAt(0).toUpperCase() +
+                                  food.name.slice(1)}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                ID: {food.id}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.protein}g
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.carbs}g
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.fiber}g
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.fat}g
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.calories} kcal
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.serving_size}
-                        {food.unit}
-                      </td>
-                      <td className="!p-3 text-sm text-gray-700">
-                        {food.category ? (
-                          <span className="inline-block !px-2 !py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                            {food.category}
-                          </span>
-                        ) : (
-                          <span className="text-gray-400">-</span>
-                        )}
-                      </td>
-                      <td className="!p-3">
-                        <div className="flex items-center !gap-2">
-                          <button
-                            type="button"
-                            aria-label={`Editar ${food.name}`}
-                            onClick={() => openEditModal(food)}
-                            className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
-                          >
-                            <FiEdit2 aria-hidden="true" focusable="false" />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label={`Eliminar ${food.name}`}
-                            onClick={() => openDeleteModal(food)}
-                            className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
-                          >
-                            <FiTrash2 aria-hidden="true" focusable="false" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-              )}
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.protein}g
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.carbs}g
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.fiber}g
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.fat}g
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.calories} kcal
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.serving_size}
+                          {food.unit}
+                        </td>
+                        <td className="!p-3 text-sm text-gray-700">
+                          {food.category ? (
+                            <span className="inline-block !px-2 !py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                              {food.category}
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </td>
+                        <td className="!p-3">
+                          <div className="flex items-center !gap-2">
+                            <button
+                              type="button"
+                              aria-label={`Editar ${food.name}`}
+                              onClick={() => openEditModal(food)}
+                              className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-50 text-blue-600 hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <FiEdit2 aria-hidden="true" focusable="false" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Eliminar ${food.name}`}
+                              onClick={() => openDeleteModal(food)}
+                              className="flex items-center justify-center w-9 h-9 rounded-full bg-red-50 text-red-600 hover:scale-105 transition-transform cursor-pointer"
+                            >
+                              <FiTrash2 aria-hidden="true" focusable="false" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                )}
               </tbody>
             </table>
           </div>
@@ -391,6 +425,8 @@ function FoodsPage() {
             {/* Navigation buttons */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
+                type="button"
+                aria-label="Página anterior"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="flex items-center justify-center w-9 h-9 rounded-lg bg-white border-2 border-gray-200 hover:border-[var(--primary)] hover:text-[var(--primary)] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-200 disabled:hover:text-current transition-all cursor-pointer font-bold"
@@ -402,6 +438,7 @@ function FoodsPage() {
                 <input
                   type="number"
                   name="page"
+                  aria-label="Página atual"
                   id="page"
                   value={currentPage}
                   onChange={(e) => setCurrentPage(Number(e.target.value))}
@@ -411,6 +448,8 @@ function FoodsPage() {
               </div>
 
               <button
+                type="button"
+                aria-label="Página seguinte"
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
@@ -425,8 +464,9 @@ function FoodsPage() {
 
         {/* Modal: Adicionar/Editar Alimento */}
         {isModalOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          <AdminDialog
+            aria-label="Gestão de registo"
+            className="admin-modal"
             onClick={closeModal}
           >
             <div
@@ -442,10 +482,14 @@ function FoodsPage() {
                 className="flex flex-col !gap-4"
               >
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-name"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Nome
                   </label>
                   <input
+                    id="admin-name"
                     type="text"
                     name="name"
                     value={formData.name}
@@ -457,10 +501,14 @@ function FoodsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-protein"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Proteína (gramas)
                   </label>
                   <input
+                    id="admin-protein"
                     type="number"
                     name="protein"
                     value={formData.protein}
@@ -474,10 +522,14 @@ function FoodsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-carbs"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Carboidratos (gramas)
                   </label>
                   <input
+                    id="admin-carbs"
                     type="number"
                     name="carbs"
                     value={formData.carbs}
@@ -491,10 +543,14 @@ function FoodsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-fiber"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Fibra (gramas)
                   </label>
                   <input
+                    id="admin-fiber"
                     type="number"
                     name="fiber"
                     value={formData.fiber}
@@ -508,10 +564,14 @@ function FoodsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-fat"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Gordura (gramas)
                   </label>
                   <input
+                    id="admin-fat"
                     type="number"
                     name="fat"
                     value={formData.fat}
@@ -525,10 +585,14 @@ function FoodsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-calories"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Calorias (kcal)
                   </label>
                   <input
+                    id="admin-calories"
                     type="number"
                     name="calories"
                     value={formData.calories}
@@ -543,10 +607,14 @@ function FoodsPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 !gap-3">
                   <div>
-                    <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    <label
+                      htmlFor="admin-serving_size"
+                      className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                    >
                       Tamanho da Porção
                     </label>
                     <input
+                      id="admin-serving_size"
                       type="number"
                       name="serving_size"
                       value={formData.serving_size}
@@ -559,10 +627,14 @@ function FoodsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                    <label
+                      htmlFor="admin-unit"
+                      className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                    >
                       Unidade
                     </label>
                     <select
+                      id="admin-unit"
                       name="unit"
                       value={formData.unit}
                       onChange={handleInputChange}
@@ -579,10 +651,14 @@ function FoodsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-category"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Categoria (opcional)
                   </label>
                   <select
+                    id="admin-category"
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
@@ -617,20 +693,39 @@ function FoodsPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg
+                          className="animate-spin h-4 w-4"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
                         </svg>
                         A processar...
                       </>
+                    ) : isEditModalOpen ? (
+                      "Guardar"
                     ) : (
-                      isEditModalOpen ? "Guardar" : "Adicionar"
+                      "Adicionar"
                     )}
                   </button>
                 </div>
               </form>
             </div>
-          </div>
+          </AdminDialog>
         )}
 
         {/* Modal: Eliminar Alimento */}

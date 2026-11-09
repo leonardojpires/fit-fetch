@@ -1,3 +1,4 @@
+import AdminDialog from "../../../components/AdminDialog";
 import "../index.css";
 import { auth } from "../../../services/firebase";
 import AdminSidebar from "./../../../components/AdminSidebar/index";
@@ -201,14 +202,14 @@ function UsersPage() {
     <section className="section-admin admin-dashboard min-h-screen">
       <AdminSidebar />
       <div className="admin-content">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between !gap-3 sm:!gap-4 !mb-4 sm:!mb-6">
+        <div className="admin-page-heading">
           <div className="w-full sm:flex-1">
             <h1 className="admin-title font-headline">Utilizadores</h1>
             <p className="admin-description font-body">
               Gestão de utilizadores da plataforma
             </p>
           </div>
-{/*           <div
+          {/*           <div
             className="admin-button font-body w-full sm:w-auto"
             onClick={openAddModal}
           >
@@ -226,22 +227,37 @@ function UsersPage() {
           setSearchItem={setSearchItem}
         />
 
-        <div className="bg-white/40 backdrop-blur-sm rounded-xl shadow-md font-body overflow-hidden">
-          <div className="table-scroll-container overflow-x-auto overflow-y-auto">
+        <p className="admin-scroll-hint">
+          Desliza a tabela para consultar os detalhes e as ações.
+        </p>
+        <div className="admin-table-card">
+          <div
+            className="table-scroll-container"
+            tabIndex={0}
+            role="region"
+            aria-label="Tabela de utilizadores"
+          >
             <table className="w-full table-fixed min-w-[700px] sm:min-w-full">
               <thead className="text-left bg-white sticky top-0 z-10">
                 <tr>
                   {headers.map((header) => (
                     <th
                       key={header.key}
-                      onClick={() => handleHeaderClick(header.key)}
                       scope="col"
                       className={`!p-3 cursor-pointer hover:bg-gray-50 select-none ${header.width} ${header.key === "email" ? "min-w-[220px]" : ""}`}
                       aria-sort={
-                        sort.field === header.key ? sort.direction : "none"
+                        sort.field === header.key
+                          ? sort.direction === "asc"
+                            ? "ascending"
+                            : "descending"
+                          : "none"
                       }
                     >
-                      <div className="flex items-center !gap-1">
+                      <button
+                        className="admin-sort-button"
+                        type="button"
+                        onClick={() => handleHeaderClick(header.key)}
+                      >
                         {header.label}
                         {sort.field === header.key &&
                           (sort.direction === "asc" ? (
@@ -257,10 +273,12 @@ function UsersPage() {
                               focusable="false"
                             ></FiChevronDown>
                           ))}
-                      </div>
+                      </button>
                     </th>
                   ))}
-                  <th className="!p-3">Ações</th>
+                  <th scope="col" className="!p-3">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -341,8 +359,9 @@ function UsersPage() {
 
         {/* Modal: Adicionar Utilizador */}
         {isModalOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          <AdminDialog
+            aria-label="Gestão de registo"
+            className="admin-modal"
             onClick={closeModal}
           >
             <div
@@ -358,10 +377,14 @@ function UsersPage() {
                 className="flex flex-col !gap-4"
               >
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-name"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Nome
                   </label>
                   <input
+                    id="admin-name"
                     type="text"
                     name="name"
                     value={formData.name}
@@ -373,10 +396,14 @@ function UsersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-email"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Email
                   </label>
                   <input
+                    id="admin-email"
                     type="email"
                     name="email"
                     value={formData.email}
@@ -388,10 +415,14 @@ function UsersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-body font-medium !mb-1.5 text-gray-700">
+                  <label
+                    htmlFor="admin-role"
+                    className="block text-sm font-body font-medium !mb-1.5 text-gray-700"
+                  >
                     Role
                   </label>
                   <select
+                    id="admin-role"
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
@@ -458,13 +489,14 @@ function UsersPage() {
                 </div>
               </form>
             </div>
-          </div>
+          </AdminDialog>
         )}
 
         {/* Modal: Eliminar Utilizador */}
         {isDeleteModalOpen && userToDelete && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          <AdminDialog
+            aria-label="Gestão de registo"
+            className="admin-modal"
             onClick={!isDeleting ? closeDeleteModal : undefined}
           >
             <div
@@ -541,7 +573,7 @@ function UsersPage() {
                 </button>
               </div>
             </div>
-          </div>
+          </AdminDialog>
         )}
       </div>
 
