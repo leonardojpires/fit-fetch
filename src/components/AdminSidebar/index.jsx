@@ -73,16 +73,11 @@ export default function AdminSidebar() {
           </nav>
         </div>
         <NavLink
-          to=".."
-          onClick={(e) => {
-            e.preventDefault();
-            window.history.back();
-            closeMenu();
-          }}
+          to="/"
           className="back-link"
         >
           <FaArrowLeft aria-hidden="true" />
-          <span>Voltar</span>
+          <span>Página principal</span>
         </NavLink>
       </aside>
     </>

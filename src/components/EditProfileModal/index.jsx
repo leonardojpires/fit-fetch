@@ -91,7 +91,7 @@ function EditProfileModal({
             </div>
 
             {/* EMAIL FIELD */}
-            <div className="form-group">
+            {/* <div className="form-group">
               <label htmlFor="email" className="form-label font-body">
                 <FaEnvelope />
                 Email
@@ -108,7 +108,7 @@ function EditProfileModal({
               <span className="form-hint font-body">
                 O email não pode ser alterado
               </span>
-            </div>
+            </div> */}
             {/* FOOTER */}
             <div className="modal-footer">
               <button onClick={onClose} className="button-secondary font-body">
