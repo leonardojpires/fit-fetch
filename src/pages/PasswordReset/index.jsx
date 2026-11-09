@@ -1,5 +1,5 @@
 import "./index.css";
-import { motion } from "framer-motion";
+import AuthLayout from "../../components/AuthLayout";
 import { Link } from "react-router-dom";
 import { FaEnvelope } from "react-icons/fa";
 import useRedirectIfAuth from "../../hooks/useAuthHook";
@@ -19,8 +19,8 @@ function PasswordReset() {
 
   const closeSuccessWarning = () => {
     setSuccessMessage("");
-  }
-  
+  };
+
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
 
@@ -53,21 +53,15 @@ function PasswordReset() {
 
   return (
     <>
-      <motion.section
-        className="w-full !py-28 pb-48"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <div className="section !py-16 flex flex-col items-center gap-8">
-          <div className="flex flex-col items-center gap-8 bg-white !px-10 !py-16 rounded-xl shadow-md w-full max-w-md">
-            <div className="flex flex-col items-center gap-2 text-center">
+      <AuthLayout recovery>
+        <div className="ff-auth-form-slot">
+          <div className="auth-div ff-reset-card">
+            <div className="ff-auth-heading">
               <h1 className="font-headline text-3xl font-bold text-[var(--primary)]">
                 Recuperar Palavra-Passe
               </h1>
               <p className="font-body text-black/70">
-                Introduz o teu e-mail para receberes um link de redefiniçao de
+                Introduz o teu e-mail para receberes um link de redefinição de
                 palavra-passe
               </p>
             </div>
@@ -79,11 +73,12 @@ function PasswordReset() {
                 E-Mail
               </label>
               <div className="input-wrapper">
-                <FaEnvelope className="icon" />
+                <FaEnvelope className="icon" aria-hidden="true" />
                 <input
                   type="email"
                   name="email"
                   id="email"
+                  autoComplete="email"
                   placeholder="teu@email.com"
                   className="input font-body"
                   onChange={(e) => setEmail(e.target.value)}
@@ -91,15 +86,16 @@ function PasswordReset() {
                   disabled={loading}
                 />
               </div>
-              <button
-                type="submit"
-                className="bg-[var(--primary)] text-white !py-2 rounded-lg hover:bg-[var(--accent)] transition-all ease-in-out duration-200 cursor-pointer"
-              >
+              <button type="submit" className="submit-input">
                 {loading ? "A enviar..." : "Enviar"}
               </button>
             </form>
-            {error && <p className="text-red-600 text-sm mt-2">{error}</p>}
-            <div className="flex flex-row items-center gap-1 text-center font-body">
+            {error && (
+              <p className="ff-auth-error" role="alert">
+                {error}
+              </p>
+            )}
+            <div className="ff-auth-switch">
               <span className="text-black/70 text-md">
                 Lembras-te da tua palavra-passe?
               </span>
@@ -112,23 +108,21 @@ function PasswordReset() {
             </div>
           </div>
         </div>
-      </motion.section>
+      </AuthLayout>
 
       {error && (
         <ErrorWarning
           validationErrors={error}
           clearErrors={() => setError("")}
         />
-        )
-      }
+      )}
 
       {successMessage && (
         <SuccessWarning
           message={successMessage}
           closeWarning={closeSuccessWarning}
         />
-      )
-    }
+      )}
     </>
   );
 }

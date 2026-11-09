@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { auth } from "../../services/firebase.js"
+import { auth } from "../../services/firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
@@ -80,7 +80,7 @@ function RegisterForm({ clickEvent }) {
     }
 
   return (
-    <div className="auth-div w-full lg:w-1/2">
+    <div className="auth-div ff-register-card">
       <h1 className="font-headline text-3xl font-bold !mb-2 text-[var(--secondary)]">
         Cria a tua conta
       </h1>
@@ -90,15 +90,16 @@ function RegisterForm({ clickEvent }) {
 
       <form onSubmit={handleRegister} className="flex flex-col gap-7 font-body">
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-[0.9rem]">
+          <label htmlFor="name" className="text-[0.9rem]">
             Nome
           </label>
           <div className="input-wrapper">
-            <FaPerson className="icon" />
+            <FaPerson className="icon" aria-hidden="true" />
             <input
               type="text"
               name="name"
               id="name"
+              autoComplete="name"
               placeholder="O Teu Nome"
               className="input font-body"
               onChange={(e) => setName(e.target.value)}
@@ -112,11 +113,12 @@ function RegisterForm({ clickEvent }) {
             E-Mail
           </label>
           <div className="input-wrapper">
-            <FaEnvelope className="icon" />
+            <FaEnvelope className="icon" aria-hidden="true" />
             <input
               type="email"
               name="email"
               id="email"
+              autoComplete="email"
               placeholder="teu@email.com"
               className="input font-body"
               onChange={(e) => setEmail(e.target.value)}
@@ -127,14 +129,16 @@ function RegisterForm({ clickEvent }) {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="password" className="text-[0.9rem]">
-            Senha
+            Palavra-passe
           </label>
           <div className="input-wrapper relative">
-            <FaLock className="icon" />
+            <FaLock className="icon" aria-hidden="true" />
             <input
               type={showPassword ? "text" : "password"}
               name="password"
               id="password"
+              autoComplete="new-password"
+              aria-describedby="password-requirements"
               placeholder="*******"
               className="input font-body"
               onChange={(e) => setPassword(e.target.value)}
@@ -144,24 +148,31 @@ function RegisterForm({ clickEvent }) {
               type="button"
               className="password-viewer-icon"
               onClick={() => setShowPassword((v) => !v)}
-              tabIndex={-1}
-              aria-label={showPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"}
+
+              aria-label={
+                showPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"
+              }
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
         </div>
 
+        <p id="password-requirements" className="ff-auth-hint">
+          Usa pelo menos 8 caracteres, com uma maiúscula, uma minúscula, um
+          número e um carácter especial.
+        </p>
         <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-[0.9rem]">
-            Confirmar Senha
+          <label htmlFor="confirm_password" className="text-[0.9rem]">
+            Confirmar palavra-passe
           </label>
           <div className="input-wrapper relative">
-            <FaLock className="icon" />
+            <FaLock className="icon" aria-hidden="true" />
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirm_password"
               id="confirm_password"
+              autoComplete="new-password"
               placeholder="*******"
               className="input font-body"
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -171,8 +182,12 @@ function RegisterForm({ clickEvent }) {
               type="button"
               className="password-viewer-icon"
               onClick={() => setShowConfirmPassword((v) => !v)}
-              tabIndex={-1}
-              aria-label={showConfirmPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"}
+
+              aria-label={
+                showConfirmPassword
+                  ? "Ocultar palavra-passe"
+                  : "Mostrar palavra-passe"
+              }
             >
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
@@ -186,7 +201,7 @@ function RegisterForm({ clickEvent }) {
         />
       </form>
 
-      <div className="flex flex-row justify-center items-center gap-1.5 font-body !mt-5">
+      <div className="ff-auth-switch">
         <p>Já és membro do Fit Fetch?</p>
         <button
           onClick={clickEvent}

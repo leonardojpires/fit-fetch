@@ -19,12 +19,14 @@ function LoginForm({ clickEvent }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [ rememberMe, setRememberMe ] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [validationErrors, setValidationErrors] = useState([]);
 
   const loginWithGoogle = async () => {
-  try {
-      const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+    try {
+      const persistence = rememberMe
+        ? browserLocalPersistence
+        : browserSessionPersistence;
 
       await setPersistence(auth, persistence);
 
@@ -56,10 +58,12 @@ function LoginForm({ clickEvent }) {
       setCurrentUser(data.user);
     } catch (e) {
       // console.error(`Erro ao autenticar com a Google: ${e}`);
-      setValidationErrors([{
-        field: "Google",
-        message: "Falha na autenticação. Tenta novamente."
-      }]);
+      setValidationErrors([
+        {
+          field: "Google",
+          message: "Falha na autenticação. Tenta novamente.",
+        },
+      ]);
     }
   };
 
@@ -67,14 +71,16 @@ function LoginForm({ clickEvent }) {
     e.preventDefault();
 
     try {
-      const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+      const persistence = rememberMe
+        ? browserLocalPersistence
+        : browserSessionPersistence;
 
       await setPersistence(auth, persistence);
 
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       const user = userCredential.user;
 
@@ -94,128 +100,140 @@ function LoginForm({ clickEvent }) {
       setCurrentUser(data.user);
     } catch (e) {
       // console.error("Erro ao entrar na conta", e);
-      setValidationErrors([{
-        field: "Autenticação",
-        message: "Falha ao entrar na conta. Verifica credenciais."
-      }]);
+      setValidationErrors([
+        {
+          field: "Autenticação",
+          message: "Falha ao entrar na conta. Verifica credenciais.",
+        },
+      ]);
     }
   };
 
   return (
     <>
-    <div className="auth-div w-full lg:w-1/2">
-      <h1 className="font-headline text-3xl font-bold text-[var(--primary)] !mb-2">
-        Entrar
-      </h1>
-      <p className="font-body text-black/80 !mb-5">
-        Acede à tua conta para continuar
-      </p>
+      <div className="auth-div">
+        <h1 className="font-headline text-3xl font-bold text-[var(--primary)] !mb-2">
+          Entrar
+        </h1>
+        <p className="font-body text-black/80 !mb-5">
+          Acede à tua conta para continuar
+        </p>
 
-      <form onSubmit={handleLogin} className="flex flex-col gap-7 font-body">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-[0.9rem]">
-            E-Mail
-          </label>
-          <div className="input-wrapper">
-              <FaEnvelope className="icon" />
-            <input
-              type="email"
-              name="email"
-              id="email"
-              placeholder="teu@email.com"
-              className="input font-body"
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+        <form onSubmit={handleLogin} className="flex flex-col gap-7 font-body">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="email" className="text-[0.9rem]">
+              E-Mail
+            </label>
+            <div className="input-wrapper">
+              <FaEnvelope className="icon" aria-hidden="true" />
+              <input
+                type="email"
+                name="email"
+                id="email"
+                autoComplete="email"
+                placeholder="teu@email.com"
+                className="input font-body"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-[0.9rem]">
-            Senha
-          </label>
-          <div className="input-wrapper relative">
-            <FaLock className="icon" />
+          <div className="flex flex-col gap-2">
+            <label htmlFor="password" className="text-[0.9rem]">
+              Palavra-passe
+            </label>
+            <div className="input-wrapper relative">
+              <FaLock className="icon" aria-hidden="true" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                autoComplete="current-password"
+                placeholder="*******"
+                className="input font-body"
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="password-viewer-icon"
+                onClick={() => setShowPassword((v) => !v)}
+
+                aria-label={
+                  showPassword
+                    ? "Ocultar palavra-passe"
+                    : "Mostrar palavra-passe"
+                }
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
             <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              id="password"
-              placeholder="*******"
-              className="input font-body"
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              type="checkbox"
+              id="remember"
+              className="w-4 h-4 accent-[var(--primary)] rounded-sm"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
             />
+            <label
+              htmlFor="remember"
+              className="font-body text-[0.9rem] text-[var(--text)] cursor-pointer"
+            >
+              Lembrar-me
+            </label>
+          </div>
+
+          <input
+            type="submit"
+            value="Entrar"
+            className="submit-input bg-[var(--primary)] font-body"
+          />
+        </form>
+
+        <span className="text-center !mt-5 !mb-5 text-[var(--text)] font-body pointer-events-none">
+          Ou
+        </span>
+
+        <div className="flex justify-center cursor-pointer">
+          <div className="google-input">
             <button
               type="button"
-              className="password-viewer-icon"
-              onClick={() => setShowPassword((v) => !v)}
-              tabIndex={-1}
-              aria-label={showPassword ? "Ocultar palavra-passe" : "Mostrar palavra-passe"}
+              onClick={loginWithGoogle}
+              className="ff-google-button"
             >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
+              <FaGoogle aria-hidden="true" />
+              Entrar com a Google
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="remember"
-            className="w-4 h-4 accent-[var(--primary)] rounded-sm"
-            checked={rememberMe}
-            onChange={() => setRememberMe(!rememberMe)}
-          />
-          <label
-            htmlFor="remember"
-            className="font-body text-[0.9rem] text-[var(--text)] cursor-pointer"
+        <Link
+          to="/recuperar-palavra-passe"
+          className="text-center !mt-5 text-black/70 hover:text-[var(--accent)]/70 hover:underline"
+        >
+          Esqueci-me da palavra-passe
+        </Link>
+
+        <div className="ff-auth-switch">
+          <p>Ainda não tens uma conta?</p>
+          <button
+            onClick={clickEvent}
+            className="font-semibold cursor-pointer hover:text-[var(--accent)]"
           >
-            Lembrar-me
-          </label>
-        </div>
-
-        <input
-          type="submit"
-          value="Entrar"
-          className="submit-input bg-[var(--primary)] font-body"
-        />
-      </form>
-
-      <span className="text-center !mt-5 !mb-5 text-[var(--text)] font-body pointer-events-none">
-        Ou
-      </span>
-
-      <div className="flex justify-center cursor-pointer">
-        <div className="google-input">
-          <FaGoogle className="text-red-500" />
-          <button onClick={loginWithGoogle} className="cursor-pointer">
-            Entrar com a Google
+            Inscreve-te já
           </button>
         </div>
       </div>
-
-      <Link
-        to="/recuperar-palavra-passe"
-        className="text-center !mt-5 text-black/70 hover:text-[var(--accent)]/70 hover:underline"
-      >
-        Esqueci-me da minha senha
-      </Link>
-
-      <div className="flex flex-row justify-center items-center gap-1.5 font-body !mt-5">
-        <p>Ainda não tens uma conta?</p>
-        <button
-          onClick={clickEvent}
-          className="font-semibold cursor-pointer hover:text-[var(--accent)]"
-        >
-          Inscreve-te já
-        </button>
-      </div>
-    </div>
-    {validationErrors.length > 0 && (
-      <ErrorWarning
-        validationErrors={validationErrors}
-        clearErrors={() => setValidationErrors([])}
-      />
-    )}
+      {validationErrors.length > 0 && (
+        <ErrorWarning
+          validationErrors={validationErrors}
+          clearErrors={() => setValidationErrors([])}
+        />
+      )}
     </>
   );
 }
