@@ -1,105 +1,47 @@
-@reference "tailwindcss";
-
-/* Exercise Page Utility Classes */
-
-/* Info Section */
-.info-section {
-  @apply flex flex-col gap-4 flex-1;
+.ff-exercise-page .video-container {
+  position: relative;
+  aspect-ratio: 16/9;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #0f172a;
 }
-
-.info-container {
-  @apply flex flex-col gap-5;
+.ff-exercise-page .video-embed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
-
-.info-item {
-  @apply flex flex-col;
+.ff-exercise-page :is(.video-button, .video-placeholder) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  min-height: 280px;
+  padding: 24px;
+  text-align: center;
+  border-radius: 10px;
+  background: #edf4ff;
+  color: #245dbb;
+  border: 1px solid #dce7f6;
 }
-
-.info-label {
-  @apply font-semibold text-black/50 text-sm;
+.ff-exercise-page .video-button:hover {
+  background: #e1edff;
 }
-
-.info-value {
-  @apply text-black font-bold;
-}
-
-/* Media Section */
-.media-section {
-  @apply flex flex-col gap-4 !px-6 !pb-6 flex-1;
-}
-
-.exercise-image {
-  @apply w-full h-auto object-cover rounded-lg;
-}
-
-.video-container {
-  @apply relative w-full overflow-hidden rounded-lg;
-  aspect-ratio: 16 / 9;
-  min-height: 220px;
-  background: #000;
-}
-
-.video-embed {
-  @apply absolute inset-0 w-full h-full;
-  border-radius: inherit;
+.ff-exercise-page .video-button small {
   display: block;
+  margin-top: 8px;
+  color: #58667a;
 }
-
-@supports not (aspect-ratio: 16 / 9) {
-  .video-container {
-    aspect-ratio: auto;
-    height: 0;
-    padding-top: 56.25%;
+.ff-exercise-page .video-placeholder {
+  color: #58667a;
+  background: #f5f7fb;
+  border-style: dashed;
+}
+@media (max-width: 480px) {
+  .ff-exercise-page :is(.video-button, .video-placeholder) {
+    min-height: 190px;
   }
-}
-
-.video-button {
-  @apply flex items-center justify-center gap-3 bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-semibold !px-6 !py-4 rounded-lg hover:opacity-90 transition-all;
-}
-
-.video-placeholder {
-  @apply flex items-center justify-center gap-3 bg-gray-100 text-gray-400 font-semibold !px-6 !py-4 rounded-lg;
-}
-
-/* Header */
-.exercise-header {
-  @apply flex flex-col gap-4 !p-6;
-}
-
-.exercise-title-container {
-  @apply flex flex-col gap-1 border-b-2 border-gray-200/50 !pb-4;
-}
-
-.exercise-back-button {
-  @apply bg-gray-50 hover:bg-gray-100 !p-2 rounded-full text-gray-600 hover:text-gray-800 transition-all;
-}
-
-/* Badges */
-.badge-container {
-  @apply flex flex-row gap-6;
-}
-
-.badge-type {
-  @apply !px-3 !py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)];
-}
-
-.badge-difficulty {
-  @apply !px-3 !py-1 rounded-full bg-[var(--secondary)]/10 text-[var(--secondary)];
-}
-
-.badge-muscle {
-  @apply !px-3 !py-1 rounded-full bg-[var(--accent)]/10 text-[var(--accent)];
-}
-
-/* Description */
-.description-section {
-  @apply !px-6 !pb-6;
-}
-
-.description-title {
-  @apply text-2xl font-semibold;
-}
-
-.description-text {
-  @apply whitespace-pre-line leading-relaxed text-black/80;
 }

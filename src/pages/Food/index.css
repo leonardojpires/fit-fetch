@@ -1,128 +1,68 @@
-@reference "tailwindcss";
-
-/* Food Page Utility Classes */
-
-/* Info Section */
-.info-section {
-  @apply flex flex-col gap-4 flex-1;
+.ff-food-page .macros-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
-
-.info-container {
-  @apply flex flex-col gap-5;
+.ff-food-page .macro-card {
+  padding: 20px;
+  border: 1px solid #dce9df;
+  border-radius: 10px;
+  background: #f5faf7;
 }
-
-.info-item {
-  @apply flex flex-col;
+.ff-food-page .macro-icon {
+  display: none;
 }
-
-.info-label {
-  @apply font-semibold text-black/50 text-sm;
+.ff-food-page .macro-label {
+  font-size: 0.65rem;
+  color: #58667a;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin-bottom: 10px;
 }
-
-.info-value {
-  @apply text-black font-bold;
+.ff-food-page .macro-value {
+  font-family: var(--headline);
+  font-weight: 700;
+  font-size: 2rem;
+  color: #08773c;
+  font-variant-numeric: tabular-nums;
 }
-
-/* Header */
-.food-header {
-  @apply flex flex-col gap-4 !p-6;
+.ff-food-page .ff-catalog-support {
+  font-size: 0.85rem;
+  color: #58667a;
+  margin: -12px 0 24px;
 }
-
-.food-title-container {
-  @apply flex flex-col gap-1 border-b-2 border-gray-200/50 !pb-4;
+.ff-food-page .nutritional-table {
+  margin: 0;
 }
-
-.food-back-button {
-  @apply bg-gray-50 hover:bg-gray-100 !p-2 rounded-full text-gray-600 hover:text-gray-800 transition-all;
+.ff-food-page .table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e7ecf3;
 }
-
-/* Badges */
-.badge-container {
-  @apply flex flex-row gap-6 flex-wrap;
+.ff-food-page .table-label {
+  color: #46556b;
+  font-size: 0.9rem;
 }
-
-.badge-category {
-  @apply !px-3 !py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] font-semibold;
+.ff-food-page .table-value {
+  color: #17243a;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  margin: 0;
 }
-
-.badge-serving {
-  @apply !px-3 !py-1 rounded-full bg-[var(--secondary)]/10 text-[var(--secondary)] font-semibold;
+.ff-food-page .nutritional-note {
+  margin-top: 20px;
+  color: #58667a;
+  font-size: 0.8rem;
 }
-
-.badge-calories {
-  @apply !px-3 !py-1 rounded-full bg-[var(--accent)]/10 text-[var(--accent)] font-semibold;
-}
-
-/* Macros Section */
-.macros-section {
-  @apply flex flex-col gap-4 flex-1 !px-6;
-}
-
-.section-title {
-  @apply text-2xl font-semibold !mb-2;
-}
-
-.macros-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
-}
-
-.macro-card {
-  @apply flex items-center gap-4 !p-4 rounded-lg transition-all hover:scale-105;
-}
-
-.macro-protein {
-  @apply bg-red-50 border-2 border-red-100;
-}
-
-.macro-carbs {
-  @apply bg-yellow-50 border-2 border-yellow-100;
-}
-
-.macro-fat {
-  @apply bg-green-50 border-2 border-green-100;
-}
-
-.macro-fiber {
-  @apply bg-amber-50 border-2 border-amber-100;
-}
-
-.macro-icon {
-  @apply text-3xl;
-}
-
-.macro-content {
-  @apply flex flex-col;
-}
-
-.macro-label {
-  @apply text-xs font-semibold text-black/50;
-}
-
-.macro-value {
-  @apply text-xl font-bold text-black;
-}
-
-/* Nutritional Breakdown */
-.nutritional-breakdown {
-  @apply !px-6 !pb-6;
-}
-
-.nutritional-table {
-  @apply flex flex-col gap-3 !my-4 bg-gray-50 !p-4 rounded-lg;
-}
-
-.table-row {
-  @apply flex justify-between items-center !py-2 border-b border-gray-200 last:border-0;
-}
-
-.table-label {
-  @apply font-medium text-black/70;
-}
-
-.table-value {
-  @apply font-bold text-black;
-}
-
-.nutritional-note {
-  @apply text-sm text-black/50 italic;
+@media (max-width: 480px) {
+  .ff-food-page .macro-card {
+    padding: 16px 12px;
+  }
+  .ff-food-page .macros-grid {
+    gap: 10px;
+  }
 }

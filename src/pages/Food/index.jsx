@@ -1,7 +1,8 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import { FaArrowLeft } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { HelpReveal } from "../../components/HelpPages";
+import "../../components/CatalogDetails/index.css";
 import "./index.css";
 import useGetFoodById from "../../hooks/Foods/useGetFoodById";
 
@@ -46,18 +47,12 @@ function Food() {
   }
 
   return (
-    <motion.section
-      className="w-full"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-    >
-      <div className="section !mt-40 !mb-40 flex flex-col gap-10">
-        <div className="containers">
-          <div className="food-header overflow-x-auto">
-            <div className="food-title-container">
-              <div className="flex flex-row items-center gap-3">
+    <div className="ff-help-page ff-catalog-page ff-food-page">
+      <header className="ff-help-hero">
+        <div className="ff-help-wrap">
+          <HelpReveal>
+            <div className="ff-catalog-title">
+              <div className="ff-catalog-title-row">
                 <Link
                   to=".."
                   onClick={(e) => {
@@ -66,13 +61,13 @@ function Food() {
                   }}
                   className="food-back-button"
                 >
-                  <FaArrowLeft />
+                  <FaArrowLeft aria-hidden="true" /> Voltar
                 </Link>
-                <h1 className="font-headline font-bold text-2xl">
+                <h1 className="ff-catalog-name">
                   {food?.name || "Nome do Alimento"}
                 </h1>
               </div>
-              <p className="font-body text-black/70">Detalhes do alimento</p>
+              <p className="ff-help-hero-description">Detalhes do alimento</p>
             </div>
 
             <div className="badge-container">
@@ -86,16 +81,24 @@ function Food() {
                 {food?.calories || "0"} kcal
               </span>
             </div>
-          </div>
-
+          </HelpReveal>
+        </div>
+      </header>
+      <div className="ff-help-wrap ff-catalog-content">
+        <HelpReveal>
           {/* NUTRITION INFO AND MACROS */}
-          <div className="flex flex-col md:flex-row md:flex-nowrap justify-center items-start gap-3 overflow-x-auto w-full !px-6 !mb-6">
+          <div className="ff-catalog-grid">
             {/* Macronutrients Cards */}
             <div className="macros-section">
               <h2 className="section-title font-heading">Macronutrientes</h2>
+              <p className="ff-catalog-support">
+                Por porção de {food?.serving_size || "100"} {food?.unit || "g"}
+              </p>
               <div className="macros-grid">
                 <div className="macro-card macro-protein">
-                  <div className="macro-icon">🥩</div>
+                  <div className="macro-icon" aria-hidden="true">
+                    🥩
+                  </div>
                   <div className="macro-content">
                     <p className="macro-label font-body">PROTEÍNA</p>
                     <span className="macro-value font-body">
@@ -104,16 +107,20 @@ function Food() {
                   </div>
                 </div>
                 <div className="macro-card macro-carbs">
-                  <div className="macro-icon">🍞</div>
+                  <div className="macro-icon" aria-hidden="true">
+                    🍞
+                  </div>
                   <div className="macro-content">
-                    <p className="macro-label font-body">CARBOIDRATOS</p>
+                    <p className="macro-label font-body">HIDRATOS DE CARBONO</p>
                     <span className="macro-value font-body">
                       {food?.carbs || "0"}g
                     </span>
                   </div>
                 </div>
                 <div className="macro-card macro-fat">
-                  <div className="macro-icon">🥑</div>
+                  <div className="macro-icon" aria-hidden="true">
+                    🥑
+                  </div>
                   <div className="macro-content">
                     <p className="macro-label font-body">GORDURA</p>
                     <span className="macro-value font-body">
@@ -122,7 +129,9 @@ function Food() {
                   </div>
                 </div>
                 <div className="macro-card macro-fiber">
-                  <div className="macro-icon">🌾</div>
+                  <div className="macro-icon" aria-hidden="true">
+                    🌾
+                  </div>
                   <div className="macro-content">
                     <p className="macro-label font-body">FIBRA</p>
                     <span className="macro-value font-body">
@@ -174,46 +183,40 @@ function Food() {
           {/* Nutritional Breakdown */}
           <div className="nutritional-breakdown">
             <h2 className="section-title font-heading">Valor Nutricional</h2>
-            <div className="nutritional-table">
+            <dl className="nutritional-table">
               <div className="table-row">
-                <span className="table-label font-body">Calorias</span>
-                <span className="table-value font-body">
+                <dt className="table-label font-body">Calorias</dt>
+                <dd className="table-value font-body">
                   {food?.calories || "0"} kcal
-                </span>
+                </dd>
               </div>
               <div className="table-row">
-                <span className="table-label font-body">Proteína</span>
-                <span className="table-value font-body">
+                <dt className="table-label font-body">Proteína</dt>
+                <dd className="table-value font-body">
                   {food?.protein || "0"}g
-                </span>
+                </dd>
               </div>
               <div className="table-row">
-                <span className="table-label font-body">Carboidratos</span>
-                <span className="table-value font-body">
-                  {food?.carbs || "0"}g
-                </span>
+                <dt className="table-label font-body">Hidratos de carbono</dt>
+                <dd className="table-value font-body">{food?.carbs || "0"}g</dd>
               </div>
               <div className="table-row">
-                <span className="table-label font-body">Fibra</span>
-                <span className="table-value font-body">
-                  {food?.fiber || "0"}g
-                </span>
+                <dt className="table-label font-body">Fibra</dt>
+                <dd className="table-value font-body">{food?.fiber || "0"}g</dd>
               </div>
               <div className="table-row">
-                <span className="table-label font-body">Gordura</span>
-                <span className="table-value font-body">
-                  {food?.fat || "0"}g
-                </span>
+                <dt className="table-label font-body">Gordura</dt>
+                <dd className="table-value font-body">{food?.fat || "0"}g</dd>
               </div>
-            </div>
+            </dl>
             <p className="nutritional-note font-body">
               * Valores nutricionais baseados em {food?.serving_size || "100"}{" "}
               {food?.unit || "g"} do alimento
             </p>
           </div>
-        </div>
+        </HelpReveal>
       </div>
-    </motion.section>
+    </div>
   );
 }
 

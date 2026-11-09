@@ -1,9 +1,10 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import { motion } from "framer-motion";
-import useRedirectIfNotAuth from '../../hooks/useIfNotAuth';
+import { HelpReveal } from "../../components/HelpPages";
+import "../../components/CatalogDetails/index.css";
+import useRedirectIfNotAuth from "../../hooks/useIfNotAuth";
 import "./index.css";
-import useGetExerciseById from '../../hooks/Exercises/useGetExercisesById';
+import useGetExerciseById from "../../hooks/Exercises/useGetExercisesById";
 
 const tType = {
   calisthenics: "Calistenia",
@@ -66,36 +67,30 @@ function Exercise() {
   }
 
   return (
-    <motion.section
-      className="w-full"
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-    >
-      <div className="section !mt-40 !mb-40 flex flex-col gap-10">
-        <div className="containers">
-          <div className="exercise-header overflow-x-auto">
-            <div className="exercise-title-container">
-              <div className="flex flex-row items-center gap-3">
-                    <Link
-                        to=".."
-                        onClick={(e) => {
-                        e.preventDefault();
-                        window.history.back();
-                        }}
-                        className="exercise-back-button"
-                    >
-                        <FaArrowLeft />
-                    </Link>
-                  <h1 className="font-headline font-bold text-2xl">
-                    {exercise
-                      ? exercise.name.slice(0, 1).toUpperCase() +
-                        exercise.name.slice(1)
-                      : ""}
-                  </h1>
+    <div className="ff-help-page ff-catalog-page ff-exercise-page">
+      <header className="ff-help-hero">
+        <div className="ff-help-wrap">
+          <HelpReveal>
+            <div className="ff-catalog-title">
+              <div className="ff-catalog-title-row">
+                <Link
+                  to=".."
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.history.back();
+                  }}
+                  className="exercise-back-button"
+                >
+                  <FaArrowLeft aria-hidden="true" /> Voltar
+                </Link>
+                <h1 className="ff-catalog-name">
+                  {exercise
+                    ? exercise.name.slice(0, 1).toUpperCase() +
+                      exercise.name.slice(1)
+                    : ""}
+                </h1>
               </div>
-              <p className="font-body text-black/70">Detalhes do exercício</p>
+              <p className="ff-help-hero-description">Detalhes do exercício</p>
             </div>
 
             <div className="badge-container">
@@ -103,32 +98,39 @@ function Exercise() {
                 {exercise.type === "weightlifting"
                   ? "Musculação"
                   : exercise.type === "calisthenics"
-                  ? "Calistenia"
-                  : "Cardio"}
+                    ? "Calistenia"
+                    : "Cardio"}
               </span>
               <span className="badge-difficulty font-body">
                 {exercise.difficulty === "beginner"
                   ? "Iniciante"
                   : exercise.difficulty === "intermediate"
-                  ? "Intermédio"
-                  : "Avançado"}
+                    ? "Intermédio"
+                    : "Avançado"}
               </span>
               <span className="badge-muscle font-body">
                 {exercise.muscle_group.slice(0, 1).toUpperCase() +
                   exercise.muscle_group.slice(1)}
               </span>
             </div>
-          </div>
-
+          </HelpReveal>
+        </div>
+      </header>
+      <div className="ff-help-wrap ff-catalog-content">
+        <HelpReveal>
           {/* IMAGE/VIDEO AND INFOS */}
-          <div className="flex flex-col md:flex-row md:flex-nowrap justify-center items-start gap-3 overflow-x-auto w-full !px-6 !mb-6">
-            <div className="media-section">
+          <div className="ff-catalog-grid">
+            <section
+              className="media-section"
+              aria-labelledby="exercise-media-title"
+            >
+              <h2 id="exercise-media-title">Demonstração</h2>
               {exercise.video_url && getYouTubeId(exercise.video_url) ? (
                 <div className="video-container">
                   <iframe
                     className="video-embed"
                     src={`https://www.youtube.com/embed/${getYouTubeId(
-                      exercise.video_url
+                      exercise.video_url,
                     )}`}
                     title="Vídeo demonstrativo do exercício"
                     frameBorder="0"
@@ -143,26 +145,29 @@ function Exercise() {
                   rel="noopener noreferrer"
                   className="video-button font-body"
                 >
-                  <span className="text-2xl">▶️</span>
-                  <span>Ver vídeo demonstrativo</span>
+                  <span className="text-2xl" aria-hidden="true">
+                    ▶️
+                  </span>
+                  <span>
+                    Ver vídeo demonstrativo{" "}
+                    <small>(abre numa nova janela)</small>
+                  </span>
                 </a>
               ) : (
                 <div className="video-placeholder font-body">
-                  <span className="text-2xl">🎥</span>
+                  <span className="text-2xl" aria-hidden="true">
+                    🎥
+                  </span>
                   <span>Sem vídeo disponível</span>
                 </div>
               )}
-            </div>
+            </section>
 
             <div className="info-section">
-              <h2 className="description-title font-heading">
-                Informações
-              </h2>
+              <h2 className="description-title font-heading">Informações</h2>
               <div className="info-container">
                 <div className="info-item">
-                  <p className="info-label font-body">
-                    TIPO DE EXERCÍCIO
-                  </p>
+                  <p className="info-label font-body">TIPO DE EXERCÍCIO</p>
                   <span className="info-value font-body">
                     {tType[exercise.type]} (
                     {exercise.type.slice(0, 1).toUpperCase() +
@@ -171,9 +176,7 @@ function Exercise() {
                   </span>
                 </div>
                 <div className="info-item">
-                  <p className="info-label font-body">
-                    DIFICULDADE
-                  </p>
+                  <p className="info-label font-body">DIFICULDADE</p>
                   <span className="info-value font-body">
                     {tDifficulty[exercise.difficulty]} (
                     {exercise.difficulty.slice(0, 1).toUpperCase() +
@@ -182,18 +185,14 @@ function Exercise() {
                   </span>
                 </div>
                 <div className="info-item">
-                  <p className="info-label font-body">
-                    GRUPO MUSCULAR
-                  </p>
+                  <p className="info-label font-body">GRUPO MUSCULAR</p>
                   <span className="info-value font-body">
                     {exercise.muscle_group.slice(0, 1).toUpperCase() +
                       exercise.muscle_group.slice(1)}
                   </span>
                 </div>
                 <div className="info-item">
-                  <p className="info-label font-body">
-                    ADICIONADO A
-                  </p>
+                  <p className="info-label font-body">ADICIONADO A</p>
                   <span className="info-value font-body">
                     {new Date(exercise.created_at).toLocaleDateString("pt-PT", {
                       day: "2-digit",
@@ -206,12 +205,14 @@ function Exercise() {
             </div>
           </div>
           <div className="description-section">
-            <h2 className="description-title font-heading">Descrição do Exercício</h2>
+            <h2 className="description-title font-heading">
+              Descrição do Exercício
+            </h2>
             <p className="description-text font-body">{exercise.description}</p>
           </div>
-        </div>
+        </HelpReveal>
       </div>
-    </motion.section>
+    </div>
   );
 }
 

@@ -1,0 +1,144 @@
+.ff-help-page.ff-catalog-page {
+  background: #f5f7fb;
+}
+.ff-catalog-page .ff-help-hero {
+  padding-bottom: 48px;
+}
+.ff-catalog-page .ff-catalog-title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+}
+.ff-catalog-page .ff-catalog-name {
+  max-width: 26ch;
+  overflow-wrap: anywhere;
+}
+.ff-catalog-page :is(.exercise-back-button, .food-back-button) {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  color: #b9c9e0;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+.ff-catalog-page :is(.exercise-back-button, .food-back-button):hover {
+  color: white;
+  text-decoration: underline;
+}
+.ff-catalog-page .badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+.ff-catalog-page .badge-container > span {
+  padding: 6px 12px;
+  border: 1px solid #ffffff26;
+  border-radius: 6px;
+  color: #d4e3fa;
+  background: #ffffff08;
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+.ff-catalog-page .ff-catalog-content {
+  padding-block: 36px 80px;
+}
+.ff-catalog-page .ff-catalog-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.ff-catalog-page
+  :is(
+    .media-section,
+    .macros-section,
+    .info-section,
+    .description-section,
+    .nutritional-breakdown
+  ) {
+  min-width: 0;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #dce3ed;
+  border-radius: 14px;
+}
+.ff-catalog-page h2 {
+  font-size: 1.35rem;
+  line-height: 1.35;
+  margin-bottom: 22px;
+}
+.ff-catalog-page .info-container {
+  display: grid;
+  gap: 18px;
+}
+.ff-catalog-page .info-item {
+  border-bottom: 1px solid #e7ecf3;
+  padding-bottom: 16px;
+}
+.ff-catalog-page .info-item:last-child {
+  border: 0;
+  padding-bottom: 0;
+}
+.ff-catalog-page .info-label {
+  color: #58667a;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.ff-catalog-page .info-value {
+  color: #17243a;
+  font-size: 0.9rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.ff-catalog-page :is(.description-section, .nutritional-breakdown) {
+  margin-top: 24px;
+}
+.ff-catalog-page .description-text {
+  max-width: 85ch;
+  white-space: pre-line;
+  line-height: 1.85;
+  color: #46556b;
+  overflow-wrap: anywhere;
+}
+.ff-catalog-page :is(a, button):focus-visible {
+  outline: 3px solid #246ce5;
+  outline-offset: 4px;
+}
+@media (max-width: 800px) {
+  .ff-catalog-page .ff-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+  .ff-catalog-page .info-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .ff-catalog-page
+    :is(
+      .media-section,
+      .macros-section,
+      .info-section,
+      .description-section,
+      .nutritional-breakdown
+    ) {
+    padding: 20px;
+  }
+  .ff-catalog-page .ff-catalog-content {
+    padding-block: 24px 56px;
+  }
+  .ff-catalog-page .info-container {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ff-catalog-page * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
