@@ -1,5 +1,52 @@
-@import 'tailwindcss';
-
-.section-lg {
-  @apply w-full max-w-[900px] px-5 mt-30 mx-auto lg:mb-0 lg:max-w-[1200px] lg:px-20;
+.ff-not-found {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 85svh;
+  padding: 140px 24px 80px;
+  background: #f5f7fb;
+  color: #17243a;
+  font-family: var(--body);
+  text-align: center;
+}
+.ff-not-found-content {
+  max-width: 560px;
+}
+.ff-not-found-code {
+  margin-bottom: 20px;
+  color: #246ce5;
+  font: 700 clamp(4rem, 12vw, 6rem)/1 var(--headline);
+  letter-spacing: -0.04em;
+}
+.ff-not-found h1 {
+  font: 700 clamp(1.75rem, 4vw, 2.5rem)/1.2 var(--headline);
+  letter-spacing: -0.025em;
+}
+.ff-not-found-description {
+  margin-top: 16px;
+  color: #58667a;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+.ff-not-found-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: #245dbb;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.ff-not-found-home:hover {
+  background: #194b9b;
+}
+.ff-not-found-home:focus-visible {
+  outline: 3px solid #246ce5;
+  outline-offset: 4px;
 }
